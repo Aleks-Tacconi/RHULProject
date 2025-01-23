@@ -10,6 +10,12 @@ from dataclasses import field
 
 from PIL import Image
 
+def file():
+    if os.name == "nt":
+        return r"file:\\"
+
+    return "file://"
+
 @dataclass
 class SpriteSheet():
     spritesheet: str = field()
@@ -58,15 +64,12 @@ class Animation:
             self.counter = 0
 
     def render(self, canvas, pos, size):
-        index_x = (self.spritesheet.rows - 1) - self.frame_index[0] if self.flipped else self.frame_index[0]
-        index_y = (self.spritesheet.columns - 1) - self.frame_index[1] if self.flipped else self.frame_index[1]
-
         source_center = [
             self.spritesheet.frame_width * self.frame_index[0] + self.spritesheet.frame_center_x,
             self.spritesheet.frame_height * self.frame_index[1] + self.spritesheet.frame_center_y,
         ]
 
         source_size = (self.spritesheet.frame_width, self.spritesheet.frame_height)
-        img = simplegui.load_image(r"file:\\" + self.spritesheet.spritesheet)
+        img = simplegui.load_image(file() + self.spritesheet.spritesheet)
 
         canvas.draw_image(img, source_center, source_size, pos, size)
