@@ -19,6 +19,7 @@ class SpriteSheet():
     def __post_init__(self):
         self.spritesheet = os.path.join(os.getcwd(), self.spritesheet)
 
+        print(self.spritesheet)
         image = Image.open(self.spritesheet)
         image_width, image_height = image.size
 
@@ -66,6 +67,6 @@ class Animation:
         ]
 
         source_size = (self.spritesheet.frame_width, self.spritesheet.frame_height)
-        img = simplegui.load_image("file://" + self.spritesheet.spritesheet)
+        img = simplegui.load_image(r"file:\\" + self.spritesheet.spritesheet)
 
         canvas.draw_image(img, source_center, source_size, pos, size)

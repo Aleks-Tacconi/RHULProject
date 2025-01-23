@@ -1,6 +1,6 @@
 from .entity import Entity
 from .animation import Animation
-
+import os
 
 class Player(Entity):
     def __init__(self, game):
@@ -11,9 +11,9 @@ class Player(Entity):
 
         self.current_animation = "idle"
         self.animations = {
-            "idle": Animation("assets/player/IDLE.png", 1, 5, 15),
-            "run right": Animation("assets/player/RUN.png", 1, 8, 15),
-            "run left": Animation("assets/player/RUN.png", 1, 8, 15, flipped=True),
+            "idle": Animation(os.path.join("assets","player","IDLE.png"), 1, 5, 15),
+            "run right": Animation(os.path.join("assets","player","RUN.png"), 1, 8, 15),
+            "run left": Animation(os.path.join("assets","player","RUN.png"), 1, 8, 15, flipped=True),
         }
 
     def render(self, canvas):
