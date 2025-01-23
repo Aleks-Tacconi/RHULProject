@@ -14,6 +14,7 @@ class Game:
         self.player = Player(self)
 
         self.frame = simplegui.create_frame("Title", self.width, self.height)
+        self.frame.set_canvas_background("#ADD8E6")
         self.frame.set_draw_handler(self.mainloop)
 
         self.frame.set_keydown_handler(self.keydown)

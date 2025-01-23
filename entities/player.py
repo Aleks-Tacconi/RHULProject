@@ -4,7 +4,7 @@ import os
 
 class Player(Entity):
     def __init__(self, game):
-        super().__init__(pos=[150, 150], size=[400, 400])
+        super().__init__(pos=[150, 150], size=[220, 220])
 
         self.game = game
         self.speed = 4
@@ -31,3 +31,10 @@ class Player(Entity):
         elif "D" in self.game.keys_pressed:
             self.pos[0] += self.speed
             self.current_animation = "run right"
+
+
+        if "W" in self.game.keys_pressed and self.vel_y == 0:
+            self.vel_y = -10
+
+        self.gravity()
+
