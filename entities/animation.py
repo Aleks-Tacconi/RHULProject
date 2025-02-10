@@ -7,6 +7,7 @@ import os
 
 from dataclasses import dataclass
 from dataclasses import field
+from vector import Vector
 
 from PIL import Image
 

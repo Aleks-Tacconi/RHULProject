@@ -1,40 +1,37 @@
 from .entity import Entity
 from .animation import Animation
 import os
+from vector import Vector
 
 class Player(Entity):
     def __init__(self, game):
-        super().__init__(pos=[150, 150], size=[220, 220])
-
+        super().__init__(pos=Vector(150,150), size=[220, 220])
         self.game = game
-        self.speed = 4
-
+        self.vel = Vector()
         self.current_animation = "idle"
         self.animations = {
             "idle": Animation(os.path.join("assets","player","IDLE.png"), 1, 5, 15),
             "run right": Animation(os.path.join("assets","player","RUN.png"), 1, 8, 15),
-            "run left": Animation(os.path.join("assets","player","RUN.png"), 1, 8, 15, flipped=True),
+            "run left": Animation(os.path.join("assets","player","RUN.png"), 1, 8, 15,
+                                  flipped=True),
+            "jump": Animation(os.path.join("assets","player","JUMP.png"), 1, 3, 15)
         }
 
     def render(self, canvas):
-        self.animations[self.current_animation].render(canvas, self.pos, self.size)
+        self.animations[self.current_animation].render(canvas, self.pos.get_p(), self.size)
 
     def update(self):
         self.animations[self.current_animation].update()
 
-        if ("A" in self.game.keys_pressed and "D" in self.game.keys_pressed) or \
-            ("A" not in self.game.keys_pressed and "D" not in self.game.keys_pressed):
+        if self.vel.x == 0:
             self.current_animation = "idle"
-        elif "A" in self.game.keys_pressed:
-            self.pos[0] -= self.speed
+        if self.vel.x < 0:
             self.current_animation = "run left"
-        elif "D" in self.game.keys_pressed:
-            self.pos[0] += self.speed
+        if self.vel.x > 0:
             self.current_animation = "run right"
+        if self.vel.y > 0:
+            self.current_animation = "jump"
 
-
-        if "W" in self.game.keys_pressed and self.vel_y == 0:
-            self.vel_y = -10
-
+        self.pos.add(self.vel)
         self.gravity()
 
