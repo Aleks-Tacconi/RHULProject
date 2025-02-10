@@ -6,4 +6,3 @@ class Mouse:
 
     def mouse_click(self, position):
         self.mouse_position = Vector(position[0], position[1])
-        print(self.mouse_position)

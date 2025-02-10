@@ -6,7 +6,6 @@ except ImportError:
 
 from .interaction import Interaction
 from .title_screen import TitleScreen
-from vector import Vector
 
 
 class Game:
@@ -26,8 +25,10 @@ class Game:
 
 
 
+
     def start(self):
         self.frame.start()
+
 
     def mainloop(self, canvas):
         self.inter.update()
@@ -36,8 +37,12 @@ class Game:
 
     def title_screen_loop(self, canvas):
         self.title_screen.draw(canvas)
+        self.title_screen.music.play()
+        self.title_screen.music.set_volume(0.2)
         if 300 <= self.inter.mouse.mouse_position.x <= 500 and 700 <= self.inter.mouse.mouse_position.y <= 780:
+            self.title_screen.music.pause()
             self.frame.set_draw_handler(self.mainloop)
+
 
 
 

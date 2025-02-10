@@ -28,4 +28,3 @@ class Interaction:
             self.player.vel.x = -1 * speed
         if "W" in self.keyboard.keys_pressed and self.player.vel.y == 0 and self.player.pos.y == 600:
             self.player.vel.y = -10
-        print(self.player.vel.x)
