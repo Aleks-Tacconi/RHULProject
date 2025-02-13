@@ -6,7 +6,7 @@ class Entity(metaclass=ABCMeta):
     def __init__(self, pos, size):
         self.pos = pos
         self.size = size
-
+        self.speed = 1
         self.vel = Vector(0, 0)
         self.vel_y_increment = 0.5
         self.max_vel_y = 20

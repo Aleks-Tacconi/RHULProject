@@ -15,16 +15,18 @@ class Interaction:
         self.mouse = Mouse()
 
     def update(self):
-        speed = 5
+        self.player.speed = 5
         if self.keyboard.current_key == "":
             self.player.vel.x = 0
         if "D" in self.keyboard.keys_pressed:
-            self.player.vel.x = 1 * speed
+            self.player.vel.x = 1 * self.player.speed
         if "A" in self.keyboard.keys_pressed:
-            self.player.vel.x = -1 * speed
-        if "D" in self.keyboard.keys_pressed and self.keyboard.current_key == "D" and self.player.vel.x != 1 * speed:
-            self.player.vel.x = 1 * speed
-        if "A" in self.keyboard.keys_pressed and self.keyboard.current_key == "A" and self.player.vel.x != -1 * speed:
-            self.player.vel.x = -1 * speed
+            self.player.vel.x = -1 * self.player.speed
+        if ("D" in self.keyboard.keys_pressed and self.keyboard.current_key == "D"
+                and self.player.vel.x != 1 * self.player.speed):
+            self.player.vel.x = 1 * self.player.speed
+        if ("A" in self.keyboard.keys_pressed and self.keyboard.current_key == "A"
+                and self.player.vel.x != -1 * self.player.speed):
+            self.player.vel.x = -1 * self.player.speed
         if "W" in self.keyboard.keys_pressed and self.player.vel.y == 0 and self.player.pos.y == 600:
             self.player.vel.y = -10

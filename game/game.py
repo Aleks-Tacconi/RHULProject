@@ -23,9 +23,6 @@ class Game:
         self.frame.set_mouseclick_handler(self.inter.mouse.mouse_click)
         self.frame.set_draw_handler(self.title_screen_loop)
 
-
-
-
     def start(self):
         self.frame.start()
 

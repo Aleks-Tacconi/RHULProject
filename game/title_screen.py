@@ -5,7 +5,8 @@ except ImportError:
 
 class TitleScreen:
     def __init__(self):
-        self.music = simplegui.load_sound("https://archive.org/download/title-music435q23ref.wav/Title%20Music.wav")
+        self.music = simplegui.load_sound('https://archive.org/details/title-music_202502.mp3')
+        #https://archive.org/details/title-music435q23ref.wav
 
     def draw(self, canvas):
         canvas.draw_text("Welcome to the Game", (250, 200), 48, "Black")
