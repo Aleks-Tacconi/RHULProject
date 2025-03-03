@@ -12,3 +12,8 @@ pyparsing==3.2.0
 python-dateutil==2.9.0.post0
 SimpleGUICS2Pygame==2.1.0
 six==1.17.0
+
+elevenlabs~=1.52.0
+openai~=1.65.2
+SpeechRecognition~=3.14.1
+playsound3~=2.5.2

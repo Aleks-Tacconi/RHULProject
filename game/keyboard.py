@@ -6,7 +6,8 @@ class Keyboard:
     def keydown(self, key):
         try:
             self.keys_pressed.add(chr(key))
-            self.current_key = chr(key)
+            if chr(key) in "AD":
+                self.current_key = chr(key)
         except ValueError:
             pass
 
