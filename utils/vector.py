@@ -85,11 +85,11 @@ class Vector:
 
     # Returns the length of the vector
     def length(self):
-        return math.sqrt(self.x ** 2 + self.y ** 2)
+        return math.sqrt(self.x**2 + self.y**2)
 
     # Returns the squared length of the vector
     def length_squared(self):
-        return self.x ** 2 + self.y ** 2
+        return self.x**2 + self.y**2
 
     # Reflect this vector on a normal
     def reflect(self, normal):
@@ -123,4 +123,3 @@ class Vector:
     def get_proj(self, vec):
         unit = vec.get_normalized()
         return unit.multiply(self.dot(unit))
-

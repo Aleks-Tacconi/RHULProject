@@ -1,58 +1,77 @@
-from .entity import Entity
-from .animation import Animation
-import os
-from vector import Vector
+"""Player module.
 
-class Player(Entity):
-    def __init__(self, game):
-        super().__init__(pos=Vector(150,150), size=[220, 220])
-        self.game = game
-        self.vel = Vector()
-        self.current_animation = ""
-        self.direction = ""
-        self.animations = {
-            "idle right": Animation(os.path.join("assets","player","IDLE.png"), 1, 5, 15),
-            "idle left": Animation(os.path.join("assets","player","IDLE.png"), 1, 5, 15,
-                                   flipped=True),
-            "run right": Animation(os.path.join("assets","player","RUN.png"), 1, 8, 15),
-            "run left": Animation(os.path.join("assets","player","RUN.png"), 1, 8, 15,
-                                  flipped=True),
-            "jump right": Animation(os.path.join("assets","player","JUMP.png"), 1, 3, 15),
-            "jump left": Animation(os.path.join("assets","player","JUMP.png"), 1, 3, 15,
-                                   flipped=True),
+This module defines the Player class, which is an implementation of the 
+PhysicsEntity class and acts as the main player in the game. This class handles the
+actions and rendering of the player.
+
+File:
+    entities/player.py
+
+Classes:
+    Player: Represents the player entity with animations and movement logic.
+"""
+
+import os
+
+from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
+
+from utils import Vector
+
+from .abstract import PhysicsEntity
+from .utils import Animation, SpriteSheet
+
+
+class Player(PhysicsEntity):
+    """Player entity
+
+    This is a implementation of the abstract base class PhysicsEntity which represents
+    the playable character implementing actions such as rendering and handling the players
+    movement.
+
+    Attributes:
+        current_animation: The current player animation.
+        __animations (Dict[str, Animation]): A list of animations that can be rendered.
+
+    Methods:
+        render(canvas: simplegui.Frame) -> None: Renders the player onto the canvas.
+        update() -> None: Updates the state of the player.
+    """
+
+    def __init__(self, pos: Vector) -> None:
+        super().__init__(pos=pos, size=Vector(200, 200), vel=Vector(0, 0))
+
+        self.__animations = {
+            "IDLE_RIGHT": Animation(
+                spritesheet=SpriteSheet(
+                    os.path.join("assets", "player", "IDLE.png"), rows=1, cols=5
+                ),
+                frames_per_sprite=15,
+            ),
+            "IDLE_LEFT": Animation(
+                spritesheet=SpriteSheet(
+                    os.path.join("assets", "player", "IDLE.png"), rows=1, cols=5
+                ).flip(),
+                frames_per_sprite=15,
+            ),
+            "RUN_RIGHT": Animation(
+                spritesheet=SpriteSheet(
+                    os.path.join("assets", "player", "RUN.png"), rows=1, cols=8
+                ),
+                frames_per_sprite=15,
+            ),
+            "RUN_LEFT": Animation(
+                spritesheet=SpriteSheet(
+                    os.path.join("assets", "player", "RUN.png"), rows=1, cols=8
+                ).flip(),
+                frames_per_sprite=15,
+            ),
         }
 
-    def render(self, canvas):
-        self.animations[self.current_animation].render(canvas, self.pos.get_p(), self.size)
+        self.current_animation = "IDLE_RIGHT"
 
-    def update(self):
-        if self.direction == "":
-            self.current_animation = "idle right"
+    def update(self) -> None:
+        self._pos += self.vel
+        self.__animations[self.current_animation].update()
 
-        if self.vel.x != 0:
-            if self.vel.x > 0:
-                self.direction = "right"
-            if self.vel.x < 0:
-                self.direction = "left"
-
-        if self.direction == "right":
-            if self.vel == Vector(0,0):
-                self.current_animation = "idle right"
-            if self.vel.y != 0:
-                self.current_animation = "jump right"
-
-        if self.direction == "left":
-            if self.vel == Vector(0, 0):
-                self.current_animation = "idle left"
-            if self.vel.y != 0:
-                self.current_animation = "jump left"
-
-        if self.vel.x > 0:
-            self.current_animation = "run right"
-        if self.vel.x < 0:
-            self.current_animation = "run left"
-
-        self.pos.add(self.vel)
-        self.gravity()
-        self.animations[self.current_animation].update()
-
+    def render(self, canvas: simplegui.Canvas) -> None:
+        self.__animations[self.current_animation].render(canvas, self._pos, self._size)
