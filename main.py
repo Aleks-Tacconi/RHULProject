@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from simplegui import GUI
 
 WIDTH = 800

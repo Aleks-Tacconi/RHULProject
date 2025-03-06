@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """GUI module.
 
 This module defines the GUI class, which is responsible for creating and managing
