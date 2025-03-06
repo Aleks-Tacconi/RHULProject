@@ -8,6 +8,7 @@ except ImportError:
 from ai import AI
 from .keyboard import Keyboard
 from entities import Player
+import threading
 
 class Interaction:
     def __init__(self):
@@ -34,12 +35,12 @@ class Interaction:
         if "W" in self.keyboard.keys_pressed and self.player.vel.y == 0 and self.player.pos.y == 600:
             self.player.vel.y = -10
         if "V" in self.keyboard.keys_pressed and self.single == True:
-            #Make it only call once + Threading (Will be done soon)
             self.single = False
-            speech = self.ai.speak()
-            print(speech)
-            response = self.ai.text_prompt(speech + "\n\n" + "Act like a game tutorial assistant and address the player as the chosen one.")
-            self.ai.generate_response_voice_backup(response)
-            self.single = True
-        print(self.single)
+            threading.Thread(target = self.voice_ai).start()
 
+
+    def voice_ai(self):
+        speech = self.ai.speak()
+        response = self.ai.text_prompt("You are a game assistant meant to help the player. Responses must be a maximum of 50 words. Prompt: " + speech)
+        self.ai.generate_response_voice_backup(response)
+        self.single = True
