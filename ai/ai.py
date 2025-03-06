@@ -2,7 +2,7 @@
 """AI Module
 
 This module defines an AI class that integrates OpenAI's GPT-4o for text generation,
-ElevenLabs for text-to-speech, and SpeechRecognition for speech input
+ElevenLabs for text-to-speech
 
 File:
     ai/ai.py
@@ -12,12 +12,13 @@ Classes:
 """
 
 import os
-from typing import Any, Tuple
+import threading
 
 import elevenlabs
 import openai
-import speech_recognition as sr
 from playsound3 import playsound
+
+from utils import speak
 
 
 class AI:
@@ -26,19 +27,32 @@ class AI:
     Attributes:
         __model (OpenAI):  GPT-4o API client.
         __voice_model (ElevenLabs): ElevenLabs API client for text-to-speech.
+        __prompt (str): custom instructions on how to respond
 
     Methods:
         text_prompt(prompt: str) -> str | None: Generates a response based on the given prompt.
-        generate_response_voice_backup(prompt: str) -> None: Generates an audio file using
+        listen_and_respond() -> None: Captures voice input through microphone and responds by playing an
+                                      audio file
+        __listen_and_respond() -> None: Handles the logic of capturing and responding this function is ran in a 
+                                        separate Thread.
+        __generate_response_voice_backup(prompt: str) -> None: Generates an audio file using
                                                              OpenAI's text-to-speech.
-        
+
     """
+
     def __init__(self) -> None:
         api_key_gpt = os.getenv("OPENAI_API_KEY")
         self.__model = openai.OpenAI(api_key=api_key_gpt)
 
         api_key_eleven = os.getenv("ELEVEN_LABS_API_KEY")
         self.__voice_model = elevenlabs.ElevenLabs(api_key=api_key_eleven)
+
+        self.__prompt = "You are a game assistant meant to help the player: "
+
+    def listen_and_respond(self) -> None:
+        """Captures voice input through microphone and responds by playing an audio file"""
+        threading.Thread(target=self.__listen_and_respond).start()
+
 
     def text_prompt(self, prompt: str) -> str | None:
         """Generates a response based on the given prompt.
@@ -52,6 +66,7 @@ class AI:
         Returns:
             str | None: The generated response | None if there was an Error.
         """
+
         response = self.__model.chat.completions.create(
             model="gpt-4o",
             messages=[
@@ -63,23 +78,18 @@ class AI:
         )
         return response.choices[0].message.content
 
-    def speak(self) -> Tuple[Any, float] | None:
-        # TODO: This does not need to be instance method, move to utils
-        recognizer = sr.Recognizer()
-        while True:
-            try:
-                with sr.Microphone() as source2:
-                    recognizer.adjust_for_ambient_noise(source2, duration=1)
-                    audio_2 = recognizer.listen(
-                        source2, timeout=10, phrase_time_limit=30
-                    )
+    def __listen_and_respond(self) -> None:
+        """Captures voice input through microphone and responds by playing an audio file"""
 
-                    return recognizer.recognize_amazon(audio_2)
+        speech = speak()
+        # speech = "Hello"
+        response = self.text_prompt(self.__prompt + speech)
+        print(response)
 
-            except sr.UnknownValueError:
-                print("Error")
+        if response is not None:
+            self.__generate_response_voice(response)
 
-    def generate_response_voice_backup(self, prompt: str) -> None:
+    def __generate_response_voice(self, prompt: str) -> None:
         """Generates an audio file using OpenAI's text-to-speech.
 
         This method converts the given text prompt into speech using OpenAI's

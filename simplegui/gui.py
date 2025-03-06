@@ -13,9 +13,6 @@ Classes:
 
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 
-from entities import Player
-from utils.vector import Vector
-
 from .gameloops import MainLoop, TitleScreen
 from .gameloops.abstract import GameLoop
 
@@ -36,10 +33,9 @@ class GUI:
     def __init__(self, title: str, width: int, height: int) -> None:
         self.__frame = simplegui.create_frame(title, width, height)
 
-        player = Player(Vector(400, 400))
-        mainloop = MainLoop(player)
-
+        mainloop = MainLoop()
         title_screen = TitleScreen(lambda: self.__set_draw_handler(mainloop))
+
         self.__set_draw_handler(title_screen)
 
     def __set_draw_handler(self, gameloop: GameLoop) -> None:

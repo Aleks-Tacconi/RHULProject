@@ -15,6 +15,7 @@ import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from entities import Player
 from utils import Vector
+from ai import AI
 
 from .abstract import GameLoop
 
@@ -34,26 +35,30 @@ class MainLoop(GameLoop):
                                            character.
     """
 
-    def __init__(self, player: Player) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.__player = player
+        self.__player = Player(Vector(400, 400))
+        self.__ai = AI()
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         self.__player.render(canvas)
         self.__player.update()
 
     def keyup_handler(self, key: int) -> None:
-        if key == 65:
+        if key == 65: # A
             self.__player.vel = Vector(0, 0)
             self.__player.current_animation = "IDLE_LEFT"
-        if key == 68:
+        if key == 68: # D
             self.__player.vel = Vector(0, 0)
             self.__player.current_animation = "IDLE_RIGHT"
 
     def keydown_handler(self, key: int) -> None:
-        if key == 65:
+        if key == 65: # A
             self.__player.vel = Vector(-2, 0)
             self.__player.current_animation = "RUN_LEFT"
-        if key == 68:
+        if key == 68: # D
             self.__player.vel = Vector(2, 0)
             self.__player.current_animation = "RUN_RIGHT"
+
+        if key == 86: # V
+            self.__ai.listen_and_respond()
