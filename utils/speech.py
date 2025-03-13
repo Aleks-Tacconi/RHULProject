@@ -1,9 +1,9 @@
-from typing import Any, Tuple
+
 
 import speech_recognition as sr
 
 
-def speak() -> Tuple[Any, float] | None:
+def speak() -> str | None:
     """Captures microphone input and returns the recognized speech
 
     This function captures audio input from the microphone. It then uses a speech recognition

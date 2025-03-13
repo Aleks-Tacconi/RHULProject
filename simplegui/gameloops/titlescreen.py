@@ -14,10 +14,9 @@ from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from simplegui.components import Button, ButtonStyle
+from simplegui.components import Button, ButtonStyle, PlaySounds
 
 from .abstract import GameLoop
-
 
 class TitleScreen(GameLoop):
     """TitleScreen entity.
@@ -38,10 +37,10 @@ class TitleScreen(GameLoop):
     def __init__(self, start_game: Callable) -> None:
         super().__init__()
 
-        # NOTE: https://archive.org/details/title-music_202502.mp3
-        # url = "https://archive.org/details/title-music_202502.mp3"
-        # self.__music = simplegui.load_sound(url)
-        # self.__music.play()
+
+        self.sound_path = "TITLE_MUSIC.wav"
+        self.music = PlaySounds(self.sound_path)
+
 
         button_style = ButtonStyle(
             border_color="Black",
@@ -61,8 +60,10 @@ class TitleScreen(GameLoop):
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         self.__render(canvas)
+        self.music.play_sound()
 
         if self._mouse.clicked:
+            #self.__start.handle_click(self._mouse.last_click, self.music.stop_sound)
             self.__start.handle_click(self._mouse.last_click, self.__start_game)
 
         self._mouse.update()

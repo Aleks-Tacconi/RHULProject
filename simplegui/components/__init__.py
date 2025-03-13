@@ -12,5 +12,6 @@ modules:
                     button and methods to check/handle button clicks.
 """
 from .button import ButtonStyle, Button
+from .playsounds import PlaySounds
 
-__all__ = ["ButtonStyle", "Button"]
+__all__ = ["ButtonStyle", "Button", "PlaySounds"]

@@ -47,12 +47,11 @@ class AI:
         api_key_eleven = os.getenv("ELEVEN_LABS_API_KEY")
         self.__voice_model = elevenlabs.ElevenLabs(api_key=api_key_eleven)
 
-        self.__prompt = "You are a game assistant meant to help the player: "
+        self.__prompt = "Must refer to me as the chosen one. 30 Word limit. You are a game assistant meant to help the player: "
 
     def listen_and_respond(self) -> None:
         """Captures voice input through microphone and responds by playing an audio file"""
         threading.Thread(target=self.__listen_and_respond).start()
-
 
     def text_prompt(self, prompt: str) -> str | None:
         """Generates a response based on the given prompt.
@@ -82,6 +81,7 @@ class AI:
         """Captures voice input through microphone and responds by playing an audio file"""
 
         speech = speak()
+        print(speech)
         # speech = "Hello"
         response = self.text_prompt(self.__prompt + speech)
         print(response)
