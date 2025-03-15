@@ -20,7 +20,6 @@ from utils import Vector
 from .abstract import PhysicsEntity
 from .utils import Animation, SpriteSheet
 
-
 class Player(PhysicsEntity):
     """Player entity
 
@@ -36,7 +35,6 @@ class Player(PhysicsEntity):
         render(canvas: simplegui.Frame) -> None: Renders the player onto the canvas.
         update() -> None: Updates the state of the player.
     """
-
     def __init__(self, pos: Vector) -> None:
         super().__init__(pos=pos, size=Vector(200, 200), vel=Vector(0, 0))
 

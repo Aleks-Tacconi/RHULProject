@@ -11,5 +11,6 @@ Modules:
 """
 
 from .player import Player
+from.abyssal_revenant import AbyssalRevenant
 
-__all__ = ["Player"]
+__all__ = ["Player", "AbyssalRevenant"]

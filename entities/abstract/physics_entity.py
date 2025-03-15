@@ -8,7 +8,7 @@ File:
     entities/abstract/physics_entity.py
 
 Classes:
-    Entity: representation of an physics entity in the game.
+    Entity: representation of a physics entity in the game.
             Inherits from entity with additional methods / attrs to 
             deal with physics / interactions.
 """
@@ -47,7 +47,7 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
         """Checks if the entity collides with another entity.
 
         This method implements a simple collision detection using the PhysicsEntity's
-        midpoint and checking weather its contained within the Entities bounding box
+        midpoint and checking weather it's contained within the Entities bounding box
 
         Args:
             entity (Entity): The entity to check for collision with.

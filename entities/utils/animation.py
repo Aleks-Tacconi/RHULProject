@@ -92,10 +92,10 @@ class Animation:
     frame itself.
 
     Attributes:
-        __spritesheet (SpriteSheet): dataclass instance which stores info about the spritesheet.
-        __frames_per_sprite (int): The num of frames per sprite before moving on to the next frame.
-        __frame_index (List[int]): A list containing the pos of the current frame.
-        __counter (int): A counter to keep track of when to transition to the next frame.
+        _spritesheet (SpriteSheet): dataclass instance which stores info about the spritesheet.
+        _frames_per_sprite (int): The num of frames per sprite before moving on to the next frame.
+        _frame_index (List[int]): A list containing the pos of the current frame.
+        _counter (int): A counter to keep track of when to transition to the next frame.
 
     Methods:
         update() -> None: Moves on to the next frame accordingly.
@@ -105,19 +105,19 @@ class Animation:
     """
 
     def __init__(self, spritesheet: SpriteSheet, frames_per_sprite: int) -> None:
-        self.__spritesheet = spritesheet
-        self.__frames_per_sprite = frames_per_sprite
-        self.__frame_index = [0, 0]
-        self.__counter = 0
+        self._spritesheet = spritesheet
+        self._frames_per_sprite = frames_per_sprite
+        self._frame_index = [0, 0]
+        self._counter = 0
 
     def update(self) -> None:
         """Moves on to the next frame accordingly.
 
         This function should be called every frame in the mainloop.
         """
-        self.__counter += 1
+        self._counter += 1
 
-        if self.__counter == self.__frames_per_sprite:
+        if self._counter == self._frames_per_sprite:
             self.__update_frame_index()
 
     def render(self, canvas: simplegui.Canvas, pos: Vector, size: Vector) -> None:
@@ -129,23 +129,70 @@ class Animation:
             size (Vector): The size of the image.
         """
         source_center = [
-            self.__spritesheet.frame_width * self.__frame_index[0]
-            + self.__spritesheet.frame_center_x,
-            self.__spritesheet.frame_height * self.__frame_index[1]
-            + self.__spritesheet.frame_center_y,
+            self._spritesheet.frame_width * self._frame_index[0]
+            + self._spritesheet.frame_center_x,
+            self._spritesheet.frame_height * self._frame_index[1]
+            + self._spritesheet.frame_center_y,
         ]
 
-        source_size = (self.__spritesheet.frame_width, self.__spritesheet.frame_height)
-        img = simplegui.load_image(file() + self.__spritesheet.path)
+        source_size = (self._spritesheet.frame_width, self._spritesheet.frame_height)
+        img = simplegui.load_image(file() + self._spritesheet.path)
 
         canvas.draw_image(img, source_center, source_size, pos.get_p(), size.get_p())
 
     def __update_frame_index(self) -> None:
-        self.__frame_index[0] = (self.__frame_index[0] + 1) % self.__spritesheet.cols
+        self._frame_index[0] = (self._frame_index[0] + 1) % self._spritesheet.cols
 
-        if self.__frame_index[0] == 0:
-            self.__frame_index[1] = (
-                self.__frame_index[1] + 1
-            ) % self.__spritesheet.rows
+        if self._frame_index[0] == 0:
+            self._frame_index[1] = (
+                                           self._frame_index[1] + 1
+            ) % self._spritesheet.rows
 
-        self.__counter = 0
+        self._counter = 0
+
+class MultiAnimation(Animation):
+
+    def __init__(self, spritesheet: SpriteSheet, animations: dict[str, tuple[int, int, int, bool]], current_anim: str):
+        self.__spriteshet = spritesheet
+        if animations[current_anim][3]:
+            spritesheet = spritesheet.flip()
+        super().__init__(spritesheet, animations[current_anim][2])
+        self.__animations = animations
+        self.__current_animation = current_anim
+        self.__start_frame = animations[self.__current_animation][1] - animations[self.__current_animation][2]
+        self.__end_frame = animations[self.__current_animation][1]
+        self._frame_index = [self.__start_frame, animations[self.__current_animation][0]]
+
+
+    def set_animation(self, animation_name: str):
+        if animation_name in self.__animations and animation_name != self.__current_animation:
+            if self.__animations[animation_name][3]:
+                self._spritesheet = self.__spriteshet.flip()
+            self.__current_animation = animation_name
+            self.__start_frame = (self.__animations[self.__current_animation][1]
+                                  - self.__animations[self.__current_animation][2])
+            self.__end_frame = self.__animations[self.__current_animation][1]
+            self._frame_index = [self.__start_frame, self.__animations[self.__current_animation][0]]
+            self._counter = 0
+
+    def get_animation(self):
+        return self.__current_animation
+
+    def update(self) -> None:
+        """Moves on to the next frame accordingly.
+
+        This function should be called every frame in the mainloop.
+        """
+        self._counter += 1
+
+        if self._counter == self._frames_per_sprite:
+            self.__update_frame_index()
+
+    def __update_frame_index(self) -> None:
+        self._frame_index[0] = (self._frame_index[0] + 1) % self.__end_frame
+        if self._frame_index[0] == 0:
+            self._frame_index[0] = self.__start_frame
+        self._counter = 0
+
+
+

@@ -13,7 +13,7 @@ Classes:
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from entities import Player
+from entities import Player, AbyssalRevenant
 from utils import Vector
 from ai import AI
 
@@ -37,12 +37,16 @@ class MainLoop(GameLoop):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__player = Player(Vector(400, 400))
+        self.__player = Player(Vector(100, 400))
+        self.__abyssal_revenant = AbyssalRevenant(Vector(700, 400)) #testing
         self.__ai = AI()
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
+        self.__abyssal_revenant.render(canvas)
+        self.__abyssal_revenant.update()
         self.__player.render(canvas)
         self.__player.update()
+        self.__abyssal_revenant.interaction(self.__player)
 
     def keyup_handler(self, key: int) -> None:
         if key == 65: # A
@@ -54,10 +58,10 @@ class MainLoop(GameLoop):
 
     def keydown_handler(self, key: int) -> None:
         if key == 65: # A
-            self.__player.vel = Vector(-2, 0)
+            self.__player.vel = Vector(-5, 0)
             self.__player.current_animation = "RUN_LEFT"
         if key == 68: # D
-            self.__player.vel = Vector(2, 0)
+            self.__player.vel = Vector(5, 0)
             self.__player.current_animation = "RUN_RIGHT"
 
         if key == 86: # V
