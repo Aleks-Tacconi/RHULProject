@@ -164,22 +164,40 @@ class Animation:
 
         self._counter = 0
 
+    """MultiAnimation entity
+
+    This class handles the logic for updating and rendering sprites from a sprite sheet with multiple animations.
+    This class controls when the sprite frame should be updated and the rendering of the
+    frame itself. Uses the Animation class as its basis.
+
+    Attributes:
+        _spritesheet (SpriteSheet): dataclass instance which stores info about the spritesheet.
+        animations (dict [str, tuple[int, int, int, int, bool]]): Dictionary of each animation and its starting row,
+        start column, ending column, number of frames, and a boolean for if the spritesheet needs to be flipped.
+        current_anim (str): Name of animation
+
+    Methods:
+        update() -> None: Moves on to the next frame accordingly.
+        __update_frame_index() -> None: Handles the logic of updating the __frame_index attribute
+        set_animation -> To change the animation
+        get_animation -> To get the current animation
+    """
 class MultiAnimation(Animation):
 
-    def __init__(self, spritesheet: SpriteSheet, animations: dict[str, tuple[int, int, int, bool]], current_anim: str):
+    def __init__(self, spritesheet: SpriteSheet, animations: dict[str, tuple[int, int, int, int, bool]], default: str):
         self.__spriteshet = spritesheet
-        super().__init__(spritesheet, animations[current_anim][2])
-        if animations[current_anim][3]:
+        super().__init__(spritesheet, animations[default][3])
+        if animations[default][4]:
             self._flipped = True
         self.__animations = animations
-        self.__current_animation = current_anim
+        self.__current_animation = default
         self.__start_frame = animations[self.__current_animation][1] - animations[self.__current_animation][2]
         self.__end_frame = animations[self.__current_animation][1]
         self._frame_index = [self.__start_frame, animations[self.__current_animation][0]]
 
     def set_animation(self, animation_name: str):
         if animation_name in self.__animations and animation_name != self.__current_animation:
-            if self.__animations[animation_name][3]:
+            if self.__animations[animation_name][4]:
                 self._flipped = True
             else:
                 self._flipped = False
@@ -188,6 +206,7 @@ class MultiAnimation(Animation):
                                   - self.__animations[self.__current_animation][2])
             self.__end_frame = self.__animations[self.__current_animation][1]
             self._frame_index = [self.__start_frame, self.__animations[self.__current_animation][0]]
+            self._frames_per_sprite = self.__animations[self.__current_animation][3]
             self._counter = 0
 
     def get_animation(self):

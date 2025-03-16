@@ -38,10 +38,15 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
         update() -> None: Updates the state of the Entity.
     """
 
-    def __init__(self, pos: Vector, size: Vector, vel: Vector) -> None:
+    def __init__(self, pos: Vector, size: Vector, vel: Vector, health: int) -> None:
         super().__init__(pos, size)
 
         self.vel = vel
+        self.health = health
+        self.alive = True
+        self.lives = 1
+        self.dead = False
+        self.death_anim_length = 1
 
     def collides_with(self, entity: Entity) -> bool:
         """Checks if the entity collides with another entity.
@@ -65,3 +70,26 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
             and (self._pos.y > min(collision_y))
             and (self._pos.y < max(collision_y))
         )
+
+    def take_damage(self, amount: int) -> None:
+        if self.alive:
+            self.health -= amount
+            if self.health <= 0:
+                self.alive = False
+
+
+    def death(self) -> bool:
+        if not self.alive:
+            self.__remove_dead()
+            self.lives -= 1
+            if self.lives == 0:
+                return True
+        return False
+
+    def __remove_dead(self) -> None:
+            self.death_anim_length -= 1
+            if self.death_anim_length == 0:
+                self.dead = True
+
+
+
