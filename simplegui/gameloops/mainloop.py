@@ -11,11 +11,13 @@ Classes:
     MainLoop: The main loop of the game.
 """
 
+import os
+
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from entities import Player, AbyssalRevenant
-from utils import Vector
 from ai import AI
+from entities import AbyssalRevenant, Block, Player
+from utils import Vector
 
 from .abstract import GameLoop
 
@@ -37,32 +39,61 @@ class MainLoop(GameLoop):
 
     def __init__(self) -> None:
         super().__init__()
-        self.__player = Player(Vector(100, 400))
-        self.__abyssal_revenant = AbyssalRevenant(Vector(700, 400)) #testing
+        self.__player = Player(Vector(200, 400))
+        self.__abyssal_revenant = AbyssalRevenant(Vector(700, 400))  # testing
         self.__ai = AI()
 
+        self.__blocks = {}
+
+        for i in range(50):
+            block = Block(
+                Vector(-15 + i, 14),
+                Vector(32, 32),
+                os.path.join("assets", "blocks", "block.jpg"),
+                rows=1,
+                cols=1,
+            )
+            self.__blocks[block.key] = block
+
+        block = Block(
+            Vector(8, 13),
+            Vector(32, 32),
+            os.path.join("assets", "blocks", "block.jpg"),
+            rows=1,
+            cols=1,
+        )
+        self.__blocks[block.key] = block
+
     def mainloop(self, canvas: simplegui.Canvas) -> None:
+
         self.__abyssal_revenant.render(canvas)
         self.__abyssal_revenant.update()
         self.__player.render(canvas)
         self.__player.update()
         self.__abyssal_revenant.interaction(self.__player)
 
+        for block in self.__blocks.values():
+            block.render(canvas)
+
     def keyup_handler(self, key: int) -> None:
-        if key == 65: # A
+        print(key)
+        if key == 65:  # A
             self.__player.vel = Vector(0, 0)
             self.__player.current_animation = "IDLE_LEFT"
-        if key == 68: # D
+        if key == 68:  # D
             self.__player.vel = Vector(0, 0)
             self.__player.current_animation = "IDLE_RIGHT"
+        if key == 87:  # W
+            self.__player.jump()
+
 
     def keydown_handler(self, key: int) -> None:
-        if key == 65: # A
-            self.__player.vel = Vector(-5, 0)
+        if key == 65:  # A
+            self.__player.vel = Vector(-3, 0)
             self.__player.current_animation = "RUN_LEFT"
-        if key == 68: # D
-            self.__player.vel = Vector(5, 0)
+        if key == 68:  # D
+            self.__player.vel = Vector(3, 0)
             self.__player.current_animation = "RUN_RIGHT"
 
-        if key == 86: # V
+        if key == 86:  # V
             self.__ai.listen_and_respond()

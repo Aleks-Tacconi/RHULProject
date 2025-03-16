@@ -57,6 +57,7 @@ class TitleScreen(GameLoop):
             style=button_style,
         )
         self.__start_game = start_game
+        self.__blocks = []
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         self.__render(canvas)

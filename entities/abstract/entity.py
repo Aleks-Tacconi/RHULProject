@@ -23,8 +23,8 @@ class Entity(metaclass=ABCMeta):
     """Entity Object.
 
     Attributes:
-        _pos (Vector): The position of the entity.
         _size (Vector): The size of the entity.
+        pos (Vector): The position of the entity.
         area (List[int | float]): The bounding box of the entity calculated
                                   from the entities position and size.
 
@@ -34,8 +34,8 @@ class Entity(metaclass=ABCMeta):
     """
 
     def __init__(self, pos: Vector, size: Vector) -> None:
-        self._pos = pos
-        self._size = size
+        self.pos = pos
+        self.size = size
 
     @abstractmethod
     def render(self, canvas: simplegui.Canvas) -> None:
@@ -71,13 +71,13 @@ class Entity(metaclass=ABCMeta):
             List[int | float]: A list representing the bounding box of the entity 
                                 in the format [x1, y1, x2, y2].
         """
-        half_width = self._size.x // 2
-        half_height = self._size.x // 2
+        half_width = self.size.x // 2
+        half_height = self.size.x // 2
 
-        x1 = self._pos.x - half_width
+        x1 = self.pos.x - half_width
         x2 = x1 + half_width
 
-        y1 = self._pos.y - half_height
+        y1 = self.pos.y - half_height
         y2 = y1 + half_height
 
         return [x1, y1, x2, y2]

@@ -9,7 +9,7 @@ File:
 
 Classes:
     Entity: representation of a physics entity in the game.
-            Inherits from entity with additional methods / attrs to 
+            Inherits from entity with additional methods / attrs to
             deal with physics / interactions.
 """
 
@@ -42,8 +42,13 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
         super().__init__(pos, size)
 
         self.vel = vel
+        self.__max_gravity = 10
+        self.__gravity_strength = 0.8
 
-    def collides_with(self, entity: Entity) -> bool:
+    def _gravity(self) -> None:
+        self.vel.y = min(self.__max_gravity, self.vel.y + self.__gravity_strength)
+
+    def collides_with(self, entity: Entity, off_x: int, off_y: int) -> bool:
         """Checks if the entity collides with another entity.
 
         This method implements a simple collision detection using the PhysicsEntity's
@@ -51,17 +56,19 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
 
         Args:
             entity (Entity): The entity to check for collision with.
+            off_x (int): An offset on the x axis.
+            off_y (int): An offset on the y axis.
 
         Returns:
             bool: True if the entity collides with the other entity, False otherwise.
         """
 
-        collision_x = [entity.area[0], entity.area[1]]
-        collision_y = [entity.area[1], entity.area[2]]
+        collision_x = [entity.area[0], entity.area[2]]
+        collision_y = [entity.area[1], entity.area[3]]
 
         return (
-            (self._pos.x > min(collision_x))
-            and (self._pos.x < max(collision_x))
-            and (self._pos.y > min(collision_y))
-            and (self._pos.y < max(collision_y))
+            (self.pos.x + (self.size.x // 2) + off_x >= min(collision_x))
+            and (self.pos.x - (self.size.x // 2) - off_x <= max(collision_x))
+            and (self.pos.y + (self.size.y // 2) + off_y >= min(collision_y))
+            and (self.pos.y - (self.size.y // 2) - off_y <= max(collision_y))
         )

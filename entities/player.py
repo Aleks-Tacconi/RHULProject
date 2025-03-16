@@ -15,6 +15,7 @@ import os
 
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 
+from entities.block import Block
 from utils import Vector
 
 from .abstract import PhysicsEntity
@@ -68,8 +69,15 @@ class Player(PhysicsEntity):
         self.current_animation = "IDLE_RIGHT"
 
     def update(self) -> None:
-        self._pos += self.vel
+        self.pos.x += self.vel.x
+        Block.collisions_x(self, -80, -30)
+        self.pos.y += self.vel.y
+        Block.collisions_y(self, -80, -30)
         self.__animations[self.current_animation].update()
+        self._gravity()
+
+    def jump(self) -> None:
+        self.vel.y = -12
 
     def render(self, canvas: simplegui.Canvas) -> None:
-        self.__animations[self.current_animation].render(canvas, self._pos, self._size)
+        self.__animations[self.current_animation].render(canvas, self.pos, self.size)
