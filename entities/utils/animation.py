@@ -106,6 +106,8 @@ class Animation:
 
     def __init__(self, spritesheet: SpriteSheet, frames_per_sprite: int) -> None:
         self._spritesheet = spritesheet
+        self._flipped_spritesheet = spritesheet.flip()
+        self._flipped = False
         self._frames_per_sprite = frames_per_sprite
         self._frame_index = [0, 0]
         self._counter = 0
@@ -128,17 +130,29 @@ class Animation:
             pos (Vector): Where the image will be rendered.
             size (Vector): The size of the image.
         """
-        source_center = [
-            self._spritesheet.frame_width * self._frame_index[0]
-            + self._spritesheet.frame_center_x,
-            self._spritesheet.frame_height * self._frame_index[1]
-            + self._spritesheet.frame_center_y,
-        ]
+        if self._flipped:
+            source_center = [
+                self._flipped_spritesheet.frame_width * self._frame_index[0]
+                + self._flipped_spritesheet.frame_center_x,
+                self._flipped_spritesheet.frame_height * self._frame_index[1]
+                + self._flipped_spritesheet.frame_center_y,
+            ]
+            source_size = (self._flipped_spritesheet.frame_width, self._flipped_spritesheet.frame_height)
+            img = simplegui.load_image(file() + self._flipped_spritesheet.path)
 
-        source_size = (self._spritesheet.frame_width, self._spritesheet.frame_height)
-        img = simplegui.load_image(file() + self._spritesheet.path)
+            canvas.draw_image(img, source_center, source_size, pos.get_p(), size.get_p())
+        else:
+            source_center = [
+                self._spritesheet.frame_width * self._frame_index[0]
+                + self._spritesheet.frame_center_x,
+                self._spritesheet.frame_height * self._frame_index[1]
+                + self._spritesheet.frame_center_y,
+            ]
 
-        canvas.draw_image(img, source_center, source_size, pos.get_p(), size.get_p())
+            source_size = (self._spritesheet.frame_width, self._spritesheet.frame_height)
+            img = simplegui.load_image(file() + self._spritesheet.path)
+
+            canvas.draw_image(img, source_center, source_size, pos.get_p(), size.get_p())
 
     def __update_frame_index(self) -> None:
         self._frame_index[0] = (self._frame_index[0] + 1) % self._spritesheet.cols
@@ -154,20 +168,21 @@ class MultiAnimation(Animation):
 
     def __init__(self, spritesheet: SpriteSheet, animations: dict[str, tuple[int, int, int, bool]], current_anim: str):
         self.__spriteshet = spritesheet
-        if animations[current_anim][3]:
-            spritesheet = spritesheet.flip()
         super().__init__(spritesheet, animations[current_anim][2])
+        if animations[current_anim][3]:
+            self._flipped = True
         self.__animations = animations
         self.__current_animation = current_anim
         self.__start_frame = animations[self.__current_animation][1] - animations[self.__current_animation][2]
         self.__end_frame = animations[self.__current_animation][1]
         self._frame_index = [self.__start_frame, animations[self.__current_animation][0]]
 
-
     def set_animation(self, animation_name: str):
         if animation_name in self.__animations and animation_name != self.__current_animation:
             if self.__animations[animation_name][3]:
-                self._spritesheet = self.__spriteshet.flip()
+                self._flipped = True
+            else:
+                self._flipped = False
             self.__current_animation = animation_name
             self.__start_frame = (self.__animations[self.__current_animation][1]
                                   - self.__animations[self.__current_animation][2])
