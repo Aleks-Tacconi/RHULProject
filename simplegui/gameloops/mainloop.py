@@ -40,7 +40,7 @@ class MainLoop(GameLoop):
     def __init__(self) -> None:
         super().__init__()
         self.__player = Player(Vector(200, 400))
-        self.__abyssal_revenant = AbyssalRevenant(Vector(700, 400))  # testing
+        self.__enemies = [AbyssalRevenant(Vector(700, 400))]
         self.__ai = AI()
 
         self.__blocks = {}
@@ -65,12 +65,14 @@ class MainLoop(GameLoop):
         self.__blocks[block.key] = block
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
+        for enemy in self.__enemies:
+            enemy.render(canvas)
+            enemy.update()
+            enemy.interaction(self.__player)
 
-        self.__abyssal_revenant.render(canvas)
-        self.__abyssal_revenant.update()
         self.__player.render(canvas)
         self.__player.update()
-        self.__abyssal_revenant.interaction(self.__player)
+        self.remove_dead()
 
         for block in self.__blocks.values():
             block.render(canvas)
@@ -97,3 +99,7 @@ class MainLoop(GameLoop):
 
         if key == 86:  # V
             self.__ai.listen_and_respond()
+
+    def remove_dead(self):
+        self.__enemies = [enemy for enemy in self.__enemies if not enemy.dead]
+

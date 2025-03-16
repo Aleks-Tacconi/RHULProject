@@ -37,7 +37,7 @@ class Player(PhysicsEntity):
         update() -> None: Updates the state of the player.
     """
     def __init__(self, pos: Vector) -> None:
-        super().__init__(pos=pos, size=Vector(200, 200), vel=Vector(0, 0))
+        super().__init__(pos=pos, size=Vector(200, 200), vel=Vector(0, 0), health=1000)
 
         self.__animations = {
             "IDLE_RIGHT": Animation(
