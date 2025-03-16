@@ -41,7 +41,7 @@ class AI:
     """
 
     def __init__(self) -> None:
-        api_key_gpt = os.getenv("OPENAI_API_KEY")
+        api_key_gpt = os.environ.get("OPENAI_API_KEY")
         self.__model = openai.OpenAI(api_key=api_key_gpt)
 
         api_key_eleven = os.getenv("ELEVEN_LABS_API_KEY")

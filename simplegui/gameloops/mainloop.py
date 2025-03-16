@@ -17,6 +17,7 @@ import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from ai import AI
 from entities import AbyssalRevenant, Block, Player
+from entities.fire import Fire
 from utils import Vector
 
 from .abstract import GameLoop
@@ -43,6 +44,7 @@ class MainLoop(GameLoop):
         self.__enemies = [AbyssalRevenant(Vector(700, 400))]
         self.__ai = AI()
         self.__left_right = []
+        self.__fire = Fire(400)
 
         self.__blocks = {}
 
@@ -74,6 +76,8 @@ class MainLoop(GameLoop):
         self.__player.render(canvas)
         self.__player.update()
         self.remove_dead()
+        self.__fire.render(canvas)
+        self.__fire.update()
 
         for block in self.__blocks.values():
             block.render(canvas)
