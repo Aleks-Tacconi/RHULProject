@@ -98,9 +98,6 @@ class MainLoop(GameLoop):
         else:
             self.__update_player_movement()
 
-        if key == 87:  # W
-            self.__player.jump()
-
     def __update_player_movement(self) -> None:
         if self.__left_right:
             direction = self.__left_right[-1]
@@ -118,6 +115,10 @@ class MainLoop(GameLoop):
 
         if key == 86:  # V
             self.__ai.listen_and_respond()
+
+        if key == 87:  # W
+            self.__player.jump()
+
 
     def remove_dead(self):
         self.__enemies = [enemy for enemy in self.__enemies if not enemy.dead]

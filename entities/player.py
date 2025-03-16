@@ -67,6 +67,7 @@ class Player(PhysicsEntity):
         }
 
         self.current_animation = "IDLE_RIGHT"
+        self.jumps = 2
 
     def update(self) -> None:
         self.pos.x += self.vel.x
@@ -77,7 +78,9 @@ class Player(PhysicsEntity):
         self._gravity()
 
     def jump(self) -> None:
-        self.vel.y = -12
+        if self.jumps > 0:
+            self.vel.y = -12
+            self.jumps -= 1
 
     def render(self, canvas: simplegui.Canvas) -> None:
         self.__animations[self.current_animation].render(canvas, self.pos, self.size)
