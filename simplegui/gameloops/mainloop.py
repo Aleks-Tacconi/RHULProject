@@ -42,6 +42,7 @@ class MainLoop(GameLoop):
         self.__player = Player(Vector(200, 400))
         self.__enemies = [AbyssalRevenant(Vector(700, 400))]
         self.__ai = AI()
+        self.__left_right = []
 
         self.__blocks = {}
 
@@ -78,28 +79,41 @@ class MainLoop(GameLoop):
             block.render(canvas)
 
     def keyup_handler(self, key: int) -> None:
-        print(key)
         if key == 65:  # A
-            self.__player.vel = Vector(0, 0)
-            self.__player.current_animation = "IDLE_LEFT"
+            self.__left_right.remove(65)
         if key == 68:  # D
+            self.__left_right.remove(68)
+
+        if not self.__left_right:
+            if self.__player.vel.x < 0:
+                self.__player.current_animation = "IDLE_LEFT"
+            else:
+                self.__player.current_animation = "IDLE_RIGHT"
+
             self.__player.vel = Vector(0, 0)
-            self.__player.current_animation = "IDLE_RIGHT"
+        else:
+            self.__update_player_movement()
+
         if key == 87:  # W
             self.__player.jump()
 
+    def __update_player_movement(self) -> None:
+        if self.__left_right:
+            direction = self.__left_right[-1]
+            if direction == 65:  # A
+                self.__player.vel = Vector(-3, 0)
+                self.__player.current_animation = "RUN_LEFT"
+            if direction == 68:  # D
+                self.__player.vel = Vector(3, 0)
+                self.__player.current_animation = "RUN_RIGHT"
 
     def keydown_handler(self, key: int) -> None:
-        if key == 65:  # A
-            self.__player.vel = Vector(-3, 0)
-            self.__player.current_animation = "RUN_LEFT"
-        if key == 68:  # D
-            self.__player.vel = Vector(3, 0)
-            self.__player.current_animation = "RUN_RIGHT"
+        if key in (65, 68):
+            self.__left_right.append(key)
+            self.__update_player_movement()
 
         if key == 86:  # V
             self.__ai.listen_and_respond()
 
     def remove_dead(self):
         self.__enemies = [enemy for enemy in self.__enemies if not enemy.dead]
-

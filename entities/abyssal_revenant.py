@@ -70,7 +70,6 @@ class AbyssalRevenant(PhysicsEntity):
 
         distance_x = self.pos.x - player.pos.x
         self.take_damage(1)
-        print(self.health)
 
         if self.alive:
             if distance_x < detection_range:
