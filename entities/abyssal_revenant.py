@@ -69,7 +69,7 @@ class AbyssalRevenant(PhysicsEntity):
         speed = 3
 
         distance_x = self.pos.x - player.pos.x
-        self.take_damage(1)
+        print(distance_x)
 
         if self.alive:
             if distance_x < detection_range:
@@ -77,15 +77,14 @@ class AbyssalRevenant(PhysicsEntity):
                     self.vel.x = 0
                     if distance_x > 0:
                         self.__animations.set_animation("ATTACK_LEFT")
-                    else:
+                    elif distance_x > -attack_distance:
                         self.__animations.set_animation("ATTACK_RIGHT")
-                else:
-                    if  distance_x < 0:
-                        self.vel.x = speed
-                        self.__animations.set_animation("RUN_RIGHT")
-                    elif distance_x > 0:
-                        self.vel.x = -speed
-                        self.__animations.set_animation("RUN_LEFT")
+                elif distance_x > 0:
+                    self.vel.x = -speed
+                    self.__animations.set_animation("RUN_LEFT")
+                if distance_x < -attack_distance:
+                    self.vel.x = speed
+                    self.__animations.set_animation("RUN_RIGHT")
             else:
                 self.vel.x = 0
                 if "LEFT" in self.current_animation:
