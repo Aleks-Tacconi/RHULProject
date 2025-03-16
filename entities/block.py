@@ -37,7 +37,7 @@ class Block(Entity):
                 while entity.collides_with(self, off_x, off_y):
                     entity.pos.y -= 1
                 entity.vel.y = 0
-                entity.can_jump = True
+                entity.jumps = 2
 
     def handle_collision_x(self, entity: PhysicsEntity, off_x: int, off_y: int) -> None:
         # TODO: use maths to speed up collisions
