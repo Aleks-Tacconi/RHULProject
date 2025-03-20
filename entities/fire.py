@@ -11,8 +11,7 @@ from .utils.animation import Animation
 
 class Fire(PhysicsEntity):
     def __init__(self, x) -> None:
-        self.pos = Vector(x, 0)
-        self.size = Vector(50, 50)
+        super().__init__(pos=Vector(x, 0), size=Vector(50, 50), vel=Vector(0, 3), health=1)
 
         spritesheet = SpriteSheet(
             os.path.join("assets", "fire", "Fire1.png"),
@@ -23,7 +22,7 @@ class Fire(PhysicsEntity):
         self.animation = Animation(spritesheet, 8)
 
     def update(self) -> None:
-        self.pos.y += 3
+        self.pos.add(self.vel)
         self.pos.y = self.pos.y % 800
         self.animation.update()
 
