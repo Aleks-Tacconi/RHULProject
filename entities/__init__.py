@@ -1,17 +1,7 @@
-"""Package with implementation of entities which can be used in a platformer game.
-
-This package provides classes that represent various entities in a platformer game.
-The entities provided by this package can be used to create and manage different characters
-or objects in the game.
-
-Modules:
-    player:
-        Classes:
-            Player: Represents the player entity with animations and movement logic.
-"""
-
 from .player import Player
-from .abyssal_revenant import AbyssalRevenant
 from .block import Block
+from .attack import Attack
+from .abyssal_revenant import AbyssalRevenant
+from .fire import Fire
 
-__all__ = ["Player", "AbyssalRevenant", "Block"]
+__all__ = ["Player", "Block", "Attack", "AbyssalRevenant", "Fire"]

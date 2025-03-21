@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from simplegui import GUI
 
 WIDTH = 800
@@ -7,7 +6,6 @@ TITLE = "Game"
 
 
 def main() -> None:
-    """Entry point for the application"""
     my_gui = GUI(TITLE, WIDTH, HEIGHT)
     my_gui.start()
 

@@ -1,43 +1,25 @@
-"""Player module.
-
-This module defines the Player class, which is an implementation of the 
-PhysicsEntity class and acts as the main player in the game. This class handles the
-actions and rendering of the player.
-
-File:
-    entities/player.py
-
-Classes:
-    Player: Represents the player entity with animations and movement logic.
-"""
-
 import os
 
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 
-from entities.block import Block
 from utils import Vector
 
 from .abstract import PhysicsEntity
+from .attack import Attack
+from .block import Block
 from .utils import Animation, SpriteSheet
 
+
 class Player(PhysicsEntity):
-    """Player entity
-
-    This is a implementation of the abstract base class PhysicsEntity which represents
-    the playable character implementing actions such as rendering and handling the players
-    movement.
-
-    Attributes:
-        current_animation: The current player animation.
-        __animations (Dict[str, Animation]): A list of animations that can be rendered.
-
-    Methods:
-        render(canvas: simplegui.Frame) -> None: Renders the player onto the canvas.
-        update() -> None: Updates the state of the player.
-    """
     def __init__(self, pos: Vector) -> None:
-        super().__init__(pos=pos, size=Vector(200, 200), vel=Vector(0, 0), health=1000)
+        super().__init__(
+            pos=pos,
+            size=Vector(200, 200),
+            vel=Vector(0, 0),
+            hitbox=Vector(40, 80),
+            hp=100000,
+            hitbox_offset=Vector(0, 30),
+        )
 
         self.__animations = {
             "IDLE_RIGHT": Animation(
@@ -64,23 +46,122 @@ class Player(PhysicsEntity):
                 ).flip(),
                 frames_per_sprite=15,
             ),
+            "ATTACK_RIGHT": Animation(
+                spritesheet=SpriteSheet(
+                    os.path.join("assets", "player", "ATTACK_1.png"), rows=1, cols=5
+                ),
+                frames_per_sprite=5,
+                one_iteration=True,
+            ),
+            "ATTACK_LEFT": Animation(
+                spritesheet=SpriteSheet(
+                    os.path.join("assets", "player", "ATTACK_1.png"), rows=1, cols=5
+                ).flip(),
+                frames_per_sprite=5,
+                one_iteration=True,
+            ),
+            "JUMP_RIGHT": Animation(
+                spritesheet=SpriteSheet(
+                    os.path.join("assets", "player", "ATTACK_1.png"), rows=1, cols=5
+                ).flip(),
+                frames_per_sprite=5,
+            ),
+            "JUMP_LEFT": Animation(
+                spritesheet=SpriteSheet(
+                    os.path.join("assets", "player", "ATTACK_1.png"), rows=1, cols=5
+                ).flip(),
+                frames_per_sprite=5,
+            ),
         }
 
-        self.current_animation = "IDLE_RIGHT"
+        self.current_animation = "IDLE"
+        self.__direction = "RIGHT"
         self.jumps = 2
 
+        self.__movement = []
+        self.__speed = 3
+
     def update(self) -> None:
-        self.pos.x += self.vel.x
-        Block.collisions_x(self, -80, -30)
-        self.pos.y += self.vel.y
-        Block.collisions_y(self, -80, -30)
-        self.__animations[self.current_animation].update()
+        self.__horizontal_movement()
         self._gravity()
 
-    def jump(self) -> None:
+        self.pos.x += self.vel.x
+        Block.collisions_x(self)
+
+        self.pos.y += self.vel.y
+        Block.collisions_y(self)
+
+        animation = f"{self.current_animation}_{self.__direction}"
+        self.__animations[animation].update()
+
+        print(f"{self.hp=}")
+
+    def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
+        animation = f"{self.current_animation}_{self.__direction}"
+        pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
+        self.__animations[animation].render(canvas, pos, self.size)
+        self._render_hitbox(canvas, offset_x, offset_y)
+
+    def set_idle(self) -> None:
+        self.current_animation = "IDLE"
+        self.__movement = []
+
+    def __jump(self) -> None:
         if self.jumps > 0:
             self.vel.y = -12
             self.jumps -= 1
 
-    def render(self, canvas: simplegui.Canvas) -> None:
-        self.__animations[self.current_animation].render(canvas, self.pos, self.size)
+    def __allow_change_animation(self) -> bool:
+        animation = f"{self.current_animation}_{self.__direction}"
+        return self.__animations[animation].done
+
+    def __horizontal_movement(self) -> None:
+        if not self.__movement:
+            self.vel.x = 0
+            if self.__allow_change_animation():
+                self.current_animation = "IDLE"
+            return
+
+        if self.__allow_change_animation():
+            self.current_animation = "RUN"
+
+        direction = self.__movement[-1]
+
+        if direction == "A":
+            self.vel.x = -self.__speed
+            self.__direction = "LEFT"
+        if direction == "D":
+            self.vel.x = self.__speed
+            self.__direction = "RIGHT"
+
+    def __attack(self) -> None:
+        self.current_animation = "ATTACK"
+        offset = 50
+
+        if self.__direction == "LEFT":
+            offset *= -1
+
+        Attack(
+            pos=Vector(int(self.pos.x + offset), int(self.pos.y + 30)),
+            hitbox=Vector(50, 50),
+            damage=10,
+            owner=self,
+        )
+
+    def keydown_handler(self, key: int) -> None:
+        if key == 65:  # A
+            self.__movement.append("A")
+        if key == 68:  # D
+            self.__movement.append("D")
+        if key == 87:  # W
+            self.__jump()
+        if key == 69:  # E
+            self.__attack()
+
+    def keyup_handler(self, key: int) -> None:
+        if key == 65:  # A
+            if "A" in self.__movement:
+                self.__movement.remove("A")
+        if key == 68:  # D
+            if "D" in self.__movement:
+                self.__movement.remove("D")

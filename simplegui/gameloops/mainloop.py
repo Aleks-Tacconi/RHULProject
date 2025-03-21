@@ -1,124 +1,63 @@
-"""MainLoop Module.
-
-This module defines the MainLoop class which is the actual event loop.
-This defines all the interactions between entities as well as rendering
-the map and entities on the map themselves.
-
-File:
-    simplegui/gameloops/mainloop.py
-
-Classes:
-    MainLoop: The main loop of the game.
-"""
-
 import os
+from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from ai import AI
-from entities import AbyssalRevenant, Block, Player
-from entities.fire import Fire
+from entities import Block, Player, Attack, AbyssalRevenant, Fire
 from utils import Vector
 
 from .abstract import GameLoop
 
 
 class MainLoop(GameLoop):
-    """MainLoop entity.
-
-    Attributes:
-        __player (Player): An instance of the player class, the main character of the game.
-
-    Methods:
-        mainloop() -> None: The main loop of the game, this is the function that runs every frame.
-        keyup_handler(key: int) -> None: The method that handles what happens when a key is pressed.
-                                         The key is provided as the ordinal value of the character
-        keydown_handler(key: int) -> None: The method that handles what happens when a key is
-                                           released. The key is provided as the ordinal value of the
-                                           character.
-    """
-
-    def __init__(self) -> None:
+    def __init__(self, reset: Callable) -> None:
         super().__init__()
-        self.__player = Player(Vector(200, 400))
-        self.__enemies = [AbyssalRevenant(Vector(700, 400))]
-        self.__ai = AI()
-        self.__left_right = []
-        self.__fire = Fire(400)
 
-        self.__blocks = {}
+        self.__reset = reset
 
-        for i in range(50):
-            block = Block(
-                Vector(-15 + i, 14),
-                Vector(32, 32),
-                os.path.join("assets", "blocks", "block.jpg"),
-                rows=1,
-                cols=1,
-            )
-            self.__blocks[block.key] = block
+        self.__player = Player(pos=Vector(400, 400))
 
-        block = Block(
-            Vector(8, 13),
-            Vector(32, 32),
-            os.path.join("assets", "blocks", "block.jpg"),
-            rows=1,
-            cols=1,
-        )
-        self.__blocks[block.key] = block
+        self.__enemies = []
+        self.__enemies.append(AbyssalRevenant(pos=Vector(300, 200)))
+        self.__enemies.append(Fire(400))
+
+        self.__entities = []
+
+        block_path = os.path.join("assets", "blocks", "block.jpg")
+        for i in range(0, 80):
+            self.__entities.append(Block(Vector(i, 15), block_path))
+
+        self.__entities.append(Block(Vector(14, 14), block_path))
+
+        self.__offset_x = 0
+        self.__offset_y = 0
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
-        for enemy in self.__enemies:
-            enemy.render(canvas)
-            enemy.update()
-            enemy.interaction(self.__player)
+        # TODO: 400 is half the screen width - not good magic number
+        self.__offset_x += (self.__player.pos.x - 400 - self.__offset_x) // 30
+        self.__offset_y += (self.__player.pos.y - 400 - self.__offset_y) // 30
 
-        self.__player.render(canvas)
         self.__player.update()
-        self.remove_dead()
-        self.__fire.render(canvas)
-        self.__fire.update()
+        self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
 
-        for block in self.__blocks.values():
-            block.render(canvas)
+        if not self.__player.is_alive:
+            self.__reset()
+
+        for entity in self.__entities:
+            entity.render(canvas, -self.__offset_x, -self.__offset_y)
+            entity.update()
+
+        for attack in Attack.all:
+            attack.render(canvas, -self.__offset_x, -self.__offset_y)
+            attack.update()
+
+        for entity in self.__enemies:
+            entity.render(canvas, -self.__offset_x, -self.__offset_y)
+            entity.update()
+            entity.interaction(self.__player)
 
     def keyup_handler(self, key: int) -> None:
-        if key == 65:  # A
-            self.__left_right.remove(65)
-        if key == 68:  # D
-            self.__left_right.remove(68)
-
-        if not self.__left_right:
-            if self.__player.vel.x < 0:
-                self.__player.current_animation = "IDLE_LEFT"
-            else:
-                self.__player.current_animation = "IDLE_RIGHT"
-
-            self.__player.vel = Vector(0, 0)
-        else:
-            self.__update_player_movement()
-
-    def __update_player_movement(self) -> None:
-        if self.__left_right:
-            direction = self.__left_right[-1]
-            if direction == 65:  # A
-                self.__player.vel = Vector(-3, 0)
-                self.__player.current_animation = "RUN_LEFT"
-            if direction == 68:  # D
-                self.__player.vel = Vector(3, 0)
-                self.__player.current_animation = "RUN_RIGHT"
+        self.__player.keyup_handler(key)
 
     def keydown_handler(self, key: int) -> None:
-        if key in (65, 68):
-            self.__left_right.append(key)
-            self.__update_player_movement()
-
-        if key == 86:  # V
-            self.__ai.listen_and_respond()
-
-        if key == 87:  # W
-            self.__player.jump()
-
-
-    def remove_dead(self):
-        self.__enemies = [enemy for enemy in self.__enemies if not enemy.dead]
+        self.__player.keydown_handler(key)

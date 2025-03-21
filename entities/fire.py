@@ -1,17 +1,22 @@
 import os
 
-from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
+import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from entities import Player
 from utils import Vector
 
-from .abstract import PhysicsEntity
-from .utils import SpriteSheet
-from .utils.animation import Animation
+from .abstract import Enemy, PhysicsEntity
+from .utils import Animation, SpriteSheet
 
-class Fire(PhysicsEntity):
+
+class Fire(Enemy):
     def __init__(self, x) -> None:
-        super().__init__(pos=Vector(x, 0), size=Vector(50, 50), vel=Vector(0, 3), health=1)
+        super().__init__(
+            pos=Vector(x, 0),
+            size=Vector(50, 50),
+            hitbox=Vector(50, 50),
+            vel=Vector(0, 3),
+            hp=1,
+        )
 
         spritesheet = SpriteSheet(
             os.path.join("assets", "fire", "Fire1.png"),
@@ -19,12 +24,18 @@ class Fire(PhysicsEntity):
             cols=8,
         )
 
-        self.animation = Animation(spritesheet, 8)
+        self.__animation = Animation(spritesheet, 8)
 
     def update(self) -> None:
-        self.pos.add(self.vel)
+        self.pos += self.vel
         self.pos.y = self.pos.y % 800
-        self.animation.update()
+        self.__animation.update()
 
-    def render(self, canvas):
-        self.animation.render(canvas, self.pos, self.size)
+    def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
+        pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
+        self.__animation.render(canvas, pos, self.size)
+
+    def set_idle(self) -> None:
+        self.vel.x = 0
+
+    def interaction(self, entity: PhysicsEntity) -> None: ...

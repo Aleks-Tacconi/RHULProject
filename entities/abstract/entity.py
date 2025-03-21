@@ -1,16 +1,3 @@
-"""Entity module.
-
-This module defines the Entity class, which serves as the base class for
-all entities in the game. This class provides a standardized way of creating
-entities and adding them to the game.
-
-File:
-    entities/abstract/entity.py
-
-Classes:
-    Entity: representation of an entity in the game.
-"""
-
 from abc import ABCMeta, abstractmethod
 from typing import List
 
@@ -20,64 +7,52 @@ from utils import Vector
 
 
 class Entity(metaclass=ABCMeta):
-    """Entity Object.
+    id = 0
 
-    Attributes:
-        _size (Vector): The size of the entity.
-        pos (Vector): The position of the entity.
-        area (List[int | float]): The bounding box of the entity calculated
-                                  from the entities position and size.
-
-    Abstract Methods:
-        render(canvas: simplegui.Frame) -> None: Renders the entity onto the canvas.
-        update() -> None: Updates the state of the Entity.
-    """
-
-    def __init__(self, pos: Vector, size: Vector) -> None:
+    def __init__(
+        self,
+        pos: Vector,
+        size: Vector,
+        hitbox: Vector,
+        hitbox_offset: Vector = Vector(0, 0),
+    ) -> None:
         self.pos = pos
         self.size = size
+        self.hitbox = hitbox
+        self.hitbox_offset = hitbox_offset
 
-    @abstractmethod
-    def render(self, canvas: simplegui.Canvas) -> None:
-        """Renders the entity onto the canvas.
-
-        This is an abstract method which must be implemented by all
-        subclasses of the Entity abstract base class.
-
-        Args:
-            canvas (simplegui.Frame): The canvas on which to render.
-        """
-
-    @abstractmethod
-    def update(self) -> None:
-        """Updates the state of the Entity.
-
-        This is an abstract method which must be implemented by all
-        subclasses of the Entity abstract base class.
-
-        This method should update the state of the entity accordingly to
-        its role in the game. This method will be called every iteration
-        of the games mainloop.
-        """
+        self.id = Entity.id
+        Entity.id += 1
 
     @property
-    def area(self) -> List[int | float]:
-        """The bounding box of the entity calculated from the entities position and size.
+    def hitbox_area(self) -> List[int | float]:
+        half_width = self.hitbox.x // 2
+        half_height = self.hitbox.y // 2
 
-        This property calculates the coordinates of the bounding box based
-        on its self._pos and self._size. 
+        x1 = self.pos.x - half_width + self.hitbox_offset.x
+        x2 = self.pos.x + half_width + self.hitbox_offset.x
 
-        Returns:
-            List[int | float]: A list representing the bounding box of the entity 
-                                in the format [x1, y1, x2, y2].
-        """
-        half_width = self.size.x // 2
-        half_height = self.size.x // 2
-
-        x1 = self.pos.x - half_width
-        x2 = x1 + half_width
-
-        y1 = self.pos.y - half_height
-        y2 = y1 + half_height
+        y1 = self.pos.y - half_height + self.hitbox_offset.y
+        y2 = self.pos.y + half_height + self.hitbox_offset.y
 
         return [x1, y1, x2, y2]
+
+    def _render_hitbox(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
+        canvas.draw_polygon(
+            [
+                [self.hitbox_area[0] + offset_x, self.hitbox_area[1] + offset_y],
+                [self.hitbox_area[2] + offset_x, self.hitbox_area[1] + offset_y],
+                [self.hitbox_area[2] + offset_x, self.hitbox_area[3] + offset_y],
+                [self.hitbox_area[0] + offset_x, self.hitbox_area[3] + offset_y],
+            ],
+            3,
+            "red",
+        )
+
+    @abstractmethod
+    def render(
+        self, canvas: simplegui.Canvas, offset_x: int, offset_y: int
+    ) -> None: ...
+
+    @abstractmethod
+    def update(self) -> None: ...
