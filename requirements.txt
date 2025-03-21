@@ -12,6 +12,7 @@ numpy==2.2.4
 packaging==24.2
 pillow==11.1.0
 platformdirs==4.3.7
+playsound3==3.2.2
 pygame==2.6.1
 pylint==3.3.6
 pyparsing==3.2.1
