@@ -1,3 +1,3 @@
-from .animation import Animation, SpriteSheet
+from .animation import Animation, MultiAnimation, SpriteSheet
 
-__all__ = ["Animation", "SpriteSheet"]
+__all__ = ["Animation", "MultiAnimation", "SpriteSheet"]

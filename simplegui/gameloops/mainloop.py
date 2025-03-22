@@ -18,7 +18,7 @@ class MainLoop(GameLoop):
         self.__player = Player(pos=Vector(400, 400))
 
         self.__enemies = []
-        self.__enemies.append(AbyssalRevenant(pos=Vector(300, 200)))
+        self.__enemies.append(AbyssalRevenant(pos=Vector(90, 200)))
         self.__enemies.append(Fire(400))
 
         self.__entities = []
@@ -52,9 +52,10 @@ class MainLoop(GameLoop):
             attack.update()
 
         for entity in self.__enemies:
-            entity.render(canvas, -self.__offset_x, -self.__offset_y)
             entity.update()
             entity.interaction(self.__player)
+            entity.render(canvas, -self.__offset_x, -self.__offset_y)
+
 
     def keyup_handler(self, key: int) -> None:
         self.__player.keyup_handler(key)

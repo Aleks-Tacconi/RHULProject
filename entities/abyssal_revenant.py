@@ -1,16 +1,16 @@
 import os
+import threading
 
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 
-from entities import abyssal_revenant
 from entities.abstract.physics_entity import PhysicsEntity
 from utils import Vector
 
 from .abstract import Enemy
 from .attack import Attack
 from .block import Block
-from .player import Player
-from .utils import Animation, SpriteSheet
+from .utils import MultiAnimation, SpriteSheet
+
 
 
 class AbyssalRevenant(Enemy):
@@ -24,67 +24,36 @@ class AbyssalRevenant(Enemy):
             hitbox_offset=Vector(0, 20),
         )
 
-        self.__animations = {
-            "IDLE_RIGHT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "abyssal_revenant", "IDLE.png"),
-                    rows=1,
-                    cols=9,
-                ),
-                frames_per_sprite=8,
-            ),
-            "IDLE_LEFT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "abyssal_revenant", "IDLE.png"),
-                    rows=1,
-                    cols=9,
-                ).flip(),
-                frames_per_sprite=8,
-            ),
-            "RUN_RIGHT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "abyssal_revenant", "RUN.png"),
-                    rows=1,
-                    cols=6,
-                ),
-                frames_per_sprite=15,
-            ),
-            "RUN_LEFT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "abyssal_revenant", "RUN.png"),
-                    rows=1,
-                    cols=6,
-                ).flip(),
-                frames_per_sprite=15,
-            ),
-            "ATTACK_RIGHT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "abyssal_revenant", "ATTACK.png"),
-                    rows=1,
-                    cols=12,
-                ),
-                frames_per_sprite=5,
-                one_iteration=True,
-            ),
-            "ATTACK_LEFT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "abyssal_revenant", "ATTACK.png"),
-                    rows=1,
-                    cols=12,
-                ).flip(),
-                frames_per_sprite=5,
-                one_iteration=True,
-            ),
+        spritesheet = SpriteSheet(
+            os.path.join("assets", "abyssal_revenant", "ABYSSAL_REVENANT.png"),
+            rows=5,
+            cols=23,
+        )
+
+        self.__animations = MultiAnimation(spritesheet=spritesheet, animations={
+            "IDLE_RIGHT": (0, 9, 9, False),
+            "IDLE_LEFT": (0, 9, 9, True),
+            "RUN_RIGHT": (1, 6, 6, False),
+            "RUN_LEFT": (1, 6, 6, True),
+            "ATTACK_RIGHT": (2, 12, 12, False),
+            "ATTACK_LEFT": (2, 12, 12, True),
+            "HURT_RIGHT": (3, 5, 5, False),
+            "HURT_LEFT": (3, 5, 5, True),
+            "DEATH_RIGHT": (4, 23, 9, False),
+            "DEATH_LEFT": (4, 23, 9, True),
         }
-        self.current_animation = "IDLE"
-        self.__direction = "LEFT"
+                                           )
+
+        self.__current_animation = "IDLE_LEFT"
+        self.__animations.set_animation(self.__current_animation)
         self.__detection_range = 300
-        self.__attack_distance = 100
+        self.__attack_distance = 70
         self.__speed = 1.5
 
     def set_idle(self) -> None:
-        self.current_animation = "IDLE"
-        self.vel.x = 0
+        ...
+        #self.__current_animation = "IDLE_LEFT"
+        #self.vel.x = 0
 
     def update(self) -> None:
         self._gravity()
@@ -93,62 +62,56 @@ class AbyssalRevenant(Enemy):
         Block.collisions_x(self)
         self.pos.y += self.vel.y
         Block.collisions_y(self)
-
-        animation = f"{self.current_animation}_{self.__direction}"
-        self.__animations[animation].update()
-
-    def __allow_change_animation(self) -> bool:
-        animation = f"{self.current_animation}_{self.__direction}"
-        return self.__animations[animation].done
+        print(self.__current_animation)
+        self.__animations.update()
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
-        animation = f"{self.current_animation}_{self.__direction}"
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
-        self.__animations[animation].render(canvas, pos, self.size)
+        self.__animations.render(canvas, pos, self.size)
         self._render_hitbox(canvas, offset_x, offset_y)
 
     def __attack(self) -> None:
-        self.current_animation = "ATTACK"
         offset = 50
 
-        if self.__direction == "LEFT":
+        if "LEFT" in self.__current_animation:
             offset *= -1
 
         Attack(
             pos=Vector(int(self.pos.x + offset), int(self.pos.y + 20)),
-            hitbox=Vector(90, 50),
+            hitbox=Vector(100, 100),
             damage=40,
             owner=self,
         )
 
     def interaction(self, entity: PhysicsEntity) -> None:
         distance_x = self.pos.x - entity.pos.x
-
+        print(distance_x)
+        self.__animations.set_animation(self.__current_animation)
         if abs(distance_x) < self.__attack_distance:
-            if self.__allow_change_animation():
+            if self.__animations.done:
                 self.__attack()
-                self.current_animation = "ATTACK"
-
+                if distance_x > 0:
+                    self.__current_animation = "ATTACK_LEFT"
+                else:
+                    self.__current_animation = "ATTACK_RIGHT"
             self.vel.x = 0
-
-            if distance_x > 0:
-                self.__direction = "LEFT"
-            else:
-                self.__direction = "RIGHT"
 
             return
 
         if abs(distance_x) < self.__detection_range:
-            if self.__allow_change_animation():
-                self.current_animation = "RUN"
-            if distance_x > 0:
-                self.__direction = "LEFT"
-                self.vel.x = -self.__speed
-            else:
-                self.__direction = "RIGHT"
-                self.vel.x = self.__speed
-
+            if self.__animations.done:
+                if distance_x > 0:
+                    self.__current_animation = "RUN_LEFT"
+                    self.vel.x = -self.__speed
+                else:
+                    self.__current_animation = "RUN_RIGHT"
+                    self.vel.x = self.__speed
             return
 
-        if self.__allow_change_animation():
-            self.current_animation = "IDLE"
+        if self.__animations.done:
+            if distance_x > 0:
+                self.__current_animation = "IDLE_LEFT"
+            else:
+                self.__current_animation = "IDLE_RIGHT"
+
+
