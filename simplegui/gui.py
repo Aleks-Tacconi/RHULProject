@@ -1,6 +1,6 @@
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 
-from .gameloops import MainLoop, TitleScreen
+from .gameloops import MainLoop, TitleScreen, LevelOne
 from .gameloops.abstract import GameLoop
 
 class GUI:
@@ -16,7 +16,8 @@ class GUI:
 
     def __reset_game(self) -> None:
         mainloop = MainLoop(self.__reset_game)
-        title_screen = TitleScreen(lambda: self.__set_draw_handler(mainloop))
+        level_one = LevelOne(self.__reset_game)
+        title_screen = TitleScreen(lambda: self.__set_draw_handler(level_one))
         self.__set_draw_handler(title_screen)
 
     def start(self) -> None:

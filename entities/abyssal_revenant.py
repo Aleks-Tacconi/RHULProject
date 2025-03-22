@@ -62,7 +62,7 @@ class AbyssalRevenant(Enemy):
         Block.collisions_x(self)
         self.pos.y += self.vel.y
         Block.collisions_y(self)
-        print(self.__current_animation)
+
         self.__animations.update()
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
@@ -87,31 +87,36 @@ class AbyssalRevenant(Enemy):
         distance_x = self.pos.x - entity.pos.x
         print(distance_x)
         self.__animations.set_animation(self.__current_animation)
-        if abs(distance_x) < self.__attack_distance:
+        if self.__animations.done():
+            if abs(distance_x) < self.__attack_distance:
+                if self.__animations.done:
+                    self.__attack()
+                    if distance_x > 0:
+                        self.__current_animation = "ATTACK_LEFT"
+                        self.__animations.set_animation(self.__current_animation)
+                        self.__animations.set_one_iteration()
+                    else:
+                        self.__current_animation = "ATTACK_RIGHT"
+                        self.__animations.set_animation(self.__current_animation)
+                        self.__animations.set_one_iteration()
+                self.vel.x = 0
+
+                return
+
+            if abs(distance_x) < self.__detection_range:
+                if self.__animations.done:
+                    if distance_x > 0:
+                        self.__current_animation = "RUN_LEFT"
+                        self.vel.x = -self.__speed
+                    else:
+                        self.__current_animation = "RUN_RIGHT"
+                        self.vel.x = self.__speed
+                return
+
             if self.__animations.done:
-                self.__attack()
                 if distance_x > 0:
-                    self.__current_animation = "ATTACK_LEFT"
+                    self.__current_animation = "IDLE_LEFT"
                 else:
-                    self.__current_animation = "ATTACK_RIGHT"
-            self.vel.x = 0
-
-            return
-
-        if abs(distance_x) < self.__detection_range:
-            if self.__animations.done:
-                if distance_x > 0:
-                    self.__current_animation = "RUN_LEFT"
-                    self.vel.x = -self.__speed
-                else:
-                    self.__current_animation = "RUN_RIGHT"
-                    self.vel.x = self.__speed
-            return
-
-        if self.__animations.done:
-            if distance_x > 0:
-                self.__current_animation = "IDLE_LEFT"
-            else:
-                self.__current_animation = "IDLE_RIGHT"
+                    self.__current_animation = "IDLE_RIGHT"
 
 

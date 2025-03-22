@@ -154,7 +154,7 @@ class MultiAnimation:
         self.__counter = 0
         self.__start_frame = 0
         self.__end_frame = 0
-        self._frame_index = [0,0]
+        self.__frame_index = [0,0]
 
     def done(self) -> bool:
         if not self.__one_iteration:
@@ -167,31 +167,35 @@ class MultiAnimation:
             == self.__animations[self.__current_animation][1]
         ):
             self.__one_iteration_counter = 0
+            self.__one_iteration = False
             return True
 
         return False
 
     def set_animation(self, animation_name: str):
-        if animation_name in self.__animations and animation_name != self.__current_animation:
-            self.__current_animation = animation_name
-            if self.__animations[animation_name][3]:
-                self.__flip = True
-                self.__start_frame = self.__spritesheet.cols - 1
-                self.__end_frame = self.__start_frame - self.__animations[self.__current_animation][1]
-            else:
-                self.__flip = False
-                self.__end_frame = self.__animations[self.__current_animation][1]
-                self.__start_frame = 0
-            self._frame_index = [self.__start_frame, self.__animations[self.__current_animation][0]]
-            self.__frames_per_animation = self.__animations[self.__current_animation][2]
-            self.__counter = 0
+        if not self.__one_iteration:
+            if animation_name in self.__animations and animation_name != self.__current_animation:
+                self.__current_animation = animation_name
+                if self.__animations[animation_name][3]:
+                    self.__flip = True
+                    self.__start_frame = self.__spritesheet.cols - 1
+                    self.__end_frame = self.__start_frame - self.__animations[self.__current_animation][1]
+                else:
+                    self.__flip = False
+                    self.__end_frame = self.__animations[self.__current_animation][1]
+                    self.__start_frame = 0
+                self.__frame_index = [self.__start_frame, self.__animations[self.__current_animation][0]]
+                self.__frames_per_animation = self.__animations[self.__current_animation][2]
+                self.__counter = 0
 
     def get_animation(self):
         return self.__current_animation
 
+    def set_one_iteration(self):
+        self.__one_iteration = True
+
     def update(self) -> None:
-        if self.__one_iteration and self.done:
-            return
+
 
         self.__counter += 1
 
@@ -200,31 +204,35 @@ class MultiAnimation:
             self.__update_frame_index()
 
     def __update_frame_index(self) -> None:
-        self.__one_iteration_counter += 1
+
         if not self.__flip:
-            self._frame_index[0] = (self._frame_index[0] + 1) % self.__end_frame
-            if self._frame_index[0] == 0:
-                self._frame_index[0] = self.__start_frame
+            self.__frame_index[0] = (self.__frame_index[0] + 1) % self.__end_frame
+            if self.__frame_index[0] == 0:
+                self.__frame_index[0] = self.__start_frame
         else:
-            self._frame_index[0] = (self._frame_index[0] - 1)
-            if self._frame_index[0] <= self.__end_frame:
-                self._frame_index[0] = self.__start_frame
+            self.__frame_index[0] = (self.__frame_index[0] - 1)
+            if self.__frame_index[0] <= self.__end_frame:
+                self.__frame_index[0] = self.__start_frame
         self.__counter = 0
+
+        if self.__one_iteration:
+            self.__one_iteration_counter += 1
+
 
     def render(self, canvas: simplegui.Canvas, pos: Vector, size: Vector) -> None:
         if self.__flip:
             source_center = [
-                self.__flipped_spritesheet.frame_width * self._frame_index[0]
+                self.__flipped_spritesheet.frame_width * self.__frame_index[0]
                 + self.__flipped_spritesheet.frame_center_x,
-                self.__flipped_spritesheet.frame_height * self._frame_index[1]
+                self.__flipped_spritesheet.frame_height * self.__frame_index[1]
                 + self.__flipped_spritesheet.frame_center_y,
             ]
             img = simplegui.load_image(file_prefix() + self.__flipped_spritesheet.path)
         else:
             source_center = [
-                self.__spritesheet.frame_width * self._frame_index[0]
+                self.__spritesheet.frame_width * self.__frame_index[0]
                 + self.__spritesheet.frame_center_x,
-                self.__spritesheet.frame_height * self._frame_index[1]
+                self.__spritesheet.frame_height * self.__frame_index[1]
                 + self.__spritesheet.frame_center_y,
             ]
             img = simplegui.load_image(file_prefix() + self.__spritesheet.path)
