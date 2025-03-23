@@ -191,7 +191,8 @@ class Player(PhysicsEntity):
 
         Attack(
             pos=Vector(int(self.pos.x + offset), int(self.pos.y + 30)),
-            hitbox=Vector(100, 50),
+            hitbox=Vector(100, 100),
+            hitbox_offset=Vector(0, 30),
             damage=100,
             owner=self,
         )
@@ -202,12 +203,13 @@ class Player(PhysicsEntity):
         self.hitbox_offset = Vector(-5, 68)
         self.__current_animation = "CROUCH"
 
-
     def death(self) -> None:
         if not self.is_alive:
             self.vel.x = 0
-            self.vel.y = 1
-            self.__current_animation = "DEATH"
+            self.vel.y = 12
+            self.__current_animation = f"DEATH_{self.__direction}"
+            self.__animations.set_animation(self.__current_animation)
+            self.__animations.set_one_iteration(True)
             self.__movement_x = []
 
     def keydown_handler(self, key: int) -> None:

@@ -80,6 +80,7 @@ class AbyssalRevenant(Enemy):
         Attack(
             pos=Vector(int(self.pos.x + offset), int(self.pos.y + 20)),
             hitbox=Vector(69, 70),
+            hitbox_offset=None,
             damage=40,
             owner=self,
         )
@@ -88,6 +89,7 @@ class AbyssalRevenant(Enemy):
         Attack(
             pos=Vector(int(self.pos.x), int(self.pos.y + 20)),
             hitbox=Vector(100, 100),
+            hitbox_offset=None,
             damage=1000,
             owner=self,
         )

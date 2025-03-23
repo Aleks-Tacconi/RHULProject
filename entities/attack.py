@@ -13,11 +13,14 @@ class Attack(Entity):
         pos: Vector,
         hitbox: Vector,
         damage: int,
+        hitbox_offset: None,
         owner: Entity,
         frame_time: int=1,
     ) -> None:
+        if hitbox_offset is None:
+            hitbox_offset = Vector(0, 0)
         super().__init__(
-            pos=pos, size=hitbox, hitbox=hitbox, hitbox_offset=Vector(0, 0)
+            pos=pos, size=hitbox, hitbox=hitbox, hitbox_offset=hitbox_offset
         )
         self.__damage = damage
         self.__owner = owner
