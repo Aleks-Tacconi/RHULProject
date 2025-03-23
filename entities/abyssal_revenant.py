@@ -51,7 +51,7 @@ class AbyssalRevenant(Enemy):
         self.__attack_distance = 70
         self.__speed = 1.5
 
-    def set_idle(self) -> None:
+    def __idle(self) -> None:
         ...
         #self.__current_animation = "IDLE_LEFT"
         #self.vel.x = 0

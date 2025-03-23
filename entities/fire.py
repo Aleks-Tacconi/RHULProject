@@ -35,7 +35,7 @@ class Fire(Enemy):
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
         self.__animation.render(canvas, pos, self.size)
 
-    def set_idle(self) -> None:
+    def __idle(self) -> None:
         self.vel.x = 0
 
     def interaction(self, entity: PhysicsEntity) -> None: ...

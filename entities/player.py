@@ -94,9 +94,11 @@ class Player(PhysicsEntity):
         self.__direction = "RIGHT"
         self.__current_animation = f"IDLE_{self.__direction}"
         self.__animations.set_animation(self.__current_animation)
-        self.jumps = 2
-        self.__movement = []
+        self.__jumps = 1
+        self.__movement_x = []
+        self.__movement_y = []
         self.__speed = 5
+        self.__crouched = False
 
     def remove(self) -> bool:
         if self.__animations.done() and not self.is_alive:
@@ -105,6 +107,8 @@ class Player(PhysicsEntity):
 
     def update(self) -> None:
         self.death()
+        self.__idle()
+        self.__vertical_movement()
         self.__horizontal_movement()
         self._gravity()
 
@@ -130,26 +134,28 @@ class Player(PhysicsEntity):
             self.__animations.render(canvas, pos, self.size)
             self._render_hitbox(canvas, offset_x, offset_y)
 
-    def set_idle(self) -> None:
-        self.__current_animation = "IDLE"
-        self.__movement = []
+    def __idle(self) -> None:
+        print("Crouched: ", self.__crouched)
+        if not self.__movement_x or not self.__movement_y:
+            self.hitbox = Vector(40, 92)
+            self.hitbox_offset = Vector(-5, 55)
+            self.vel.x = 0
+            self.__current_animation = "IDLE"
 
     def __jump(self) -> None:
-        if self.jumps > 0:
+        if self.__jumps > 0:
             self.vel.y = -12
-            self.jumps -= 1
+            self.__jumps -= 1
+
 
     def __horizontal_movement(self) -> None:
-        if not self.__movement:
-            self.vel.x = 0
-            if self.__animations.done():
-                self.__current_animation = "IDLE"
+        if not self.__movement_x:
             return
 
         if self.__animations.done():
             self.__current_animation = "RUN"
 
-        direction = self.__movement[-1]
+        direction = self.__movement_x[-1]
 
         if direction == "A":
             self.vel.x = -self.__speed
@@ -157,6 +163,20 @@ class Player(PhysicsEntity):
         if direction == "D":
             self.vel.x = self.__speed
             self.__direction = "RIGHT"
+
+    def __vertical_movement(self) -> None:
+        if not self.__movement_y:
+            return
+
+        direction = self.__movement_y[-1]
+
+        if direction == "W":
+            self.__jump()
+        if direction == "S":
+            self.__crouch()
+        if self.vel.y == 0 and self.__animations.done():
+            self.__jumps = 1
+
 
     def __attack(self) -> None:
         offset = 50
@@ -174,35 +194,45 @@ class Player(PhysicsEntity):
             owner=self,
         )
 
-    def __crouch_down(self) -> None:
-        self.hitbox= Vector(40, 46)
-        self.__current_animation = f"CROUCH_{self.__direction}"
-        self.__animations.set_animation(self.__current_animation)
+    def __crouch(self) -> None:
+        self.vel.y = 12
+        self.hitbox = Vector(40, 66)
+        self.hitbox_offset = Vector(-5, 68)
+        self.__current_animation = "CROUCH"
+
 
     def death(self) -> None:
         if not self.is_alive:
             self.vel.x = 0
             self.vel.y = 1
             self.__current_animation = "DEATH"
-            self.__movement = []
+            self.__movement_x = []
 
     def keydown_handler(self, key: int) -> None:
         if key == 65:  # A
-            self.__movement.append("A")
+            self.__movement_x.append("A")
         if key == 68:  # D
-            self.__movement.append("D")
+            self.__movement_x.append("D")
         if key == 83:  # S
-            self.__crouch_down()
+            self.__movement_y.append("S")
+            self.__crouched = True
         if key == 87:  # W
-            self.__jump()
+            self.__movement_y.append("W")
         if key == 69:  # E
             self.__attack()
 
 
     def keyup_handler(self, key: int) -> None:
         if key == 65:  # A
-            if "A" in self.__movement:
-                self.__movement.remove("A")
+            if "A" in self.__movement_x:
+                self.__movement_x.remove("A")
         if key == 68:  # D
-            if "D" in self.__movement:
-                self.__movement.remove("D")
+            if "D" in self.__movement_x:
+                self.__movement_x.remove("D")
+        if key == 83:  # S
+            if "S" in self.__movement_y:
+                self.__movement_y.remove("S")
+                self.__crouched = False
+        if key == 87:  # W
+            if "W" in self.__movement_y:
+                self.__movement_y.remove("W")

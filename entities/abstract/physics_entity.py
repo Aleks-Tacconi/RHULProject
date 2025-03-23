@@ -44,7 +44,4 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
         return x2 > a1 and x1 < a2 and y2 > b1 and y1 < b2
 
     @abstractmethod
-    def set_idle(self) -> None: ...
-
-    @abstractmethod
     def remove(self) -> bool: ...
