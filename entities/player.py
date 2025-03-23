@@ -99,9 +99,10 @@ class Player(PhysicsEntity):
         self.__movement_y = []
         self.__speed = 5
         self.__crouched = False
+        self.__dead = False
 
     def remove(self) -> bool:
-        if self.__animations.done() and not self.is_alive:
+        if self.__animations.done() and self.__dead:
             return True
         return False
 
@@ -211,6 +212,7 @@ class Player(PhysicsEntity):
             self.__animations.set_animation(self.__current_animation)
             self.__animations.set_one_iteration(True)
             self.__movement_x = []
+            self.__dead = True
 
     def keydown_handler(self, key: int) -> None:
         if key == 65:  # A

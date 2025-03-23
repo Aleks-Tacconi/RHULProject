@@ -20,7 +20,8 @@ class Entity(metaclass=ABCMeta):
         self.size = size
         self.hitbox = hitbox
         self.hitbox_offset = hitbox_offset
-
+        self.points = 0
+        self.give_points = True
         self.id = Entity.id
         Entity.id += 1
 

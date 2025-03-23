@@ -44,6 +44,7 @@ class AbyssalRevenant(Enemy):
         }
                                            )
 
+        self.points = 100
         self.__direction = "RIGHT"
         self.__current_animation = f"IDLE_{self.__direction}"
         self.__animations.set_animation(self.__current_animation)

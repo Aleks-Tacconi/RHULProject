@@ -2,7 +2,7 @@ import os
 from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
-
+from simplegui.components import ScoreBoard
 from entities import Block, Player, Attack, AbyssalRevenant, Fire, BackgroundOne, PlayerHealthBar
 from utils import Vector
 
@@ -14,6 +14,8 @@ class LevelOne(GameLoop):
         super().__init__()
 
         self.__reset = reset
+
+        self.__scoreboard = ScoreBoard()
 
         self.__player = Player(pos=Vector(400, 400))
 
@@ -43,6 +45,9 @@ class LevelOne(GameLoop):
         self.__offset_y1 = 0
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
+
+        self.__scoreboard.update()
+
         # TODO: 400 is half the screen width - not good magic number
         self.__offset_x += (self.__player.pos.x - 400 - self.__offset_x) // 30
         self.__offset_y += (self.__player.pos.y - 400 - self.__offset_y) // 30
@@ -52,9 +57,6 @@ class LevelOne(GameLoop):
 
         self.__player.update()
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
-
-        if self.__player.remove():
-            self.__reset()
 
         for entity in self.__gui:
             entity.update()
@@ -72,9 +74,17 @@ class LevelOne(GameLoop):
             entity.update()
             entity.interaction(self.__player)
             entity.render(canvas, -self.__offset_x, -self.__offset_y)
+            if not entity.is_alive:
+                self.__scoreboard.enemy_killed_score(entity)
             if entity.remove():
                 self.__enemies.remove(entity)
 
+        if self.__player.remove():
+            self.__scoreboard.calculate_score("LEVEL ONE")
+            print("|||||||||||||||||||||||||||||||||")
+            self.__scoreboard.print_score()
+            print("|||||||||||||||||||||||||||||||||")
+            self.__reset()
 
     def keyup_handler(self, key: int) -> None:
         self.__player.keyup_handler(key)
