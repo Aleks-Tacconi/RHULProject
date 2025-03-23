@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 from PIL import Image
-import time
+
 from utils import Vector
 
 
@@ -146,7 +146,7 @@ class Animation:
     """
 class MultiAnimation:
 
-    def __init__(self, spritesheet: SpriteSheet, animations: dict[str, tuple[int, int, int]]):
+    def __init__(self, spritesheet: SpriteSheet, animations: dict[str, tuple[int, int, int, bool]]):
         self.__spritesheet = spritesheet
         self.__flipped_spritesheet = spritesheet.flip()
         self.__animations = animations
@@ -176,19 +176,16 @@ class MultiAnimation:
 
         return False
 
-    def set_flip(self, boolean: bool) -> None:
-        self.__flip = boolean
-
     def set_animation(self, animation_name: str):
         if not self.__one_iteration:
             if animation_name in self.__animations and animation_name != self.__current_animation:
                 self.__current_animation = animation_name
-                print("Flipped is: ", self.__flip) #not changing properly when changing direction
-                if self.__flip:
-                    print("Flipped")
+                if self.__animations[animation_name][3]:
+                    self.__flip = True
                     self.__start_frame = self.__spritesheet.cols - 1
                     self.__end_frame = self.__start_frame - self.__animations[self.__current_animation][1]
                 else:
+                    self.__flip = False
                     self.__end_frame = self.__animations[self.__current_animation][1]
                     self.__start_frame = 0
                 self.__frame_index = [self.__start_frame, self.__animations[self.__current_animation][0]]
@@ -198,25 +195,20 @@ class MultiAnimation:
     def get_animation(self):
         return self.__current_animation
 
-    def set_one_iteration(self, boolean: bool) -> None:
+    def set_one_iteration(self, boolean: bool):
         self.__one_iteration = boolean
 
-    def get_flip(self) -> bool:
-        return self.__flip
-
-    def get_start_frame(self) -> int:
-        return self.__start_frame
-
-    def get_end_frame(self) -> int:
-        return self.__end_frame
-
     def update(self) -> None:
+
+
         self.__counter += 1
+
 
         if self.__counter == self.__frames_per_animation:
             self.__update_frame_index()
 
     def __update_frame_index(self) -> None:
+
         if not self.__flip:
             self.__frame_index[0] = (self.__frame_index[0] + 1) % self.__end_frame
             if self.__frame_index[0] == 0:
