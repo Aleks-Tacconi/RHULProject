@@ -5,7 +5,9 @@ import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 from simplegui.components import ScoreBoard
 from entities import Block, Player, Attack, AbyssalRevenant, Fire, PlayerHealthBar, Background
 from utils import Vector
-
+#from OpenGL.GL import *
+#OpenGL.GLUT import *
+#from OpenGL.GLU import *
 from .abstract import GameLoop
 
 
@@ -65,16 +67,17 @@ class LevelOne(GameLoop):
         self.__player.update()
 
         for entity in self.__environment:
-            entity.render(canvas, -self.__offset_x, -self.__offset_y)
-            #entity.render(canvas, -self.__offset_x + 1704, -self.__offset_y)
+            ...
+            #entity.render(canvas, -self.__offset_x, -self.__offset_y)
 
         for entity in self.__gui:
             entity.update()
             entity.render(canvas, 0, 0)
 
         for entity in self.__entities:
-            entity.render(canvas, -self.__offset_x, -self.__offset_y)
-            entity.update()
+            if self.is_entity_visible(self.__player, entity):
+                entity.render(canvas, -self.__offset_x, -self.__offset_y)
+                entity.update()
 
         for attack in Attack.all:
             attack.render(canvas, -self.__offset_x, -self.__offset_y)
@@ -83,7 +86,9 @@ class LevelOne(GameLoop):
         for entity in self.__enemies:
             entity.update()
             entity.interaction(self.__player)
-            entity.render(canvas, -self.__offset_x, -self.__offset_y)
+            if self.is_entity_visible(self.__player, entity):
+                entity.render(canvas, -self.__offset_x, -self.__offset_y)
+
             if not entity.is_alive:
                 self.__scoreboard.enemy_killed_score(entity)
             if entity.remove():
@@ -103,3 +108,5 @@ class LevelOne(GameLoop):
 
     def keydown_handler(self, key: int) -> None:
         self.__player.keydown_handler(key)
+
+
