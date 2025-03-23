@@ -40,4 +40,7 @@ class Fire(Enemy):
 
     def interaction(self, entity: PhysicsEntity) -> None: ...
 
-    def remove(self) -> None: ...
+    def remove(self) -> bool:
+        if self.__animation.done and not self.is_alive:
+            return True
+        return False
