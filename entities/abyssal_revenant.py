@@ -78,8 +78,16 @@ class AbyssalRevenant(Enemy):
 
         Attack(
             pos=Vector(int(self.pos.x + offset), int(self.pos.y + 20)),
-            hitbox=Vector(100, 100),
+            hitbox=Vector(69, 70),
             damage=40,
+            owner=self,
+        )
+
+    def __death_attack(self) -> None:
+        Attack(
+            pos=Vector(int(self.pos.x), int(self.pos.y + 20)),
+            hitbox=Vector(100, 100),
+            damage=1000,
             owner=self,
         )
 
@@ -98,6 +106,7 @@ class AbyssalRevenant(Enemy):
         if not self.is_alive:
             self.vel.x = 0
             self.__animations.set_one_iteration(False)
+            self.__death_attack()
             if distance_x > 0:
                 self.__current_animation = "DEATH_LEFT"
                 self.__animations.set_animation(self.__current_animation)

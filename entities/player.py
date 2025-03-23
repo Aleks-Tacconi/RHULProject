@@ -164,7 +164,7 @@ class Player(PhysicsEntity):
 
         Attack(
             pos=Vector(int(self.pos.x + offset), int(self.pos.y + 30)),
-            hitbox=Vector(50, 50),
+            hitbox=Vector(100, 50),
             damage=100,
             owner=self,
         )
