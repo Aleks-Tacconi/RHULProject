@@ -68,7 +68,7 @@ class LevelOne(GameLoop):
 
         for entity in self.__environment:
             ...
-            #entity.render(canvas, -self.__offset_x, -self.__offset_y)
+            entity.render(canvas, -self.__offset_x, -self.__offset_y)
 
         for entity in self.__gui:
             entity.update()
