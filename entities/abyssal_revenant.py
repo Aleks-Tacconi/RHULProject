@@ -31,21 +31,18 @@ class AbyssalRevenant(Enemy):
         )
 
         self.__animations = MultiAnimation(spritesheet=spritesheet, animations={
-            "IDLE_RIGHT": (0, 9, 9, False),
-            "IDLE_LEFT": (0, 9, 9, True),
-            "RUN_RIGHT": (1, 6, 6, False),
-            "RUN_LEFT": (1, 6, 6, True),
-            "ATTACK_RIGHT": (2, 12, 12, False),
-            "ATTACK_LEFT": (2, 12, 12, True),
-            "HURT_RIGHT": (3, 5, 5, False),
-            "HURT_LEFT": (3, 5, 5, True),
-            "DEATH_RIGHT": (4, 23, 9, False),
-            "DEATH_LEFT": (4, 23, 9, True),
+            "IDLE": (0, 9, 9),
+            "RUN": (1, 6, 6),
+            "ATTACK": (2, 12, 12),
+            "HURT": (3, 5, 5),
+            "DEATH": (4, 23, 9),
         }
                                            )
 
-        self.__current_animation = "IDLE_LEFT"
+        self.__current_animation = "IDLE"
         self.__animations.set_animation(self.__current_animation)
+        self.__direction = "RIGHT"
+        self.__animation = f"{self.__current_animation}_{self.__direction}"
         self.__detection_range = 300
         self.__attack_distance = 70
         self.__speed = 1.5
@@ -55,7 +52,18 @@ class AbyssalRevenant(Enemy):
         #self.__current_animation = "IDLE_LEFT"
         #self.vel.x = 0
 
+    def __get_direction(self):
+        if self.vel.x > 0:
+            self.__direction = "RIGHT"
+        else:
+            self.__direction = "LEFT"
+
     def update(self) -> None:
+        self.__get_direction()
+        if self.__direction == "LEFT":
+            self.__animations.set_flip(True)
+        if self.__direction == "RIGHT":
+            self.__animations.set_flip(False)
         self._gravity()
 
         self.pos.x += self.vel.x
@@ -73,7 +81,7 @@ class AbyssalRevenant(Enemy):
     def __attack(self) -> None:
         offset = 50
 
-        if "LEFT" in self.__current_animation:
+        if self.__direction == "LEFT":
             offset *= -1
 
         Attack(
@@ -108,11 +116,11 @@ class AbyssalRevenant(Enemy):
             self.__animations.set_one_iteration(False)
             self.__death_attack()
             if distance_x > 0:
-                self.__current_animation = "DEATH_LEFT"
+                self.__current_animation = "DEATH"
                 self.__animations.set_animation(self.__current_animation)
                 self.__animations.set_one_iteration(True)
             else:
-                self.__current_animation = "DEATH_RIGHT"
+                self.__current_animation = "DEATH"
                 self.__animations.set_animation(self.__current_animation)
                 self.__animations.set_one_iteration(True)
 
@@ -121,11 +129,11 @@ class AbyssalRevenant(Enemy):
                 if self.__animations.done:
                     self.__attack()
                     if distance_x > 0:
-                        self.__current_animation = "ATTACK_LEFT"
+                        self.__current_animation = "ATTACK"
                         self.__animations.set_animation(self.__current_animation)
                         self.__animations.set_one_iteration(True)
                     else:
-                        self.__current_animation = "ATTACK_RIGHT"
+                        self.__current_animation = "ATTACK"
                         self.__animations.set_animation(self.__current_animation)
                         self.__animations.set_one_iteration(True)
                 self.vel.x = 0
@@ -135,19 +143,19 @@ class AbyssalRevenant(Enemy):
             if abs(distance_x) < self.__detection_range:
                 if self.__animations.done:
                     if distance_x > 0:
-                        self.__current_animation = "RUN_LEFT"
+                        self.__current_animation = "RUN"
                         self.vel.x = -self.__speed
                     else:
-                        self.__current_animation = "RUN_RIGHT"
+                        self.__current_animation = "RUN"
                         self.vel.x = self.__speed
                 return
 
             if self.__animations.done:
                 self.vel.x = 0
                 if distance_x > 0:
-                    self.__current_animation = "IDLE_LEFT"
+                    self.__current_animation = "IDLE"
                 else:
-                    self.__current_animation = "IDLE_RIGHT"
+                    self.__current_animation = "IDLE"
 
                 return
 

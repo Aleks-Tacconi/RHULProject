@@ -15,7 +15,7 @@ class LevelOne(GameLoop):
 
         self.__reset = reset
 
-        self.__player = Player(pos=Vector(400, 400))
+        self.__player = Player(pos=Vector(400, 350))
 
         self.__enemies = []
         self.__enemies.append(AbyssalRevenant(pos=Vector(90, 200)))

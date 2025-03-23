@@ -7,7 +7,7 @@ from utils import Vector
 from .abstract import PhysicsEntity
 from .attack import Attack
 from .block import Block
-from .utils import Animation, SpriteSheet
+from .utils import MultiAnimation, SpriteSheet
 
 
 class Player(PhysicsEntity):
@@ -16,97 +16,86 @@ class Player(PhysicsEntity):
             pos=pos,
             size=Vector(200, 200),
             vel=Vector(0, 0),
-            hitbox=Vector(40, 80),
+            hitbox=Vector(40, 92),
             hp=100,
-            hitbox_offset=Vector(0, 30),
+            hitbox_offset=Vector(-5, 55),
         )
 
-        self.__animations = {
-            "IDLE_RIGHT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "player", "IDLE.png"), rows=1, cols=5
-                ),
-                frames_per_sprite=15,
-            ),
-            "IDLE_LEFT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "player", "IDLE.png"), rows=1, cols=5
-                ).flip(),
-                frames_per_sprite=15,
-            ),
-            "RUN_RIGHT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "player", "RUN.png"), rows=1, cols=8
-                ),
-                frames_per_sprite=15,
-            ),
-            "RUN_LEFT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "player", "RUN.png"), rows=1, cols=8
-                ).flip(),
-                frames_per_sprite=15,
-            ),
-            "ATTACK_RIGHT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "player", "ATTACK_1.png"), rows=1, cols=5
-                ),
-                frames_per_sprite=5,
-                one_iteration=True,
-            ),
-            "ATTACK_LEFT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "player", "ATTACK_1.png"), rows=1, cols=5
-                ).flip(),
-                frames_per_sprite=5,
-                one_iteration=True,
-            ),
-            "JUMP_RIGHT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "player", "ATTACK_1.png"), rows=1, cols=5
-                ).flip(),
-                frames_per_sprite=5,
-                one_iteration=True,
-            ),
-            "JUMP_LEFT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "player", "ATTACK_1.png"), rows=1, cols=5
-                ).flip(),
-                frames_per_sprite=5,
-                one_iteration=True,
-            ),
-            "DEATH_RIGHT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "player", "DEATH.png"), rows=1, cols=10
-                ),
-                frames_per_sprite=10,
-                one_iteration=True,
-            ),
-            "DEATH_LEFT": Animation(
-                spritesheet=SpriteSheet(
-                    os.path.join("assets", "player", "DEATH.png"), rows=1, cols=10
-                ).flip(),
-                frames_per_sprite=10,
-                one_iteration=True,
-            )
-        }
+        spritesheet = SpriteSheet(
+            os.path.join("assets", "player", "KNIGHT.png"),
+            rows=30,
+            cols=12,
+        )
 
-        self.current_animation = "IDLE"
+        self.__animations = MultiAnimation(spritesheet=spritesheet, animations={
+            "ATTACK_OVERHEAD": (0, 4, 4),
+            "ATTACK_SLASH": (1, 6, 6),
+            "ATTACK_SLASH_NO_MOVEMENT": (2, 6, 6),
+            "ATTACK_COMBO": (3, 10, 10),
+            "ATTACK_COMBO_NO_MOVEMENT": (4, 10, 10),
+            "ATTACK_OVERHEAD_NO_MOVEMENT": (5, 4, 4),
+            "CROUCH": (6, 1, 1),
+            "CROUCH_ATTACK": (7, 4, 4),
+            "CROUCH_FULL": (8, 3, 3),
+            "CROUCH_TRANSITION": (9, 1, 1),
+            "CROUCH_WALK": (10, 8, 8),
+            "DASH": (11, 2, 2),
+            "DEATH": (12, 10, 10),
+            "DEATH_NO_MOVEMENT": (13, 10, 10),
+            "FALL": (14, 3, 3),
+            "HIT": (15, 1, 1),
+            "IDLE": (16, 10, 10),
+            "JUMP": (17, 3, 3),
+            "JUMP_FALL_IN_BETWEEN": (18, 2, 2),
+            "ROLL": (19, 12, 12),
+            "RUN": (20, 10, 3),
+            "RUN2": (20, 10, 10),
+            "SLIDE": (21, 2, 2),
+            "SLIDE_FULL": (22, 4, 4),
+            "SLIDE_TRANSITION_END": (23, 1, 1),
+            "SLIDE_TRANSITION_START": (24, 1, 1),
+            "TURN_AROUND": (25, 3, 3),
+            "WALL_CLIMB": (26, 7, 7),
+            "WALL_CLIMB_NO_MOVEMENT": (27, 7, 7),
+            "WALL_HANG": (28, 1, 1),
+            "WALL_SLIDE": (29, 3, 3),
+        }
+                                           )
+
+        self.__current_animation = "IDLE"
+        self.__animations.set_animation(self.__current_animation)
         self.__direction = "RIGHT"
+        self.__animation = f"{self.__current_animation}_{self.__direction}"
         self.jumps = 2
 
         self.__movement = []
-        self.__speed = 3
+        self.__speed = 5
 
     def remove(self) -> bool:
-        animation = f"{self.current_animation}_{self.__direction}"
-        if self.__animations[animation].done and not self.is_alive:
+        if self.__animations.done() and not self.is_alive:
             return True
         return False
 
+    def __get_direction(self):
+        if self.vel.x > 0:
+            self.__direction = "RIGHT"
+        elif self.vel.x < 0:
+            self.__direction = "LEFT"
+
     def update(self) -> None:
+        print("Start Frame", self.__animations.get_start_frame())
+        print("End Frame", self.__animations.get_end_frame())
+        print(self.vel.x)
         self.death()
         self.__horizontal_movement()
         self._gravity()
+        self.__get_direction()
+        if self.__direction == "LEFT":
+            self.__animations.set_flip(True)
+            self.hitbox_offset = Vector(5, 55)
+        if self.__direction == "RIGHT":
+            self.__animations.set_flip(False)
+            self.hitbox_offset = Vector(-5, 55)
 
         self.pos.x += self.vel.x
         Block.collisions_x(self)
@@ -114,19 +103,18 @@ class Player(PhysicsEntity):
         self.pos.y += self.vel.y
         Block.collisions_y(self)
 
-        animation = f"{self.current_animation}_{self.__direction}"
-        self.__animations[animation].update()
+        self.__animations.set_animation(self.__current_animation)
+        self.__animations.update()
 
         print(f"{self.hp=}")
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
-        animation = f"{self.current_animation}_{self.__direction}"
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
-        self.__animations[animation].render(canvas, pos, self.size)
+        self.__animations.render(canvas, pos, self.size)
         self._render_hitbox(canvas, offset_x, offset_y)
 
     def set_idle(self) -> None:
-        self.current_animation = "IDLE"
+        self.__current_animation = "IDLE"
         self.__movement = []
 
     def __jump(self) -> None:
@@ -134,37 +122,30 @@ class Player(PhysicsEntity):
             self.vel.y = -12
             self.jumps -= 1
 
-    def __allow_change_animation(self) -> bool:
-        animation = f"{self.current_animation}_{self.__direction}"
-        return self.__animations[animation].done
-
     def __horizontal_movement(self) -> None:
         if not self.__movement:
             self.vel.x = 0
-            if self.__allow_change_animation():
-                self.current_animation = "IDLE"
+
+            self.set_idle()
             return
 
-        if self.__allow_change_animation():
-            self.current_animation = "RUN"
+
+        self.__current_animation = "RUN"
+
+
 
         direction = self.__movement[-1]
 
         if direction == "A":
             self.vel.x = -self.__speed
-            self.__direction = "LEFT"
         if direction == "D":
             self.vel.x = self.__speed
-            self.__direction = "RIGHT"
 
     def __attack(self) -> None:
         offset = 50
-
-        self.current_animation = "ATTACK"
-
-        animation = f"{self.current_animation}_{self.__direction}"
-        if self.__animations[animation].done:
-            self.__animations[animation].set_one_iteration(True)
+        self.__current_animation = "ATTACK_SLASH"
+        self.__animations.set_animation(self.__current_animation)
+        self.__animations.set_one_iteration(True)
 
         if self.__direction == "LEFT":
             offset *= -1
@@ -180,7 +161,7 @@ class Player(PhysicsEntity):
         if not self.is_alive:
             self.vel.x = 0
             self.vel.y = 1
-            self.current_animation = "DEATH"
+            self.__current_animation = "DEATH"
             self.__movement = []
 
     def keydown_handler(self, key: int) -> None:
