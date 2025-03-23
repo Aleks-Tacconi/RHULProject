@@ -65,12 +65,14 @@ class Player(PhysicsEntity):
                     os.path.join("assets", "player", "ATTACK_1.png"), rows=1, cols=5
                 ).flip(),
                 frames_per_sprite=5,
+                one_iteration=True,
             ),
             "JUMP_LEFT": Animation(
                 spritesheet=SpriteSheet(
                     os.path.join("assets", "player", "ATTACK_1.png"), rows=1, cols=5
                 ).flip(),
                 frames_per_sprite=5,
+                one_iteration=True,
             ),
             "DEATH_RIGHT": Animation(
                 spritesheet=SpriteSheet(
@@ -156,8 +158,13 @@ class Player(PhysicsEntity):
             self.__direction = "RIGHT"
 
     def __attack(self) -> None:
-        self.current_animation = "ATTACK"
         offset = 50
+
+        self.current_animation = "ATTACK"
+
+        animation = f"{self.current_animation}_{self.__direction}"
+        if self.__animations[animation].done:
+            self.__animations[animation].set_one_iteration(True)
 
         if self.__direction == "LEFT":
             offset *= -1
@@ -171,6 +178,8 @@ class Player(PhysicsEntity):
 
     def death(self) -> None:
         if not self.is_alive:
+            self.vel.x = 0
+            self.vel.y = 1
             self.current_animation = "DEATH"
             self.__movement = []
 

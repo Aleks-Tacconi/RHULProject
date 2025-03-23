@@ -72,9 +72,13 @@ class Animation:
             == (self.__spritesheet.rows * self.__spritesheet.cols) - 1
         ):
             self.__one_iteration_counter = 0
+            self.__one_iteration = False
             return True
 
         return False
+
+    def set_one_iteration(self, boolean: bool):
+        self.__one_iteration = boolean
 
     def __update_frame_index(self) -> None:
         self.__frame_index[0] = (self.__frame_index[0] + 1) % self.__spritesheet.cols
