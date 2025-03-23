@@ -152,15 +152,17 @@ class Player(PhysicsEntity):
         if not self.__movement_x:
             return
 
-        if self.__animations.done():
+        if self.__animations.done() and not self.__crouched:
             self.__current_animation = "RUN"
+        else:
+            self.__current_animation = "CROUCH_WALK"
 
-        direction = self.__movement_x[-1]
+        direction_x = self.__movement_x[-1]
 
-        if direction == "A":
+        if direction_x == "A":
             self.vel.x = -self.__speed
             self.__direction = "LEFT"
-        if direction == "D":
+        if direction_x == "D":
             self.vel.x = self.__speed
             self.__direction = "RIGHT"
 
@@ -168,11 +170,11 @@ class Player(PhysicsEntity):
         if not self.__movement_y:
             return
 
-        direction = self.__movement_y[-1]
+        direction_y = self.__movement_y[-1]
 
-        if direction == "W":
+        if direction_y == "W":
             self.__jump()
-        if direction == "S":
+        if direction_y == "S":
             self.__crouch()
         if self.vel.y == 0 and self.__animations.done():
             self.__jumps = 1
