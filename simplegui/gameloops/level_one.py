@@ -3,7 +3,7 @@ from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 from simplegui.components import ScoreBoard
-from entities import Block, Player, Attack, AbyssalRevenant, Fire, BackgroundOne, PlayerHealthBar
+from entities import Block, Player, Attack, AbyssalRevenant, Fire, PlayerHealthBar, Background
 from utils import Vector
 
 from .abstract import GameLoop
@@ -17,6 +17,21 @@ class LevelOne(GameLoop):
 
         self.__scoreboard = ScoreBoard()
 
+        self.__environment = []
+
+        self.__environment.append(Background(pos=Vector(400, 500),
+                                             img=os.path.join("assets", "background", "01 background.png")))
+        self.__environment.append(Background(pos=Vector(400, 500),
+                                             img=os.path.join("assets", "background", "02 background.png")))
+        self.__environment.append(Background(pos=Vector(400, 400),
+                                             img=os.path.join("assets", "background", "03 background A.png")))
+        self.__environment.append(Background(pos=Vector(400, 300),
+                                             img=os.path.join("assets", "background", "04 background.png")))
+        self.__environment.append(Background(pos=Vector(400, 200),
+                                             img=os.path.join("assets", "background", "05 background.png")))
+
+
+
         self.__player = Player(pos=Vector(400, 400))
 
         self.__enemies = []
@@ -28,11 +43,8 @@ class LevelOne(GameLoop):
         self.__gui.append(self.__player_healthbar)
 
         self.__entities = []
-        background_path = os.path.join("assets", "background", "01_background.png")
 
-        self.__entities.append(BackgroundOne(Vector(11, 10), background_path))
-        test_path = os.path.join("assets", "blocks", "main_lev_build.png")
-        self.__entities.append(Block(Vector(10, 10), background_path))
+
         block_path = os.path.join("assets", "blocks", "block.jpg")
         for i in range(0, 80):
             self.__entities.append(Block(Vector(i, 15), block_path))
@@ -41,8 +53,6 @@ class LevelOne(GameLoop):
 
         self.__offset_x = 0
         self.__offset_y = 0
-        self.__offset_x1 = 0
-        self.__offset_y1 = 0
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
 
@@ -52,15 +62,15 @@ class LevelOne(GameLoop):
         self.__offset_x += (self.__player.pos.x - 400 - self.__offset_x) // 30
         self.__offset_y += (self.__player.pos.y - 400 - self.__offset_y) // 30
 
-        self.__offset_x1 += (self.__player_healthbar.pos.x - 130 - self.__offset_x1) // 30
-        self.__offset_y1 += (self.__player_healthbar.pos.y - 760 - self.__offset_y1) // 30
-
         self.__player.update()
-        self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
+
+        for entity in self.__environment:
+            entity.render(canvas, -self.__offset_x, -self.__offset_y)
+            #entity.render(canvas, -self.__offset_x + 1704, -self.__offset_y)
 
         for entity in self.__gui:
             entity.update()
-            entity.render(canvas, -self.__offset_x1, -self.__offset_y1)
+            entity.render(canvas, 0, 0)
 
         for entity in self.__entities:
             entity.render(canvas, -self.__offset_x, -self.__offset_y)
@@ -85,6 +95,8 @@ class LevelOne(GameLoop):
             self.__scoreboard.print_score()
             print("|||||||||||||||||||||||||||||||||")
             self.__reset()
+
+        self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
 
     def keyup_handler(self, key: int) -> None:
         self.__player.keyup_handler(key)
