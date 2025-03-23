@@ -40,7 +40,7 @@ class MainLoop(GameLoop):
         self.__player.update()
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
 
-        if not self.__player.is_alive:
+        if self.__player.remove():
             self.__reset()
 
         for entity in self.__entities:
@@ -55,6 +55,7 @@ class MainLoop(GameLoop):
             entity.update()
             entity.interaction(self.__player)
             entity.render(canvas, -self.__offset_x, -self.__offset_y)
+
 
 
     def keyup_handler(self, key: int) -> None:

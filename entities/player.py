@@ -17,7 +17,7 @@ class Player(PhysicsEntity):
             size=Vector(200, 200),
             vel=Vector(0, 0),
             hitbox=Vector(40, 80),
-            hp=100000,
+            hp=100,
             hitbox_offset=Vector(0, 30),
         )
 
@@ -72,6 +72,20 @@ class Player(PhysicsEntity):
                 ).flip(),
                 frames_per_sprite=5,
             ),
+            "DEATH_RIGHT": Animation(
+                spritesheet=SpriteSheet(
+                    os.path.join("assets", "player", "DEATH.png"), rows=1, cols=10
+                ),
+                frames_per_sprite=10,
+                one_iteration=True,
+            ),
+            "DEATH_LEFT": Animation(
+                spritesheet=SpriteSheet(
+                    os.path.join("assets", "player", "DEATH.png"), rows=1, cols=10
+                ).flip(),
+                frames_per_sprite=10,
+                one_iteration=True,
+            )
         }
 
         self.current_animation = "IDLE"
@@ -81,7 +95,14 @@ class Player(PhysicsEntity):
         self.__movement = []
         self.__speed = 3
 
+    def remove(self) -> bool:
+        animation = f"{self.current_animation}_{self.__direction}"
+        if self.__animations[animation].done and not self.is_alive:
+            return True
+        return False
+
     def update(self) -> None:
+        self.death()
         self.__horizontal_movement()
         self._gravity()
 
@@ -144,9 +165,14 @@ class Player(PhysicsEntity):
         Attack(
             pos=Vector(int(self.pos.x + offset), int(self.pos.y + 30)),
             hitbox=Vector(50, 50),
-            damage=10,
+            damage=100,
             owner=self,
         )
+
+    def death(self) -> None:
+        if not self.is_alive:
+            self.current_animation = "DEATH"
+            self.__movement = []
 
     def keydown_handler(self, key: int) -> None:
         if key == 65:  # A

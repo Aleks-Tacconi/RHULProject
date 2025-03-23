@@ -22,3 +22,5 @@ class GameLoop(metaclass=ABCMeta):
     @abstractmethod
     def keyup_handler(self, key: int) -> None: ...
 
+
+

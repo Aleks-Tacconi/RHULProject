@@ -69,7 +69,7 @@ class Animation:
 
         if (
             self.__one_iteration_counter
-            == self.__spritesheet.rows * self.__spritesheet.cols
+            == (self.__spritesheet.rows * self.__spritesheet.cols) - 1
         ):
             self.__one_iteration_counter = 0
             return True
@@ -78,7 +78,6 @@ class Animation:
 
     def __update_frame_index(self) -> None:
         self.__frame_index[0] = (self.__frame_index[0] + 1) % self.__spritesheet.cols
-        self.__one_iteration_counter += 1
 
         if self.__frame_index[0] == 0:
             self.__frame_index[1] = (
@@ -86,10 +85,11 @@ class Animation:
             ) % self.__spritesheet.rows
 
         self.__counter = 0
+        if self.__one_iteration:
+            self.__one_iteration_counter += 1
 
     def update(self) -> None:
-        if self.__one_iteration and self.done:
-            return
+
 
         self.__counter += 1
 
@@ -164,7 +164,7 @@ class MultiAnimation:
 
         if (
             self.__one_iteration_counter
-            == self.__animations[self.__current_animation][1]
+            == (self.__animations[self.__current_animation][1]) - 1
         ):
             self.__one_iteration_counter = 0
             self.__one_iteration = False
@@ -191,8 +191,8 @@ class MultiAnimation:
     def get_animation(self):
         return self.__current_animation
 
-    def set_one_iteration(self):
-        self.__one_iteration = True
+    def set_one_iteration(self, boolean: bool):
+        self.__one_iteration = boolean
 
     def update(self) -> None:
 

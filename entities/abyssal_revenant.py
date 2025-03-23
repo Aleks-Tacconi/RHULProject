@@ -83,10 +83,30 @@ class AbyssalRevenant(Enemy):
             owner=self,
         )
 
+    def remove(self) -> bool:
+        if self.__animations.done() and not self.is_alive:
+            return True
+        return False
+
     def interaction(self, entity: PhysicsEntity) -> None:
         distance_x = self.pos.x - entity.pos.x
         print(distance_x)
+        print("Health: ", self.hp)
+
         self.__animations.set_animation(self.__current_animation)
+
+        if not self.is_alive:
+            self.vel.x = 0
+            self.__animations.set_one_iteration(False)
+            if distance_x > 0:
+                self.__current_animation = "DEATH_LEFT"
+                self.__animations.set_animation(self.__current_animation)
+                self.__animations.set_one_iteration(True)
+            else:
+                self.__current_animation = "DEATH_RIGHT"
+                self.__animations.set_animation(self.__current_animation)
+                self.__animations.set_one_iteration(True)
+
         if self.__animations.done():
             if abs(distance_x) < self.__attack_distance:
                 if self.__animations.done:
@@ -94,11 +114,11 @@ class AbyssalRevenant(Enemy):
                     if distance_x > 0:
                         self.__current_animation = "ATTACK_LEFT"
                         self.__animations.set_animation(self.__current_animation)
-                        self.__animations.set_one_iteration()
+                        self.__animations.set_one_iteration(True)
                     else:
                         self.__current_animation = "ATTACK_RIGHT"
                         self.__animations.set_animation(self.__current_animation)
-                        self.__animations.set_one_iteration()
+                        self.__animations.set_one_iteration(True)
                 self.vel.x = 0
 
                 return
@@ -114,9 +134,13 @@ class AbyssalRevenant(Enemy):
                 return
 
             if self.__animations.done:
+                self.vel.x = 0
                 if distance_x > 0:
                     self.__current_animation = "IDLE_LEFT"
                 else:
                     self.__current_animation = "IDLE_RIGHT"
+
+                return
+
 
 

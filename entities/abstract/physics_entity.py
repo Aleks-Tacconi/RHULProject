@@ -45,3 +45,6 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
 
     @abstractmethod
     def set_idle(self) -> None: ...
+
+    @abstractmethod
+    def remove(self) -> bool: ...

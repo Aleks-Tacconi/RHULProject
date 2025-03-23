@@ -19,13 +19,15 @@ class LevelOne(GameLoop):
 
         self.__enemies = []
         self.__enemies.append(AbyssalRevenant(pos=Vector(90, 200)))
-        self.__enemies.append(AbyssalRevenant(pos=Vector(500, 200)))
-        self.__enemies.append(Fire(400))
+        self.__enemies.append(AbyssalRevenant(pos=Vector(600, 200)))
+
 
         self.__entities = []
         background_path = os.path.join("assets", "background", "01_background.png")
-        self.__entities.append(BackgroundOne(Vector(400, 400), background_path))
 
+        self.__entities.append(BackgroundOne(Vector(11, 10), background_path))
+        test_path = os.path.join("assets", "blocks", "main_lev_build.png")
+        self.__entities.append(Block(Vector(10, 10), background_path))
         block_path = os.path.join("assets", "blocks", "block.jpg")
         for i in range(0, 80):
             self.__entities.append(Block(Vector(i, 15), block_path))
@@ -43,7 +45,7 @@ class LevelOne(GameLoop):
         self.__player.update()
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
 
-        if not self.__player.is_alive:
+        if self.__player.remove():
             self.__reset()
 
         for entity in self.__entities:
@@ -58,6 +60,8 @@ class LevelOne(GameLoop):
             entity.update()
             entity.interaction(self.__player)
             entity.render(canvas, -self.__offset_x, -self.__offset_y)
+            if entity.remove():
+                self.__enemies.remove(entity)
 
 
     def keyup_handler(self, key: int) -> None:
