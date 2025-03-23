@@ -3,7 +3,7 @@ from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from entities import Block, Player, Attack, AbyssalRevenant, Fire, BackgroundOne
+from entities import Block, Player, Attack, AbyssalRevenant, Fire, BackgroundOne, PlayerHealthBar
 from utils import Vector
 
 from .abstract import GameLoop
@@ -21,6 +21,9 @@ class LevelOne(GameLoop):
         self.__enemies.append(AbyssalRevenant(pos=Vector(90, 200)))
         self.__enemies.append(AbyssalRevenant(pos=Vector(600, 200)))
 
+        self.__gui = []
+        self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 760), player=self.__player)
+        self.__gui.append(self.__player_healthbar)
 
         self.__entities = []
         background_path = os.path.join("assets", "background", "01_background.png")
@@ -36,17 +39,26 @@ class LevelOne(GameLoop):
 
         self.__offset_x = 0
         self.__offset_y = 0
+        self.__offset_x1 = 0
+        self.__offset_y1 = 0
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         # TODO: 400 is half the screen width - not good magic number
         self.__offset_x += (self.__player.pos.x - 400 - self.__offset_x) // 30
         self.__offset_y += (self.__player.pos.y - 400 - self.__offset_y) // 30
 
+        self.__offset_x1 += (self.__player_healthbar.pos.x - 130 - self.__offset_x1) // 30
+        self.__offset_y1 += (self.__player_healthbar.pos.y - 760 - self.__offset_y1) // 30
+
         self.__player.update()
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
 
         if self.__player.remove():
             self.__reset()
+
+        for entity in self.__gui:
+            entity.update()
+            entity.render(canvas, -self.__offset_x1, -self.__offset_y1)
 
         for entity in self.__entities:
             entity.render(canvas, -self.__offset_x, -self.__offset_y)
