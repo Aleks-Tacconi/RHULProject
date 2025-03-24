@@ -101,6 +101,9 @@ class Player(PhysicsEntity):
         self.__crouched = False
         self.__rolling = False
         self.__dead = False
+        self.immune = True
+        self.__movement_x_locked = False
+        self.__movement_y_locked = False
 
     def remove(self) -> bool:
         if self.__animations.done() and self.__dead:
@@ -110,6 +113,8 @@ class Player(PhysicsEntity):
     def update(self) -> None:
         if self.__animations.done():
             self.immune = False
+            self.__movement_x_locked = False
+            self.__movement_y_locked = False
         self.death()
         self.__idle()
         self.__vertical_movement()
@@ -140,7 +145,8 @@ class Player(PhysicsEntity):
 
     def __idle(self) -> None:
         print("Crouched: ", self.__crouched)
-        if not self.__movement_x or not self.__movement_y:
+        if (not self.__movement_x and not self.__movement_y and
+                not self.__movement_x_locked and not self.__movement_y_locked):
             self.hitbox = Vector(40, 92)
             self.hitbox_offset = Vector(-5, 55)
             self.vel.x = 0
@@ -163,18 +169,20 @@ class Player(PhysicsEntity):
 
         direction_x = self.__movement_x[-1]
 
-        if self.__direction == "LEFT":
-            self.vel.x = -self.__speed
-        else:
-            self.vel.x = self.__speed
-
-        if self.__rolling:
-            self.__roll()
-            return
         if direction_x == "A":
             self.__direction = "LEFT"
         if direction_x == "D":
             self.__direction = "RIGHT"
+
+        if not self.__movement_x_locked:
+            if self.__direction == "LEFT":
+                self.vel.x = -self.__speed
+            else:
+                self.vel.x = self.__speed
+
+        if self.__rolling:
+            self.__roll()
+            return
 
     def __vertical_movement(self) -> None:
         if not self.__movement_y:
@@ -182,12 +190,13 @@ class Player(PhysicsEntity):
 
         direction_y = self.__movement_y[-1]
 
-        if direction_y == "W":
-            self.__jump()
-        if direction_y == "S":
-            self.__crouch()
-        if self.vel.y == 0 and self.__animations.done():
-            self.__jumps = 1
+        if not self.__movement_y_locked:
+            if direction_y == "W":
+                self.__jump()
+            if direction_y == "S":
+                self.__crouch()
+            if self.vel.y == 0 and self.__animations.done():
+                self.__jumps = 1
 
 
     def __attack(self) -> None:
@@ -217,6 +226,8 @@ class Player(PhysicsEntity):
         self.immune = True
         self.__current_animation = f"ROLL_{self.__direction}"
         self.__animations.set_animation(self.__current_animation)
+        self.__movement_x_locked = True
+        self.__movement_y_locked = True
         self.__animations.set_one_iteration(True)
 
     def death(self) -> None:
