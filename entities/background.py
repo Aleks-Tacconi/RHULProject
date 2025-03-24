@@ -9,11 +9,11 @@ from .abstract import Entity
 from .utils import Animation, SpriteSheet
 
 class Background(Entity):
-    def __init__(self, pos: Vector, img: str) -> None:
+    def __init__(self, pos: Vector, img: str, size_x: int, size_y: int, scale_factor: int) -> None:
 
-        original_size_x = 426
-        original_size_y = 384
-        scale_factor = 4
+        original_size_x = size_x
+        original_size_y = size_y
+        scale_factor = scale_factor
         scaled_size_x = original_size_x * scale_factor
         scaled_size_y = original_size_y * scale_factor
 
