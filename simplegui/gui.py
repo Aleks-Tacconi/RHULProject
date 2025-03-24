@@ -1,7 +1,5 @@
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 
-from simplegui.gameloops.test_level import TestLevel
-
 from .gameloops import MainLoop, TitleScreen, LevelOne
 from .gameloops.abstract import GameLoop
 
