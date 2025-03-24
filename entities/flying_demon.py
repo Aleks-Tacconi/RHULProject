@@ -10,14 +10,12 @@ from .attack import Attack
 from .block import Block
 from .utils import MultiAnimation, SpriteSheet
 
-#TODO: In progress...
-
 class FlyingDemon(Enemy):
     def __init__(self, pos: Vector) -> None:
         super().__init__(
             pos=pos,
             size=Vector(158, 98),
-            hitbox=Vector(50, 80),
+            hitbox=Vector(100, 80),
             vel=Vector(0, 0),
             hp=300,
             hitbox_offset=Vector(0, 20),
@@ -30,16 +28,16 @@ class FlyingDemon(Enemy):
         )
 
         self.__animations = MultiAnimation(spritesheet=spritesheet, animations={
-            "ATTACK_RIGHT": (0, 8, 8, False),
-            "DEATH_RIGHT": (1, 6, 6, False),
-            "FLYING_RIGHT": (2, 4, 4, False),
-            "HURT_RIGHT": (3, 4, 4, False),
-            "IDLE_RIGHT": (4, 4, 4, False),
-            "ATTACK_LEFT": (0, 8, 8, True),
-            "DEATH_LEFT": (1, 6, 6, True),
-            "FLYING_LEFT": (2, 4, 4, True),
-            "HURT_LEFT": (3, 4, 4, True),
-            "IDLE_LEFT": (4, 4, 4, True),
+            "ATTACK_LEFT": (0, 8, 8, False),
+            "DEATH_LEFT": (1, 6, 6, False),
+            "FLYING_LEFT": (2, 4, 4, False),
+            "HURT_LEFT": (3, 4, 4, False),
+            "IDLE_LEFT": (4, 4, 4, False),
+            "ATTACK_RIGHT": (0, 8, 8, True),
+            "DEATH_RIGHT": (1, 6, 6, True),
+            "FLYING_RIGHT": (2, 4, 4, True),
+            "HURT_RIGHT": (3, 4, 4, True),
+            "IDLE_RIGHT": (4, 4, 4, True),
         }
                                            )
 
