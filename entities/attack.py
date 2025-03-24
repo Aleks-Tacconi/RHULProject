@@ -33,8 +33,9 @@ class Attack(Entity):
         self.__counter += 1
 
         for entity in PhysicsEntity.all:
-            if entity.id != self.__owner.id and entity.collides_with(self):
-                entity.hp -= self.__damage
+            if not entity.immune:
+                if entity.id != self.__owner.id and entity.collides_with(self):
+                    entity.hp -= self.__damage
 
         if self.__counter == self.__frame_time:
             Attack.remove_attack(self)

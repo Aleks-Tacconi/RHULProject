@@ -47,7 +47,7 @@ class Player(PhysicsEntity):
             "IDLE_RIGHT": (16, 10, 10, False),
             "JUMP_RIGHT": (17, 3, 3, False),
             "JUMP_FALL_IN_BETWEEN_RIGHT": (18, 2, 2, False),
-            "ROLL_RIGHT": (19, 12, 12, False),
+            "ROLL_RIGHT": (19, 12, 3, False),
             "RUN_RIGHT": (20, 10, 3, False),
             "SLIDE_RIGHT": (21, 2, 2, False),
             "SLIDE_FULL_RIGHT": (22, 4, 4, False),
@@ -77,7 +77,7 @@ class Player(PhysicsEntity):
             "IDLE_LEFT": (16, 10, 10, True),
             "JUMP_LEFT": (17, 3, 3, True),
             "JUMP_FALL_IN_BETWEEN_LEFT": (18, 2, 2, True),
-            "ROLL_LEFT": (19, 12, 12, True),
+            "ROLL_LEFT": (19, 12, 3, True),
             "RUN_LEFT": (20, 10, 3, True),
             "SLIDE_LEFT": (21, 2, 2, True),
             "SLIDE_FULL_LEFT": (22, 4, 4, True),
@@ -99,6 +99,7 @@ class Player(PhysicsEntity):
         self.__movement_y = []
         self.__speed = 5
         self.__crouched = False
+        self.__rolling = False
         self.__dead = False
 
     def remove(self) -> bool:
@@ -107,6 +108,8 @@ class Player(PhysicsEntity):
         return False
 
     def update(self) -> None:
+        if self.__animations.done():
+            self.immune = False
         self.death()
         self.__idle()
         self.__vertical_movement()
@@ -160,11 +163,17 @@ class Player(PhysicsEntity):
 
         direction_x = self.__movement_x[-1]
 
-        if direction_x == "A":
+        if self.__direction == "LEFT":
             self.vel.x = -self.__speed
+        else:
+            self.vel.x = self.__speed
+
+        if self.__rolling:
+            self.__roll()
+            return
+        if direction_x == "A":
             self.__direction = "LEFT"
         if direction_x == "D":
-            self.vel.x = self.__speed
             self.__direction = "RIGHT"
 
     def __vertical_movement(self) -> None:
@@ -204,6 +213,12 @@ class Player(PhysicsEntity):
         self.hitbox_offset = Vector(-5, 68)
         self.__current_animation = "CROUCH"
 
+    def __roll(self):
+        self.immune = True
+        self.__current_animation = f"ROLL_{self.__direction}"
+        self.__animations.set_animation(self.__current_animation)
+        self.__animations.set_one_iteration(True)
+
     def death(self) -> None:
         if not self.is_alive:
             self.vel.x = 0
@@ -215,6 +230,9 @@ class Player(PhysicsEntity):
             self.__dead = True
 
     def keydown_handler(self, key: int) -> None:
+        if key == 32: # SPACE
+            self.__movement_x.append("SPACE")
+            self.__rolling = True
         if key == 65:  # A
             self.__movement_x.append("A")
         if key == 68:  # D
@@ -229,6 +247,9 @@ class Player(PhysicsEntity):
 
 
     def keyup_handler(self, key: int) -> None:
+        if key == 32: # SPACE
+            self.__movement_x.remove("SPACE")
+            self.__rolling = False
         if key == 65:  # A
             if "A" in self.__movement_x:
                 self.__movement_x.remove("A")
