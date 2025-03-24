@@ -45,6 +45,7 @@ class LevelOne(GameLoop):
         self.__enemies = []
         self.__enemies.append(AbyssalRevenant(pos=Vector(90, 200)))
         self.__enemies.append(AbyssalRevenant(pos=Vector(600, 200)))
+        self.__enemies.append(Fire(400))
 
         self.__gui = []
         self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 760), player=self.__player)

@@ -18,8 +18,7 @@ class GUI:
 
     def __reset_game(self) -> None:
         mainloop = MainLoop(self.__reset_game)
-        # level_one = LevelOne(self.__reset_game)
-        level_one = TestLevel(self.__reset_game)
+        level_one = LevelOne(self.__reset_game)
         title_screen = TitleScreen(lambda: self.__set_draw_handler(level_one))
         self.__set_draw_handler(title_screen)
 

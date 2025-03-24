@@ -51,7 +51,7 @@ class Fire(Enemy):
                 pos=self.pos,
                 hitbox=Vector(50, 50),
                 hitbox_offset=None,
-                damage=20,
+                damage=1000,
                 owner=self
             )
 
