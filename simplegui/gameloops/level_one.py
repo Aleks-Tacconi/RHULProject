@@ -40,7 +40,7 @@ class LevelOne(GameLoop):
         self.__player = Player(pos=Vector(400, 400))
         self.__player_light = Background(pos=Vector(0, 0),
                                              img=os.path.join("assets", "player", "PLAYER_LIGHT.png"),
-                                             size_x=1024, size_y=1024, scale_factor=1/4)
+                                             size_x=1200, size_y=1200, scale_factor=3/4)
 
         self.__enemies = []
         self.__enemies.append(AbyssalRevenant(pos=Vector(90, 200)))
@@ -79,11 +79,7 @@ class LevelOne(GameLoop):
 
         for entity in self.__environment:
             ...
-            #entity.render(canvas, -self.__offset_x, -self.__offset_y)
-
-        for entity in self.__gui:
-            entity.update()
-            entity.render(canvas, 0, 0)
+            entity.render(canvas, -self.__offset_x, -self.__offset_y)
 
         for entity in self.__entities:
             if self.is_entity_visible(self.__player, entity):
@@ -112,8 +108,13 @@ class LevelOne(GameLoop):
             print("|||||||||||||||||||||||||||||||||")
             self.__reset()
 
+        self.__player_light.render(canvas, self.__player.pos.x - self.__offset_x, self.__player.pos.y - self.__offset_y)
+
+        for entity in self.__gui:
+            entity.update()
+            entity.render(canvas, 0, 0)
+
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
-        self.__player_light.render(canvas, self.__player.pos.x -self.__offset_x, self.__player.pos.y -self.__offset_y)
 
     def keyup_handler(self, key: int) -> None:
         self.__player.keyup_handler(key)

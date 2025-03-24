@@ -48,7 +48,7 @@ class AbyssalRevenant(Enemy):
         self.__direction = "RIGHT"
         self.__current_animation = f"IDLE_{self.__direction}"
         self.__animations.set_animation(self.__current_animation)
-        self.__detection_range = 300
+        self.__detection_range = 400
         self.__attack_distance = 70
         self.__speed = 1.5
 
