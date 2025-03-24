@@ -10,34 +10,36 @@ from .attack import Attack
 from .block import Block
 from .utils import MultiAnimation, SpriteSheet
 
-class FlyingDemon(Enemy):
+
+
+class DemonSlimeBoss(Enemy):
     def __init__(self, pos: Vector) -> None:
         super().__init__(
             pos=pos,
-            size=Vector(158, 98),
-            hitbox=Vector(100, 80),
+            size=Vector(576, 320),
+            hitbox=Vector(120, 80),
             vel=Vector(0, 0),
             hp=300,
             hitbox_offset=Vector(0, 20),
         )
 
         spritesheet = SpriteSheet(
-            os.path.join("assets", "flying_demon", "FLYING_DEMON.png"),
+            os.path.join("assets", "demon_slime_boss", "DEMON_SLIME_BOSS.png"),
             rows=5,
-            cols=8,
+            cols=22,
         )
 
         self.__animations = MultiAnimation(spritesheet=spritesheet, animations={
-            "ATTACK_LEFT": (0, 8, 8, False),
-            "WALK_LEFT": (1, 6, 6, False),
-            "ATTACK_LEFT": (2, 4, 4, False),
-            "HURT_LEFT": (3, 4, 4, False),
-            "IDLE_LEFT": (4, 4, 4, False),
-            "ATTACK_RIGHT": (0, 8, 8, True),
-            "DEATH_RIGHT": (1, 6, 6, True),
-            "FLYING_RIGHT": (2, 4, 4, True),
-            "HURT_RIGHT": (3, 4, 4, True),
-            "IDLE_RIGHT": (4, 4, 4, True),
+            "IDLE_LEFT": (0, 6, 6, False),
+            "WALK_LEFT": (1, 12, 12, False),
+            "ATTACK_LEFT": (2, 15, 5, False),
+            "HURT_LEFT": (3, 5, 5, False),
+            "DEATH_LEFT": (4, 22, 4, False),
+            "IDLE_RIGHT": (0, 6, 6, True),
+            "WALK_RIGHT": (1, 12, 12, True),
+            "ATTACK_RIGHT": (2, 15, 5, True),
+            "HURT_RIGHT": (3, 5, 5, True),
+            "DEATH_RIGHT": (4, 22, 4, True),
         }
                                            )
 
@@ -65,7 +67,7 @@ class FlyingDemon(Enemy):
         self.__animations.update()
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
-        pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
+        pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y - 100))
         self.__animations.render(canvas, pos, self.size)
         self._render_hitbox(canvas, offset_x, offset_y)
 
@@ -96,6 +98,11 @@ class FlyingDemon(Enemy):
         if self.__animations.done() and not self.is_alive:
             return True
         return False
+
+    def __receive_damage(self):
+        if self.__base_hp != self.hp:
+            self.__base_hp = self.hp
+            self.__animation_blood.set_animation(f"BLOOD_{self.__direction}")
 
     def interaction(self, entity: PhysicsEntity) -> None:
         distance_x = self.pos.x - entity.pos.x
@@ -137,10 +144,10 @@ class FlyingDemon(Enemy):
             if abs(distance_x) < self.__detection_range:
                 if self.__animations.done:
                     if distance_x > 0:
-                        self.__current_animation = "FLYING_LEFT"
+                        self.__current_animation = "RUN_LEFT"
                         self.vel.x = -self.__speed
                     else:
-                        self.__current_animation = "FLYING_RIGHT"
+                        self.__current_animation = "RUN_RIGHT"
                         self.vel.x = self.__speed
                 return
 

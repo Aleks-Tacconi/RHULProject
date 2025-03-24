@@ -43,18 +43,6 @@ class AbyssalRevenant(Enemy):
         }
                                            )
 
-        spritesheet_blood = SpriteSheet(
-            os.path.join("assets", "blood", "BLOOD_DAMAGE.png"),
-            rows=1,
-            cols=10,
-        )
-
-        self.__animation_blood = MultiAnimation(spritesheet=spritesheet_blood, animations={
-            "BLOOD_RIGHT": (0, 10, 2, False),
-            "BLOOD_LEFT": (0, 10, 2, True),
-        }
-                                           )
-
         self.points = 100
         self.__direction = "RIGHT"
         self.__current_animation = f"IDLE_{self.__direction}"
@@ -76,13 +64,11 @@ class AbyssalRevenant(Enemy):
         Block.collisions_x(self)
         self.pos.y += self.vel.y
         Block.collisions_y(self)
-        self.__animation_blood.update()
         self.__animations.update()
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
         self.__animations.render(canvas, pos, self.size)
-        self.__animation_blood.render(canvas, pos, self.size)
         self._render_hitbox(canvas, offset_x, offset_y)
 
     def __attack(self) -> None:
