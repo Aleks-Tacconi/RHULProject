@@ -17,7 +17,7 @@ class Player(PhysicsEntity):
             size=Vector(200, 200),
             vel=Vector(0, 0),
             hitbox=Vector(40, 92),
-            hp=100,
+            hp=10000,
             hitbox_offset=Vector(-5, 55),
         )
 

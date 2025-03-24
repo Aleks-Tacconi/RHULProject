@@ -12,34 +12,46 @@ from .utils import MultiAnimation, SpriteSheet
 
 
 
-class AbyssalRevenant(Enemy):
+class ImpalerBoss(Enemy):
     def __init__(self, pos: Vector) -> None:
         super().__init__(
             pos=pos,
-            size=Vector(200, 200),
+            size=Vector(502, 212),
             hitbox=Vector(50, 80),
             vel=Vector(0, 0),
             hp=300,
             hitbox_offset=Vector(0, 20),
         )
 
+        #TODO Update the spritesheet with higher resolution version for better quality
+
         spritesheet = SpriteSheet(
-            os.path.join("assets", "abyssal_revenant", "ABYSSAL_REVENANT.png"),
-            rows=5,
-            cols=23,
+            os.path.join("assets", "impaler_boss", "sprite_sheet (13).png"),
+            rows=1,
+            cols=25,
         )
 
         self.__animations = MultiAnimation(spritesheet=spritesheet, animations={
-            "IDLE_RIGHT": (0, 9, 9, False),
-            "IDLE_LEFT": (0, 9, 9, True),
-            "RUN_RIGHT": (1, 6, 6, False),
-            "RUN_LEFT": (1, 6, 6, True),
-            "ATTACK_RIGHT": (2, 12, 12, False),
-            "ATTACK_LEFT": (2, 12, 12, True),
-            "HURT_RIGHT": (3, 5, 5, False),
-            "HURT_LEFT": (3, 5, 5, True),
-            "DEATH_RIGHT": (4, 23, 9, False),
-            "DEATH_LEFT": (4, 23, 9, True),
+            "WALK_RIGHT": (1, 6, 6, False),
+            "SPEAR_STRIKE_RIGHT": (0, 25, 10, False),
+            "SPEAR_SPIN_RIGHT": (2, 8, 8, False),
+            "SPEAR_SPIN_COMBO_RIGHT": (3, 21, 21, False),
+            "SPEAR_THRUST_RIGHT": (4, 26, 4, False),
+            "DUPLICATE_ATTACK_RIGHT": (5, 29, 29, False),
+            "SPEAR_THURST_RIGHT": (6, 20, 20, False),
+            "DEATH_RIGHT": (7, 25, 25, False),
+            "IDLE_RIGHT": (8, 4, 4, False),
+            "WALK_LEFT": (1, 6, 6, True),
+            "SPEAR_STRIKE_LEFT": (0, 25, 10, True),
+            "SPEAR_SPIN_LEFT": (2, 8, 8, True),
+            "SPEAR_SPIN_COMBO_LEFT": (3, 21, 21, True),
+            "SPEAR_THRUST_LEFT": (4, 26, 4, True),
+            "DUPLICATE_ATTACK_LEFT": (5, 29, 29, True),
+            "SPEAR_THURST_LEFT": (6, 20, 20, True),
+            "DEATH_LEFT": (7, 25, 25, True),
+            "IDLE_LEFT": (8, 4, 4, True),
+
+
         }
                                            )
 
@@ -47,16 +59,20 @@ class AbyssalRevenant(Enemy):
         self.__direction = "RIGHT"
         self.__current_animation = f"IDLE_{self.__direction}"
         self.__animations.set_animation(self.__current_animation)
-        self.__detection_range = 400
+        self.__detection_range = 100
         self.__attack_distance = 70
         self.__speed = 1.5
 
     def __idle(self) -> None:
         ...
-        #self.__current_animation = "IDLE_LEFT"
-        #self.vel.x = 0
+        # self.__current_animation = "IDLE_LEFT"
+        # self.vel.x = 0
 
     def update(self) -> None:
+        if self.vel.x > 0:
+            self.__direction = "RIGHT"
+        else:
+            self.__direction = "LEFT"
         self._gravity()
 
         self.pos.x += self.vel.x
@@ -67,9 +83,14 @@ class AbyssalRevenant(Enemy):
         self.__animations.update()
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
-        pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
-        self.__animations.render(canvas, pos, self.size)
-        self._render_hitbox(canvas, offset_x, offset_y)
+        if self.__direction == "LEFT":
+            pos = Vector(int(self.pos.x + offset_x - 50), int(self.pos.y + offset_y - 35))
+            self.__animations.render(canvas, pos, self.size)
+            self._render_hitbox(canvas, offset_x, offset_y)
+        else:
+            pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
+            self.__animations.render(canvas, pos, self.size)
+            self._render_hitbox(canvas, offset_x, offset_y)
 
     def __attack(self) -> None:
         offset = 50
@@ -125,11 +146,11 @@ class AbyssalRevenant(Enemy):
                 if self.__animations.done:
                     self.__attack()
                     if distance_x > 0:
-                        self.__current_animation = "ATTACK_LEFT"
+                        self.__current_animation = "SPEAR_STRIKE_LEFT"
                         self.__animations.set_animation(self.__current_animation)
                         self.__animations.set_one_iteration(True)
                     else:
-                        self.__current_animation = "ATTACK_RIGHT"
+                        self.__current_animation = "SPEAR_STRIKE_RIGHT"
                         self.__animations.set_animation(self.__current_animation)
                         self.__animations.set_one_iteration(True)
                 self.vel.x = 0
@@ -139,10 +160,10 @@ class AbyssalRevenant(Enemy):
             if abs(distance_x) < self.__detection_range:
                 if self.__animations.done:
                     if distance_x > 0:
-                        self.__current_animation = "RUN_LEFT"
+                        self.__current_animation = "WALK_LEFT"
                         self.vel.x = -self.__speed
                     else:
-                        self.__current_animation = "RUN_RIGHT"
+                        self.__current_animation = "WALK_RIGHT"
                         self.vel.x = self.__speed
                 return
 
@@ -154,6 +175,3 @@ class AbyssalRevenant(Enemy):
                     self.__current_animation = "IDLE_RIGHT"
 
                 return
-
-
-
