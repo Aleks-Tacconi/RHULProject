@@ -21,9 +21,28 @@ class LevelOne(GameLoop):
 
         self.__environment = []
 
-        self.__environment.append(Background(pos=Vector(400, 300),
-                                             img=os.path.join("assets", "background", "FOREST.jpg"),
-                                             size_x=800, size_y=468, scale_factor=1.25))
+        self.__environment.append(Background(pos=Vector(-26, 310),
+                                             img=os.path.join("assets", "background", "03 background B_FLIPPED.png"),
+                                             size_x=426, size_y=468, scale_factor=1))
+        self.__environment.append(Background(pos=Vector(400, 310),
+                                             img=os.path.join("assets", "background", "03 background B.png"),
+                                             size_x=426, size_y=468, scale_factor=1))
+        self.__environment.append(Background(pos=Vector(826, 310),
+                                             img=os.path.join("assets", "background", "03 background B_FLIPPED.png"),
+                                             size_x=426, size_y=468, scale_factor=1))
+
+        #TODO: I will optimise this and only render background when in its in view
+        #for i in range(1, 5):
+            #self.__environment.append(Background(pos=Vector(-26 - (426 * i), 310),
+             #                                    img=os.path.join("assets", "background",
+             #                                                     "03 background B_FLIPPED.png"),
+             #                                    size_x=426, size_y=468, scale_factor=1))
+
+        #for i in range(0, 5):
+            #self.__environment.append(Background(pos=Vector(-826 + (426 * i), 310),
+                                                 #img=os.path.join("assets", "background",
+                                                 #                 "03 background B_FLIPPED.png"),
+                                                 #size_x=426, size_y=468, scale_factor=1))
 
         self.__player = Player(pos=Vector(400, 400))
         self.__player_light = Background(pos=Vector(0, 0),
