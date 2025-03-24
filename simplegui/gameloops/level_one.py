@@ -21,21 +21,9 @@ class LevelOne(GameLoop):
 
         self.__environment = []
 
-        self.__environment.append(Background(pos=Vector(400, 500),
-                                             img=os.path.join("assets", "background", "01 background.png"),
-                                             size_x=426, size_y=384, scale_factor=3))
-        self.__environment.append(Background(pos=Vector(400, 500),
-                                             img=os.path.join("assets", "background", "02 background.png"),
-                                             size_x=426, size_y=384, scale_factor=3))
-        self.__environment.append(Background(pos=Vector(400, 400),
-                                             img=os.path.join("assets", "background", "03 background A.png"),
-                                             size_x=426, size_y=384, scale_factor=3))
         self.__environment.append(Background(pos=Vector(400, 300),
-                                             img=os.path.join("assets", "background", "04 background.png"),
-                                             size_x=426, size_y=384, scale_factor=3))
-        self.__environment.append(Background(pos=Vector(400, 200),
-                                             img=os.path.join("assets", "background", "05 background.png"),
-                                             size_x=426, size_y=384, scale_factor=3))
+                                             img=os.path.join("assets", "background", "FOREST.jpg"),
+                                             size_x=800, size_y=468, scale_factor=1.25))
 
         self.__player = Player(pos=Vector(400, 400))
         self.__player_light = Background(pos=Vector(0, 0),
@@ -79,7 +67,6 @@ class LevelOne(GameLoop):
         self.__player.update()
 
         for entity in self.__environment:
-            ...
             entity.render(canvas, -self.__offset_x, -self.__offset_y)
 
         for entity in self.__entities:
