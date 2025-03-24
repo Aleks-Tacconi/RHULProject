@@ -10,13 +10,13 @@ from .attack import Attack
 from .block import Block
 from .utils import MultiAnimation, SpriteSheet
 
+#TODO: In progress...
 
-
-class AbyssalRevenant(Enemy):
+class FlyingDemon(Enemy):
     def __init__(self, pos: Vector) -> None:
         super().__init__(
             pos=pos,
-            size=Vector(200, 200),
+            size=Vector(158, 98),
             hitbox=Vector(50, 80),
             vel=Vector(0, 0),
             hp=300,
@@ -24,34 +24,22 @@ class AbyssalRevenant(Enemy):
         )
 
         spritesheet = SpriteSheet(
-            os.path.join("assets", "abyssal_revenant", "ABYSSAL_REVENANT.png"),
+            os.path.join("assets", "flying_demon", "FLYING_DEMON.png"),
             rows=5,
-            cols=23,
+            cols=8,
         )
 
         self.__animations = MultiAnimation(spritesheet=spritesheet, animations={
-            "IDLE_RIGHT": (0, 9, 9, False),
-            "IDLE_LEFT": (0, 9, 9, True),
-            "RUN_RIGHT": (1, 6, 6, False),
-            "RUN_LEFT": (1, 6, 6, True),
-            "ATTACK_RIGHT": (2, 12, 12, False),
-            "ATTACK_LEFT": (2, 12, 12, True),
-            "HURT_RIGHT": (3, 5, 5, False),
-            "HURT_LEFT": (3, 5, 5, True),
-            "DEATH_RIGHT": (4, 23, 9, False),
-            "DEATH_LEFT": (4, 23, 9, True),
-        }
-                                           )
-
-        spritesheet_blood = SpriteSheet(
-            os.path.join("assets", "blood", "BLOOD_DAMAGE.png"),
-            rows=1,
-            cols=10,
-        )
-
-        self.__animation_blood = MultiAnimation(spritesheet=spritesheet_blood, animations={
-            "BLOOD_RIGHT": (0, 10, 2, False),
-            "BLOOD_LEFT": (0, 10, 2, True),
+            "ATTACK_RIGHT": (0, 8, 8, False),
+            "DEATH_RIGHT": (1, 6, 6, False),
+            "FLYING_RIGHT": (2, 4, 4, False),
+            "HURT_RIGHT": (3, 4, 4, False),
+            "IDLE_RIGHT": (4, 4, 4, False),
+            "ATTACK_LEFT": (0, 8, 8, True),
+            "DEATH_LEFT": (1, 6, 6, True),
+            "FLYING_LEFT": (2, 4, 4, True),
+            "HURT_LEFT": (3, 4, 4, True),
+            "IDLE_LEFT": (4, 4, 4, True),
         }
                                            )
 
@@ -76,13 +64,11 @@ class AbyssalRevenant(Enemy):
         Block.collisions_x(self)
         self.pos.y += self.vel.y
         Block.collisions_y(self)
-        self.__animation_blood.update()
         self.__animations.update()
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
         self.__animations.render(canvas, pos, self.size)
-        self.__animation_blood.render(canvas, pos, self.size)
         self._render_hitbox(canvas, offset_x, offset_y)
 
     def __attack(self) -> None:
@@ -112,11 +98,6 @@ class AbyssalRevenant(Enemy):
         if self.__animations.done() and not self.is_alive:
             return True
         return False
-
-    def __receive_damage(self):
-        if self.__base_hp != self.hp:
-            self.__base_hp = self.hp
-            self.__animation_blood.set_animation(f"BLOOD_{self.__direction}")
 
     def interaction(self, entity: PhysicsEntity) -> None:
         distance_x = self.pos.x - entity.pos.x
@@ -158,10 +139,10 @@ class AbyssalRevenant(Enemy):
             if abs(distance_x) < self.__detection_range:
                 if self.__animations.done:
                     if distance_x > 0:
-                        self.__current_animation = "RUN_LEFT"
+                        self.__current_animation = "FLYING_LEFT"
                         self.vel.x = -self.__speed
                     else:
-                        self.__current_animation = "RUN_RIGHT"
+                        self.__current_animation = "FLYING_RIGHT"
                         self.vel.x = self.__speed
                 return
 

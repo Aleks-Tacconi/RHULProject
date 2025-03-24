@@ -16,7 +16,7 @@ class ImpalerBoss(Enemy):
     def __init__(self, pos: Vector) -> None:
         super().__init__(
             pos=pos,
-            size=Vector(502, 212),
+            size=Vector(256, 106),
             hitbox=Vector(50, 80),
             vel=Vector(0, 0),
             hp=300,

@@ -199,7 +199,8 @@ class MultiAnimation:
         self.__one_iteration = boolean
 
     def update(self) -> None:
-
+        if self.__current_animation is None:
+            return
 
         self.__counter += 1
 
@@ -224,6 +225,8 @@ class MultiAnimation:
 
 
     def render(self, canvas: simplegui.Canvas, pos: Vector, size: Vector) -> None:
+        if self.__current_animation is None:
+            return
         if self.__flip:
             source_center = [
                 self.__flipped_spritesheet.frame_width * self.__frame_index[0]

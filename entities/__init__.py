@@ -6,5 +6,6 @@ from .fire import Fire
 from .player_healthbar import PlayerHealthBar
 from.background import Background
 from .impaler_boss import ImpalerBoss
+from .flying_demon import FlyingDemon
 
-__all__ = ["Player", "Block", "Attack", "AbyssalRevenant", "Fire", "PlayerHealthBar", "Background", "ImpalerBoss"]
+__all__ = ["Player", "Block", "Attack", "AbyssalRevenant", "Fire", "PlayerHealthBar", "Background", "ImpalerBoss", "FlyingDemon"]
