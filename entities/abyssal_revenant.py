@@ -44,21 +44,29 @@ class AbyssalRevenant(Enemy):
                                            )
 
         self.points = 100
-        self.__direction = "RIGHT"
-        self.__current_animation = f"IDLE_{self.__direction}"
+        self.direction = "RIGHT"
+        self.__current_animation = f"IDLE_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
-        self.__detection_range = 400
+        self.__distance_x = 1000
+        self.__detection_range = 200
         self.__attack_distance = 70
-        self.__speed = 1.5
+        self.__speed = 3
         self.__base_hp = self.hp
+        self.__dead = False
 
     def __idle(self) -> None:
-        ...
-        #self.__current_animation = "IDLE_LEFT"
-        #self.vel.x = 0
+        if abs(self.__distance_x) > self.__detection_range:
+            self.vel.x = 0
+            self.__animations.set_animation(f"IDLE_{self.direction}")
 
     def update(self) -> None:
+        self._get_direction()
         self._gravity()
+        if self.__animations.done():
+            self.__idle()
+            self.__move()
+            self.__attack()
+            self.__death()
 
         self.pos.x += self.vel.x
         Block.collisions_x(self)
@@ -66,15 +74,20 @@ class AbyssalRevenant(Enemy):
         Block.collisions_y(self)
         self.__animations.update()
 
+
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
         self.__animations.render(canvas, pos, self.size)
         self._render_hitbox(canvas, offset_x, offset_y)
 
     def __attack(self) -> None:
+        if abs(self.__distance_x) > self.__attack_distance:
+            return
+
+        self.vel.x = 0
         offset = 50
 
-        if "LEFT" in self.__current_animation:
+        if self.direction == "LEFT":
             offset *= -1
 
         Attack(
@@ -85,80 +98,46 @@ class AbyssalRevenant(Enemy):
             owner=self,
         )
 
-    def __death_attack(self) -> None:
-        Attack(
-            pos=Vector(int(self.pos.x), int(self.pos.y + 20)),
-            hitbox=Vector(100, 100),
-            hitbox_offset=None,
-            damage=1000,
-            owner=self,
-        )
+        self.__animations.set_animation(f"ATTACK_{self.direction}")
+        self.__animations.set_one_iteration(True)
 
     def remove(self) -> bool:
-        if self.__animations.done() and not self.is_alive:
+        if self.__animations.done() and self.__dead:
             return True
         return False
 
-    def __receive_damage(self):
-        if self.__base_hp != self.hp:
-            self.__base_hp = self.hp
-            self.__animation_blood.set_animation(f"BLOOD_{self.__direction}")
-
-    def interaction(self, entity: PhysicsEntity) -> None:
-        distance_x = self.pos.x - entity.pos.x
-        print(distance_x)
-        print("Health: ", self.hp)
-
-        self.__animations.set_animation(self.__current_animation)
-        self.__animations.update()
-
+    def __death(self) -> None:
         if not self.is_alive:
+
+            Attack(
+                pos=Vector(int(self.pos.x), int(self.pos.y + 20)),
+                hitbox=Vector(100, 100),
+                hitbox_offset=None,
+                damage=1000,
+                owner=self,
+            )
+
             self.vel.x = 0
             self.__animations.set_one_iteration(False)
-            self.__death_attack()
-            if distance_x > 0:
-                self.__current_animation = "DEATH_LEFT"
-                self.__animations.set_animation(self.__current_animation)
-                self.__animations.set_one_iteration(True)
-            else:
-                self.__current_animation = "DEATH_RIGHT"
-                self.__animations.set_animation(self.__current_animation)
-                self.__animations.set_one_iteration(True)
+            self.__animations.set_animation(f"DEATH_{self.direction}")
+            self.__animations.set_one_iteration(True)
+            self.__dead = True
 
-        if self.__animations.done():
-            if abs(distance_x) < self.__attack_distance:
-                if self.__animations.done:
-                    self.__attack()
-                    if distance_x > 0:
-                        self.__current_animation = "ATTACK_LEFT"
-                        self.__animations.set_animation(self.__current_animation)
-                        self.__animations.set_one_iteration(True)
-                    else:
-                        self.__current_animation = "ATTACK_RIGHT"
-                        self.__animations.set_animation(self.__current_animation)
-                        self.__animations.set_one_iteration(True)
-                self.vel.x = 0
+    def __move(self) -> None:
+        if abs(self.__distance_x) > self.__detection_range:
+            return
+        if self.__distance_x > 0:
+            self.vel.x = -self.__speed
+        else:
+            self.vel.x = self.__speed
+        self.__animations.set_animation(f"RUN_{self.direction}")
 
-                return
+    def interaction(self, entity: PhysicsEntity) -> None:
+        self.__distance_x = self.pos.x - entity.pos.x
+        print("Health: ", self.hp)
 
-            if abs(distance_x) < self.__detection_range:
-                if self.__animations.done:
-                    if distance_x > 0:
-                        self.__current_animation = "RUN_LEFT"
-                        self.vel.x = -self.__speed
-                    else:
-                        self.__current_animation = "RUN_RIGHT"
-                        self.vel.x = self.__speed
-                return
 
-            if self.__animations.done:
-                self.vel.x = 0
-                if distance_x > 0:
-                    self.__current_animation = "IDLE_LEFT"
-                else:
-                    self.__current_animation = "IDLE_RIGHT"
 
-                return
 
 
 

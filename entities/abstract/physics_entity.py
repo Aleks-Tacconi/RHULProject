@@ -23,6 +23,7 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
         self.vel = vel
         self.hp = hp
         self.immune = False
+        self.direction = None
         self.__max_gravity = 10
         self.__gravity_strength = 0.8
 
@@ -43,6 +44,12 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
         a1, b1, a2, b2 = self.hitbox_area
 
         return x2 > a1 and x1 < a2 and y2 > b1 and y1 < b2
+
+    def _get_direction(self) -> None:
+        if self.vel.x > 0:
+            self.direction = "RIGHT"
+        elif self.vel.x < 0:
+            self.direction = "LEFT"
 
     @abstractmethod
     def remove(self) -> bool: ...
