@@ -56,8 +56,11 @@ class LevelOne(GameLoop):
 
         self.__player = Player(pos=Vector(400, 400))
         self.__player_light = Background(pos=Vector(0, 0),
-                                             img=os.path.join("assets", "player", "PLAYER_LIGHT.png"),
-                                             size_x=1200, size_y=1200, scale_factor=3/4)
+                                             img=os.path.join("assets", "player", "FRAME_HARD.png"),
+                                             size_x=1200, size_y=1200, scale_factor=1)
+        self.__player_light_flip = Background(pos=Vector(0, 0),
+                                             img=os.path.join("assets", "player", "FRAME_HARD_FLIPPED.png"),
+                                             size_x=1200, size_y=1200, scale_factor=1)
 
         self.__enemies = []
         self.__enemies.append(AbyssalRevenant(pos=Vector(90, 200)))
@@ -66,6 +69,9 @@ class LevelOne(GameLoop):
         self.__enemies.append(Fire(400))
 
         self.__gui = []
+        self.__player_frame = Background(pos=Vector(400, 400),
+                                             img=os.path.join("assets", "player", "FRAME_FANTASY.png"),
+                                             size_x=934, size_y=936, scale_factor=1.4)
         self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 760), player=self.__player)
         self.__gui.append(self.__player_healthbar)
 
@@ -74,25 +80,21 @@ class LevelOne(GameLoop):
 
         block_path = os.path.join("assets", "blocks", "block.jpg")
         for i in range(0, 80):
-            self.__entities.append(Block(Vector(i, 15), block_path))
+            self.__entities.append(Block(Vector(i - 20, 15), block_path))
 
         self.__entities.append(Block(Vector(14, 14), block_path))
+        self.__entities.append(Block(Vector(14, 24), block_path))
 
         self.__offset_x = 0
         self.__offset_y = 0
-        self.__offset_x_light = 0
-        self.__offset_y_light = 0
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
 
         self.__scoreboard.update()
 
         # TODO: 400 is half the screen width - not good magic number
-        self.__offset_x += (self.__player.pos.x - 400 - self.__offset_x) // 30
-        self.__offset_y += (self.__player.pos.y - 400 - self.__offset_y) // 30
-
-        self.__offset_x_light += (self.__player_light.pos.x - 400 - self.__offset_x) // 30
-        self.__offset_y_light += (self.__player_light.pos.y - 400 - self.__offset_y) // 30
+        self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 30
+        self.__offset_y += (self.__player.pos.y - 580 - self.__offset_y)
 
         self.__player.update()
 
@@ -126,7 +128,14 @@ class LevelOne(GameLoop):
             print("|||||||||||||||||||||||||||||||||")
             self.__reset()
 
-        self.__player_light.render(canvas, self.__player.pos.x - self.__offset_x, self.__player.pos.y - self.__offset_y)
+        if self.__player.direction == "LEFT":
+            self.__player_light.render(canvas, self.__player.pos.x - self.__offset_x,
+                                       self.__player.pos.y - self.__offset_y)
+        else:
+            self.__player_light_flip.render(canvas, self.__player.pos.x - self.__offset_x,
+                                       self.__player.pos.y - self.__offset_y)
+
+        self.__player_frame.render(canvas, 0, 0)
 
         for entity in self.__gui:
             entity.update()
