@@ -59,6 +59,7 @@ class FlyingDemon(Enemy):
             self.__animations.set_animation(f"IDLE_{self.direction}")
 
     def update(self) -> None:
+        self.healthbar()
         self._get_direction()
         self._gravity()
         if self.__animations.done():

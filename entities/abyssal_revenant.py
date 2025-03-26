@@ -19,7 +19,7 @@ class AbyssalRevenant(Enemy):
             size=Vector(200, 200),
             hitbox=Vector(50, 80),
             vel=Vector(0, 0),
-            hp=300,
+            hp=3000,
             hitbox_offset=Vector(0, 20),
         )
 
@@ -30,16 +30,16 @@ class AbyssalRevenant(Enemy):
         )
 
         self.__animations = MultiAnimation(spritesheet=spritesheet, animations={
-            "IDLE_RIGHT": (0, 9, 9, False),
-            "IDLE_LEFT": (0, 9, 9, True),
-            "RUN_RIGHT": (1, 6, 6, False),
-            "RUN_LEFT": (1, 6, 6, True),
-            "ATTACK_RIGHT": (2, 12, 12, False),
-            "ATTACK_LEFT": (2, 12, 12, True),
+            "IDLE_RIGHT": (0, 9, 3, False),
+            "IDLE_LEFT": (0, 9, 3, True),
+            "RUN_RIGHT": (1, 6, 3, False),
+            "RUN_LEFT": (1, 6, 3, True),
+            "ATTACK_RIGHT": (2, 12, 4, False),
+            "ATTACK_LEFT": (2, 12, 4, True),
             "HURT_RIGHT": (3, 5, 5, False),
             "HURT_LEFT": (3, 5, 5, True),
-            "DEATH_RIGHT": (4, 23, 9, False),
-            "DEATH_LEFT": (4, 23, 9, True),
+            "DEATH_RIGHT": (4, 23, 3, False),
+            "DEATH_LEFT": (4, 23, 3, True),
         }
                                            )
 
@@ -79,6 +79,7 @@ class AbyssalRevenant(Enemy):
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
         self.__animations.render(canvas, pos, self.size)
         self._render_hitbox(canvas, offset_x, offset_y)
+        self.healthbar(canvas, offset_x, offset_y)
 
     def __attack(self) -> None:
         if abs(self.__distance_x) > self.__attack_distance:
@@ -95,6 +96,8 @@ class AbyssalRevenant(Enemy):
             hitbox=Vector(69, 70),
             hitbox_offset=None,
             damage=40,
+            start_frame=5,
+            end_frame=5,
             owner=self,
         )
 
@@ -114,10 +117,13 @@ class AbyssalRevenant(Enemy):
                 hitbox=Vector(100, 100),
                 hitbox_offset=None,
                 damage=1000,
+                start_frame=5,
+                end_frame=15,
                 owner=self,
             )
 
             self.vel.x = 0
+            self.vel.y = 12
             self.__animations.set_one_iteration(False)
             self.__animations.set_animation(f"DEATH_{self.direction}")
             self.__animations.set_one_iteration(True)
