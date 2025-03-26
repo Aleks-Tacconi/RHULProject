@@ -20,7 +20,7 @@ class Background(Entity):
         super().__init__(
             pos=Vector(int(pos.x), int(pos.y)),
             size=Vector(scaled_size_x, scaled_size_y),
-            hitbox=Vector(0,0)
+            hitbox=Vector(scaled_size_x, scaled_size_y)
         )
 
         spritesheet = SpriteSheet(img, rows = 1, cols = 1)

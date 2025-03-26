@@ -21,38 +21,17 @@ class LevelOne(GameLoop):
 
         self.__environment = []
 
-        self.__environment.append(Background(pos=Vector(-26, 310),
-                                             img=os.path.join("assets", "background", "03 background B_FLIPPED.png"),
-                                             size_x=426, size_y=468, scale_factor=1))
-        self.__environment.append(Background(pos=Vector(400, 310),
-                                             img=os.path.join("assets", "background", "03 background B.png"),
-                                             size_x=426, size_y=468, scale_factor=1))
-        self.__environment.append(Background(pos=Vector(826, 310),
-                                             img=os.path.join("assets", "background", "03 background B_FLIPPED.png"),
-                                             size_x=426, size_y=468, scale_factor=1))
+        for i in range(0, 8):
+            self.__environment.append(Background(pos=Vector(0 + (700 * i), 310),
+                                                 img=os.path.join("assets", "background",
+                                                                  f"Purple_Nebula_0{i + 1}-1024x1024.png"),
+                                                 size_x=1000, size_y=1000, scale_factor=0.7))
+            self.__environment.append(Background(pos=Vector(0 - (700 * i), 310),
+                                                 img=os.path.join("assets", "background",
+                                                                  f"Purple_Nebula_0{i + 1}-1024x1024.png"),
+                                                 size_x=1000, size_y=1000, scale_factor=0.7))
 
-        #TODO: I will optimise this and only render background when in its in view
-        #for i in range(1, 6, 2):
-            #self.__environment.append(Background(pos=Vector(-26 - (426 * i), 310),
-                                            # img=os.path.join("assets", "background", "03 background B.png"),
-                                          #   size_x=426, size_y=468, scale_factor=1))
-            #self.__environment.append(Background(pos=Vector(-26 - (426 * (i + 1)), 310),
-             #                                    img=os.path.join("assets", "background",
-             #                                                     "03 background B_FLIPPED.png"),
-             #                                    size_x=426, size_y=468, scale_factor=1))
-            # self.__environment.append(Background(pos=Vector(-26 - (426 * i), 310),
-            # img=os.path.join("assets", "background", "03 background B.png"),
-            #   size_x=426, size_y=468, scale_factor=1))
-            # self.__environment.append(Background(pos=Vector(-26 - (426 * (i + 1)), 310),
-            #                                    img=os.path.join("assets", "background",
-            #                                                     "03 background B_FLIPPED.png"),
-            #                                    size_x=426, size_y=468, scale_factor=1))
 
-        #for i in range(0, 5):
-            #self.__environment.append(Background(pos=Vector(-826 + (426 * i), 310),
-                                                 #img=os.path.join("assets", "background",
-                                                 #                 "03 background B_FLIPPED.png"),
-                                                 #size_x=426, size_y=468, scale_factor=1))
 
         self.__player = Player(pos=Vector(400, 400))
         self.__player_light = Background(pos=Vector(0, 0),
@@ -64,21 +43,21 @@ class LevelOne(GameLoop):
 
         self.__enemies = []
         self.__enemies.append(AbyssalRevenant(pos=Vector(90, 200)))
-        self.__enemies.append(FlyingDemon(pos=Vector(500, 200)))
-        self.__enemies.append(DemonSlimeBoss(pos=Vector(700, 300)))
+        self.__enemies.append(FlyingDemon(pos=Vector(700, 200)))
+        self.__enemies.append(DemonSlimeBoss(pos=Vector(1000, 300)))
         self.__enemies.append(Fire(400))
 
         self.__gui = []
         self.__player_frame = Background(pos=Vector(400, 400),
-                                             img=os.path.join("assets", "player", "FRAME_FANTASY.png"),
-                                             size_x=934, size_y=936, scale_factor=1.4)
+                                             img=os.path.join("assets", "player", "FANTASY_FRAME.png"),
+                                             size_x=1024, size_y=1024, scale_factor=1)
         self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 760), player=self.__player)
         self.__gui.append(self.__player_healthbar)
 
         self.__entities = []
 
 
-        block_path = os.path.join("assets", "blocks", "block.jpg")
+        block_path = os.path.join("assets", "blocks", "BLOCK1.png")
         for i in range(0, 80):
             self.__entities.append(Block(Vector(i - 20, 15), block_path))
 
@@ -94,12 +73,13 @@ class LevelOne(GameLoop):
 
         # TODO: 400 is half the screen width - not good magic number
         self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 30
-        self.__offset_y += (self.__player.pos.y - 580 - self.__offset_y)
+        self.__offset_y += (self.__player.pos.y - 480 - self.__offset_y)
 
         self.__player.update()
 
         for entity in self.__environment:
-            entity.render(canvas, -self.__offset_x, -self.__offset_y)
+            if self.is_entity_visible(self.__player, entity):
+                entity.render(canvas, -self.__offset_x, -self.__offset_y)
 
         for entity in self.__entities:
             if self.is_entity_visible(self.__player, entity):
