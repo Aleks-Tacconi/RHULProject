@@ -61,7 +61,6 @@ class DemonSlimeBoss(Enemy):
             self.__animations.set_animation(f"IDLE_{self.direction}")
 
     def update(self) -> None:
-        self.healthbar()
         self._get_direction()
         self._gravity()
         if self.__animations.done():
@@ -90,6 +89,7 @@ class DemonSlimeBoss(Enemy):
             for fire in self.__fires:
                 fire.render(canvas, offset_x, offset_y)
         self._render_hitbox(canvas, offset_x, offset_y)
+        self.healthbar(canvas, offset_x, offset_y)
 
     def __fire(self) -> None:
         if abs(self.__distance_x) > self.__detection_range:

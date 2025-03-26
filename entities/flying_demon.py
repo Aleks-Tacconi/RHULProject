@@ -59,7 +59,6 @@ class FlyingDemon(Enemy):
             self.__animations.set_animation(f"IDLE_{self.direction}")
 
     def update(self) -> None:
-        self.healthbar()
         self._get_direction()
         self._gravity()
         if self.__animations.done():
@@ -78,6 +77,7 @@ class FlyingDemon(Enemy):
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
         self.__animations.render(canvas, pos, self.size)
         self._render_hitbox(canvas, offset_x, offset_y)
+        self.healthbar(canvas, offset_x, offset_y)
 
 
     def __attack(self) -> None:
