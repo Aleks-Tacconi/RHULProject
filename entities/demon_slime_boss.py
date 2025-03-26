@@ -1,7 +1,6 @@
 import os
 
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
-from SimpleGUICS2Pygame.example.Mandelbrot_Set import frame
 
 from entities.abstract.physics_entity import PhysicsEntity
 from utils import Vector
