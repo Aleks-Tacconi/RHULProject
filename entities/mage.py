@@ -20,7 +20,7 @@ class Mage(Enemy):
             size=Vector(128, 128),
             hitbox=Vector(40, 70),
             vel=Vector(0, 0),
-            hp=200,
+            hp=2000,
             hitbox_offset=Vector(0, 20),
         )
 
@@ -35,12 +35,12 @@ class Mage(Enemy):
             "IDLE_LEFT": (0, 8, 8, True),
             "RUN_RIGHT": (1, 8, 8, False),
             "RUN_LEFT": (1, 8, 8, True),
-            "ATTACK_RIGHT": (5, 17, 17, False),
-            "ATTACK_LEFT": (5, 17, 17, True),
+            "ATTACK_RIGHT": (5, 17, 8, False),
+            "ATTACK_LEFT": (5, 17, 8, True),
             "HURT_RIGHT": (5, 5, 5, False),
             "HURT_LEFT": (5, 5, 5, True),
-            "DEATH_RIGHT": (6, 9, 9, False),
-            "DEATH_LEFT": (6, 9, 9, True),
+            "DEATH_RIGHT": (6, 9, 8, False),
+            "DEATH_LEFT": (6, 9, 8, True),
         }
                                            )
 

@@ -3,7 +3,7 @@ from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 from simplegui.components import ScoreBoard
-from entities import Block, Player, Attack, AbyssalRevenant, Fire, PlayerHealthBar, Background, ImpalerBoss, FlyingDemon, DemonSlimeBoss
+from entities import Block, Player, Attack, AbyssalRevenant, Fire, PlayerHealthBar, Background, ImpalerBoss, FlyingDemon, DemonSlimeBoss, Mage
 from utils import Vector
 #from OpenGL.GL import *
 #OpenGL.GLUT import *
@@ -45,6 +45,7 @@ class LevelOne(GameLoop):
         self.__enemies.append(AbyssalRevenant(pos=Vector(90, 200)))
         self.__enemies.append(FlyingDemon(pos=Vector(700, 200)))
         self.__enemies.append(DemonSlimeBoss(pos=Vector(1000, 300)))
+        self.__enemies.append(Mage(pos=Vector(120,200)))
 
         self.__gui = []
         self.__player_frame = Background(pos=Vector(400, 400),
