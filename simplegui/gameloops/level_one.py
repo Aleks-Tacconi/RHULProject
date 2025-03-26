@@ -45,7 +45,6 @@ class LevelOne(GameLoop):
         self.__enemies.append(AbyssalRevenant(pos=Vector(90, 200)))
         self.__enemies.append(FlyingDemon(pos=Vector(700, 200)))
         self.__enemies.append(DemonSlimeBoss(pos=Vector(1000, 300)))
-        self.__enemies.append(Fire(400))
 
         self.__gui = []
         self.__player_frame = Background(pos=Vector(400, 400),

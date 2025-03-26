@@ -9,6 +9,8 @@ from .abstract import Enemy
 from .attack import Attack
 from .block import Block
 from .utils import MultiAnimation, SpriteSheet
+from .fire import Fire
+import random
 
 class DemonSlimeBoss(Enemy):
     def __init__(self, pos: Vector) -> None:
@@ -51,7 +53,7 @@ class DemonSlimeBoss(Enemy):
         self.__speed = 1
         self.__base_hp = self.hp
         self.__dead = False
-
+        self.__fires = []
 
     def __idle(self) -> None:
         if abs(self.__distance_x) > self.__detection_range:
@@ -65,7 +67,13 @@ class DemonSlimeBoss(Enemy):
             self.__idle()
             self.__move()
             self.__attack()
+            self.__fire()
             self.__death()
+        for fire in self.__fires:
+            fire.interaction(self.__player)
+            fire.update()
+            if fire.remove():
+                self.__fires.remove(fire)
 
         self.pos.x += self.vel.x
         Block.collisions_x(self)
@@ -77,7 +85,17 @@ class DemonSlimeBoss(Enemy):
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y - 40))
         self.__animations.render(canvas, pos, self.size)
+        if self.__fires:
+            for fire in self.__fires:
+                fire.render(canvas, offset_x, offset_y)
         self._render_hitbox(canvas, offset_x, offset_y)
+
+    def __fire(self) -> None:
+        if abs(self.__distance_x) > self.__detection_range:
+            return
+        if random.randint(1,20) == 1:
+            self.__fires.append(Fire(self.__player_x + random.randint(-20,20)))
+
 
 
     def __attack(self) -> None:
@@ -137,6 +155,8 @@ class DemonSlimeBoss(Enemy):
 
     def interaction(self, entity: PhysicsEntity) -> None:
         self.__distance_x = self.pos.x - entity.pos.x
+        self.__player_x = entity.pos.x
+        self.__player = entity
         print("Health: ", self.hp)
 
 
