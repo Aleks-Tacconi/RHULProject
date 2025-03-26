@@ -17,11 +17,11 @@ class Mage(Enemy):
     def __init__(self, pos: Vector) -> None:
         super().__init__(
             pos=pos,
-            size=Vector(128, 128),
-            hitbox=Vector(40, 70),
+            size=Vector(256, 256),
+            hitbox=Vector(40, 120),
             vel=Vector(0, 0),
             hp=2000,
-            hitbox_offset=Vector(0, 20),
+            hitbox_offset=Vector(0, 60),
         )
 
         spritesheet = SpriteSheet(
@@ -35,8 +35,8 @@ class Mage(Enemy):
             "IDLE_LEFT": (0, 8, 8, True),
             "RUN_RIGHT": (1, 8, 8, False),
             "RUN_LEFT": (1, 8, 8, True),
-            "ATTACK_RIGHT": (5, 17, 8, False),
-            "ATTACK_LEFT": (5, 17, 8, True),
+            "ATTACK_RIGHT": (4, 17, 8, False),
+            "ATTACK_LEFT": (4, 17, 8, True),
             "HURT_RIGHT": (5, 5, 5, False),
             "HURT_LEFT": (5, 5, 5, True),
             "DEATH_RIGHT": (6, 9, 8, False),
@@ -72,6 +72,7 @@ class Mage(Enemy):
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
         self.__animations.render(canvas, pos, self.size)
         self._render_hitbox(canvas, offset_x, offset_y)
+        self.healthbar(canvas, offset_x, offset_y)
 
     def __attack(self) -> None:
         offset = 50

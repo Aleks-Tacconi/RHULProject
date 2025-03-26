@@ -27,6 +27,7 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
         self.__max_gravity = 10
         self.__gravity_strength = 0.8
         self.__original_hp = self.hp
+        self.boss = False
         self.id = PhysicsEntity.id
         PhysicsEntity.id += 1
 
@@ -45,11 +46,11 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
                                 [min(hitbox[2] + offset_x, hitbox[0] + offset_x + hitbox_difference * health_percentage),
                                  hitbox[1 ] - 15 + offset_y],
                                 [hitbox[0] + offset_x,hitbox[1 ] - 15 + offset_y]], 5, 'Red')
-
-        canvas.draw_polygon([[hitbox[0] - 1 + offset_x, hitbox[1] - 9 + offset_y],
-                        [hitbox[2] + 1 + offset_x, hitbox[1] - 9 + offset_y],
-                            [hitbox[2] + 1 + offset_x,hitbox[1 ] - 16 + offset_y],
-                            [hitbox[0] - 1 + offset_x,hitbox[1 ] - 16 + offset_y]], 3, 'White')
+        if not self.boss:
+            canvas.draw_polygon([[hitbox[0] - 1 + offset_x, hitbox[1] - 9 + offset_y],
+                            [hitbox[2] + 1 + offset_x, hitbox[1] - 9 + offset_y],
+                                [hitbox[2] + 1 + offset_x,hitbox[1 ] - 16 + offset_y],
+                                [hitbox[0] - 1 + offset_x,hitbox[1 ] - 16 + offset_y]], 3, 'White')
 
     @property
     def is_alive(self) -> bool:

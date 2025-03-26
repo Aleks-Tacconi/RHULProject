@@ -1,6 +1,7 @@
 import os
 
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
+from SimpleGUICS2Pygame.example.Mandelbrot_Set import frame
 
 from entities.abstract.physics_entity import PhysicsEntity
 from utils import Vector
@@ -52,8 +53,9 @@ class DemonSlimeBoss(Enemy):
         self.__attack_distance = 100
         self.__speed = 1
         self.__base_hp = self.hp
-        self.__dead = False
         self.__fires = []
+        self.__dead = False
+        self.boss = True
 
     def __idle(self) -> None:
         if abs(self.__distance_x) > self.__detection_range:

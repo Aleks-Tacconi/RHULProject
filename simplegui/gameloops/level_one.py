@@ -21,15 +21,11 @@ class LevelOne(GameLoop):
 
         self.__environment = []
 
-        for i in range(0, 8):
-            self.__environment.append(Background(pos=Vector(0 + (700 * i), 240),
-                                                 img=os.path.join("assets", "background",
-                                                                  f"Purple_Nebula_0{i + 1}-1024x1024.png"),
-                                                 size_x=1000, size_y=1000, scale_factor=0.7))
-            self.__environment.append(Background(pos=Vector(0 - (700 * i), 240),
-                                                 img=os.path.join("assets", "background",
-                                                                  f"Purple_Nebula_0{i + 1}-1024x1024.png"),
-                                                 size_x=1000, size_y=1000, scale_factor=0.7))
+        for i in range(0, 10):
+            self.__environment.append(Background(pos=Vector(0 + (828 * i), 360),
+                                                 img=os.path.join("assets", "background", "HELL_BACKGROUND.png"),
+                                                 size_x=828, size_y=358, scale_factor=1,frames=4, cols=8))
+
 
 
 
@@ -79,6 +75,7 @@ class LevelOne(GameLoop):
 
         for entity in self.__environment:
             if self.is_entity_visible(self.__player, entity):
+                entity.update()
                 entity.render(canvas, -self.__offset_x, -self.__offset_y)
 
         for entity in self.__entities:
