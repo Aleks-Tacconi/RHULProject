@@ -1,7 +1,7 @@
 from simplegui import GUI
 
 WIDTH = 800
-HEIGHT = 800
+HEIGHT = 400
 TITLE = "Game"
 
 

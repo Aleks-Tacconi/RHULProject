@@ -22,9 +22,9 @@ class LevelOne(GameLoop):
         self.__environment = []
 
         for i in range(0, 10):
-            self.__environment.append(Background(pos=Vector(0 + (828 * i), 360),
+            self.__environment.append(Background(pos=Vector(0 + (1656 * i), 450),
                                                  img=os.path.join("assets", "background", "HELL_BACKGROUND.png"),
-                                                 size_x=828, size_y=358, scale_factor=1,frames=4, cols=8))
+                                                 size_x=828, size_y=358, scale_factor=2,frames=4, cols=8))
 
 
 
@@ -44,10 +44,7 @@ class LevelOne(GameLoop):
         self.__enemies.append(Mage(pos=Vector(120,200)))
 
         self.__gui = []
-        self.__player_frame = Background(pos=Vector(400, 400),
-                                             img=os.path.join("assets", "player", "FANTASY_FRAME.png"),
-                                             size_x=1024, size_y=1024, scale_factor=1)
-        self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 760), player=self.__player)
+        self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 360), player=self.__player)
         self.__gui.append(self.__player_healthbar)
 
         self.__entities = []
@@ -69,7 +66,7 @@ class LevelOne(GameLoop):
 
         # TODO: 400 is half the screen width - not good magic number
         self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 30
-        self.__offset_y += (self.__player.pos.y - 480 - self.__offset_y)
+        self.__offset_y += (self.__player.pos.y - 180 - self.__offset_y)
 
         self.__player.update()
 
@@ -111,8 +108,6 @@ class LevelOne(GameLoop):
         else:
             self.__player_light_flip.render(canvas, self.__player.pos.x - self.__offset_x,
                                        self.__player.pos.y - self.__offset_y)
-
-        self.__player_frame.render(canvas, 0, 0)
 
         for entity in self.__gui:
             entity.update()
