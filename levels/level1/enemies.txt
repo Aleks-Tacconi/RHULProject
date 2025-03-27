@@ -1,0 +1,2 @@
+AbyssalRevenant,328,527
+Mage,621,551

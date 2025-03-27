@@ -1,4 +1,7 @@
-import threading, os
+"""
+import threading
+import os
+
 from pydub import AudioSegment
 from pydub.playback import play
 
@@ -24,3 +27,4 @@ class PlaySounds:
         self.event.set()
         self.thread.join()
         self.thread = None
+"""

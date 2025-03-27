@@ -2,7 +2,7 @@ from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from simplegui.components import Button, ButtonStyle, PlaySounds
+from simplegui.components import Button, ButtonStyle
 
 from .abstract import GameLoop
 
@@ -12,10 +12,10 @@ class TitleScreen(GameLoop):
         super().__init__()
 
         sound_path = "TITLE_MUSIC.wav"
-        self.__music = PlaySounds(sound_path)
+        # self.__music = PlaySounds(sound_path)
 
         self.__start = Button(
-            pos=[[300, 700], [500, 700], [500, 780], [300, 780]],
+            pos=[[300, 300], [500, 300], [500, 380], [300, 380]],
             text="start",
             style=ButtonStyle(
                 border_color="Black",
@@ -30,9 +30,9 @@ class TitleScreen(GameLoop):
         self.__start_game = start_game
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
-        canvas.draw_text("Welcome to the Game", (200, 300), 50, "White")
+        canvas.draw_text("Welcome to the Game", (200, 200), 50, "White")
         self.__start.render(canvas)
-        self.__music.play_sound()
+        # self.__music.play_sound()
 
         if self._mouse.clicked:
             self.__start.handle_click(self._mouse.last_click, self.__start_game)

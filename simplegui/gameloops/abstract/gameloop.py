@@ -1,14 +1,47 @@
+import os
 from abc import ABCMeta, abstractmethod
 from typing import Tuple
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from utils import Mouse
+from entities import AbyssalRevenant, Mage
+from entities.abstract import Entity
+from entities.block import Block
+from utils import Mouse, Vector
 
+
+def get_enemy(enemy: str, x: int, y: int, _id: str) -> Entity | None:
+    pos = Vector(x, y)
+
+    match enemy:
+        case "AbyssalRevenant":
+            return AbyssalRevenant(pos, _id)
+        case "Mage":
+            return Mage(pos, _id)
 
 class GameLoop(metaclass=ABCMeta):
     def __init__(self) -> None:
         self._mouse = Mouse()
+        self._environment = []
+        self._enemies = []
+
+    def _load_level(self, path: str, _id: str) -> None:
+        file = os.path.join(path, "enemies.txt")
+        with open(file=file, mode="r", encoding="utf-8") as f:
+            enemies = [enemy.strip() for enemy in f.readlines()]
+
+        file = os.path.join(path, "entities.txt")
+        with open(file=file, mode="r", encoding="utf-8") as f:
+            entities = [entity.strip() for entity in f.readlines()]
+
+        for line in enemies:
+            enemy, x, y = line.split(",")
+            enemy = get_enemy(enemy, int(x), int(y), _id)
+            self._enemies.append(enemy)
+
+        for line in entities:
+            entity, x, y = line.split(",")
+            Block(pos=Vector(int(x), int(y)), img=entity, id=_id)
 
     def mouseclick_handler(self, pos: Tuple[int, int]) -> None:
         self._mouse.click(*pos)
@@ -26,14 +59,17 @@ class GameLoop(metaclass=ABCMeta):
         hitbox = entity.hitbox_area
         player_x = player.pos.x
         player_y = player.pos.y
+        direction = player.direction
 
-        screen_right = player_x + 169
-        screen_left = player_x - 169
-        screen_bottom = player_y + 169
-        screen_top = player_y - 169
+        screen_right = player_x + 250
+        screen_left = player_x - 250
 
-        if (hitbox[0] < screen_right and hitbox[2] > screen_left and
-                hitbox[1] < screen_bottom and hitbox[3] > screen_top):
-            return True
+        if hitbox[0] < screen_right and hitbox[2] > screen_left:
+            if direction == "RIGHT":
+                if hitbox[2] > player.pos.x - 100:
+                    return True
+            else:
+                if hitbox[0] < player.pos.x + 100:
+                    return True
+
         return False
-

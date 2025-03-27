@@ -10,13 +10,14 @@ from .utils import Animation, SpriteSheet
 
 
 class Fire(Enemy):
-    def __init__(self, x) -> None:
+    def __init__(self, x, level_id: str) -> None:
         super().__init__(
             pos=Vector(x, 0),
             size=Vector(50, 50),
             hitbox=Vector(0, 0),
             vel=Vector(0, 10),
             hp=1,
+            level_id=level_id,
         )
 
         spritesheet = SpriteSheet(
@@ -24,7 +25,8 @@ class Fire(Enemy):
             rows=1,
             cols=8,
         )
-        self.__detectionrange = 10
+        self.__detection_range_x = 20
+        self.__detection_range_y = 10
         self.__hascollided = False
 
         self.__animation = Animation(spritesheet, 8)
@@ -34,6 +36,7 @@ class Fire(Enemy):
         if not self.__hascollided:
             self.pos.y = self.pos.y
         self.__animation.update()
+        self.remove()
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
@@ -46,7 +49,7 @@ class Fire(Enemy):
         distance_x = self.pos.x - entity.pos.x
         distance_y = self.pos.y - entity.pos.y
 
-        if abs(distance_x) < self.__detectionrange and abs(distance_y) < self.__detectionrange:
+        if abs(distance_x) < self.__detection_range_x and abs(distance_y) < self.__detection_range_y:
             Attack(
                 pos=self.pos,
                 hitbox=Vector(50, 50),
@@ -61,6 +64,8 @@ class Fire(Enemy):
         # if self.__animation.done and not self.is_alive:
         #     return True
         # return False
+        if self.pos.y > 800:
+            return True
 
         return self.__hascollided
     

@@ -77,7 +77,7 @@ class Animation:
 
         return False
 
-    def set_one_iteration(self, boolean: bool):
+    def set_one_iteration(self, boolean: bool) -> None:
         self.__one_iteration = boolean
 
     def __update_frame_index(self) -> None:
@@ -192,14 +192,15 @@ class MultiAnimation:
                 self.__frames_per_animation = self.__animations[self.__current_animation][2]
                 self.__counter = 0
 
-    def get_animation(self):
+    def get_animation(self) -> None:
         return self.__current_animation
 
-    def set_one_iteration(self, boolean: bool):
+    def set_one_iteration(self, boolean: bool) -> None:
         self.__one_iteration = boolean
 
     def update(self) -> None:
-
+        if self.__current_animation is None:
+            return
 
         self.__counter += 1
 
@@ -224,6 +225,8 @@ class MultiAnimation:
 
 
     def render(self, canvas: simplegui.Canvas, pos: Vector, size: Vector) -> None:
+        if self.__current_animation is None:
+            return
         if self.__flip:
             source_center = [
                 self.__flipped_spritesheet.frame_width * self.__frame_index[0]

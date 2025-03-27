@@ -15,7 +15,9 @@ class Attack(Entity):
         damage: int,
         hitbox_offset: None,
         owner: Entity,
-        frame_time: int=1,
+        start_frame: int = 1,
+        end_frame: int=1,
+        frames_per_damage: int=1,
     ) -> None:
         if hitbox_offset is None:
             hitbox_offset = Vector(0, 0)
@@ -24,23 +26,32 @@ class Attack(Entity):
         )
         self.__damage = damage
         self.__owner = owner
-        self.__frame_time = frame_time
+        self.__start_frame = start_frame
+        self.__end_frame = end_frame
+        self.__frames_per_damage = frames_per_damage
         self.__counter = 0
+        self.__still_attacking = True
 
         Attack.all.append(self)
 
     def update(self) -> None:
         self.__counter += 1
 
-        for entity in PhysicsEntity.all:
-            if entity.id != self.__owner.id and entity.collides_with(self):
-                entity.hp -= self.__damage
+        if (self.__counter == self.__start_frame and self.__counter % self.__frames_per_damage == 0):
+            for entity in PhysicsEntity.all:
+                if not entity.immune and not self.__owner.friendly:
+                    if entity.id != self.__owner.id and entity.collides_with(self):
+                        entity.hp -= self.__damage
+                elif not entity.immune and not entity.friendly:
+                    if entity.id != self.__owner.id and entity.collides_with(self):
+                        entity.hp -= self.__damage
 
-        if self.__counter == self.__frame_time:
+        if self.__counter == self.__end_frame:
             Attack.remove_attack(self)
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
-        super()._render_hitbox(canvas, offset_x, offset_y)
+        if self.__counter == self.__start_frame - 1:
+            super()._render_hitbox(canvas, offset_x, offset_y)
 
     @classmethod
     def remove_attack(cls, attack: "Attack") -> None:

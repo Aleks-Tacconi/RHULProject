@@ -6,10 +6,11 @@ from utils import Vector
 
 from .abstract import Entity
 
-from .utils import Animation, SpriteSheet
+from .utils import MultiAnimation, SpriteSheet
 
 class Background(Entity):
-    def __init__(self, pos: Vector, img: str, size_x: int, size_y: int, scale_factor: int) -> None:
+    def __init__(self, pos: Vector, img: str, size_x: int, size_y: int,
+                 scale_factor: int, frames: int=1, cols: int=1, rows: int=1) -> None:
 
         original_size_x = size_x
         original_size_y = size_y
@@ -20,17 +21,22 @@ class Background(Entity):
         super().__init__(
             pos=Vector(int(pos.x), int(pos.y)),
             size=Vector(scaled_size_x, scaled_size_y),
-            hitbox=Vector(0,0)
+            hitbox=Vector(scaled_size_x, scaled_size_y)
         )
 
-        spritesheet = SpriteSheet(img, rows = 1, cols = 1)
+        spritesheet = SpriteSheet(img, rows = rows, cols = cols)
 
-        self.__animation = Animation(spritesheet, 1)
+        self.__animations = MultiAnimation(spritesheet=spritesheet, animations={
+            "BACKGROUND": (rows - 1, cols, frames, False),
+        }
+                                           )
+        self.__animations.set_animation("BACKGROUND")
+
+    def update(self) -> None:
+        self.__animations.update()
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
-        self.__animation.render(canvas, pos, self.size)
+        self.__animations.render(canvas, pos, self.size)
         self._render_hitbox(canvas, offset_x, offset_y)
 
-    def update(self) -> None:
-        ...

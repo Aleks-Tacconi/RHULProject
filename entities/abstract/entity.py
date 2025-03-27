@@ -22,6 +22,7 @@ class Entity(metaclass=ABCMeta):
         self.hitbox_offset = hitbox_offset
         self.points = 0
         self.give_points = True
+        self.friendly = True
         self.id = Entity.id
         Entity.id += 1
 
@@ -49,6 +50,17 @@ class Entity(metaclass=ABCMeta):
             3,
             "red",
         )
+
+    def healthbar(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int):
+        hitbox = self.hitbox_area
+        canvas.draw_polygon([[hitbox[0] + offset_x, hitbox[1] - 10 + offset_y],
+                        [hitbox[2] + offset_x, hitbox[1] - 10 + offset_y],
+                            [hitbox[2] + offset_x,hitbox[1 ] - 15 + offset_y],
+                            [hitbox[0] + offset_x,hitbox[1 ] - 15 + offset_y]], 5, 'Red')
+        canvas.draw_polygon([[hitbox[0] - 1 + offset_x, hitbox[1] - 9 + offset_y],
+                        [hitbox[2] + 1 + offset_x, hitbox[1] - 9 + offset_y],
+                            [hitbox[2] + 1 + offset_x,hitbox[1 ] - 16 + offset_y],
+                            [hitbox[0] - 1 + offset_x,hitbox[1 ] - 16 + offset_y]], 3, 'White')
 
     @abstractmethod
     def render(
