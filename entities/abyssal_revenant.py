@@ -134,17 +134,6 @@ class AbyssalRevenant(Enemy):
         print(distance_x)
         print("Health: ", self.hp)
 
-        self.__animations.set_animation(self.__current_animation)
-        self.__animations.update()
-
-        if not self.is_alive:
-            self.vel.x = 0
-            self.vel.y = 12
-            self.__animations.set_one_iteration(False)
-            self.__animations.set_animation(f"DEATH_{self.direction}")
-            self.__animations.set_one_iteration(True)
-            self.__dead = True
-
     def __move(self) -> None:
         if abs(self.__distance_x) > self.__detection_range:
             return

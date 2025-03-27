@@ -133,6 +133,7 @@ class LevelOne(GameLoop):
             print("|||||||||||||||||||||||||||||||||")
             self.__reset()
 
+        """
         if self.__player.direction == "LEFT":
             self.__player_light.render(
                 canvas,
@@ -145,6 +146,7 @@ class LevelOne(GameLoop):
                 self.__player.pos.x - self.__offset_x,
                 self.__player.pos.y - self.__offset_y,
             )
+        """
 
         for entity in self.__gui:
             entity.update()

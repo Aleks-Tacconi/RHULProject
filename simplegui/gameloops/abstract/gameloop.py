@@ -61,16 +61,11 @@ class GameLoop(metaclass=ABCMeta):
         player_y = player.pos.y
         direction = player.direction
 
-        screen_right = player_x + 250
-        screen_left = player_x - 250
+        screen_right = player_x + 600
+        screen_left = player_x - 600
 
         if (hitbox[0] < screen_right and hitbox[2] > screen_left):
-            if direction == "RIGHT":
-                if hitbox[2] > player.pos.x - 100:
-                    return True
-            else:
-                if hitbox[0] < player.pos.x + 100:
-                    return True
+            return True
 
         return False
 
