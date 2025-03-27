@@ -64,11 +64,12 @@ class AbyssalRevenant(Enemy):
     def update(self) -> None:
         self._get_direction()
         self._gravity()
+        self.__death()
+
         if self.__animations.done():
             self.__idle()
             self.__move()
             self.__attack()
-            self.__death()
 
         self.pos.x += self.vel.x
         Block.collisions_x(self, self._level_id)
@@ -98,8 +99,8 @@ class AbyssalRevenant(Enemy):
             hitbox=Vector(69, 70),
             hitbox_offset=None,
             damage=40,
-            start_frame=5,
-            end_frame=5,
+            start_frame=7,
+            end_frame=7,
             owner=self,
         )
 
@@ -107,27 +108,26 @@ class AbyssalRevenant(Enemy):
         self.__animations.set_one_iteration(True)
 
     def remove(self) -> bool:
-        if self.__animations.done() and self.__dead:
-            return True
-        return False
+        return self.__dead and self.__animations.done()
 
     def __death(self) -> None:
         if not self.is_alive:
-
             Attack(
                 pos=Vector(int(self.pos.x), int(self.pos.y + 20)),
                 hitbox=Vector(100, 100),
                 hitbox_offset=None,
                 damage=1000,
-                start_frame=5,
-                end_frame=15,
                 owner=self,
             )
 
-    def remove(self) -> bool:
-        if self.__animations.done() and not self.is_alive:
-            return True
-        return False
+            if not self.__dead:
+                self.__animations.set_one_iteration(False)
+
+            if self.__animations.done():
+                self.vel.x = 0
+                self.__animations.set_animation(f"DEATH_{self.direction}")
+                self.__animations.set_one_iteration(True)
+                self.__dead = True
 
     def interaction(self, entity: PhysicsEntity) -> None:
         distance_x = self.pos.x - entity.pos.x
@@ -157,9 +157,3 @@ class AbyssalRevenant(Enemy):
     def interaction(self, entity: PhysicsEntity) -> None:
         self.__distance_x = self.pos.x - entity.pos.x
         print("Health: ", self.hp)
-
-
-        return
-
-
-

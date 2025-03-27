@@ -17,7 +17,7 @@ class Player(PhysicsEntity):
             size=Vector(200, 200),
             vel=Vector(0, 0),
             hitbox=Vector(40, 92),
-            hp=10000,
+            hp=1000,
             level_id=level_id,
             hitbox_offset=Vector(-5, 55),
         )
@@ -246,11 +246,16 @@ class Player(PhysicsEntity):
         if not self.is_alive:
             self.vel.x = 0
             self.vel.y = 12
-            self.__current_animation = f"DEATH_{self.direction}"
-            self.__animations.set_animation(self.__current_animation)
-            self.__animations.set_one_iteration(True)
-            self.__movement_x = []
-            self.__dead = True
+
+            if not self.__dead:
+                self.__animations.set_one_iteration(False)
+
+            if self.__animations.done():
+                self.__current_animation = f"DEATH_{self.direction}"
+                self.__animations.set_animation(self.__current_animation)
+                self.__animations.set_one_iteration(True)
+                self.__movement_x = []
+                self.__dead = True
 
     def keydown_handler(self, key: int) -> None:
         if key == 32: # SPACE

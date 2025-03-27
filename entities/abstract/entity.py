@@ -8,6 +8,7 @@ from utils import Vector
 
 class Entity(metaclass=ABCMeta):
     id = 0
+    blocks = []
 
     def __init__(
         self,
@@ -24,6 +25,7 @@ class Entity(metaclass=ABCMeta):
         self.give_points = True
         self.friendly = True
         self.id = Entity.id
+        Entity.blocks.append(self)
         Entity.id += 1
 
     @property

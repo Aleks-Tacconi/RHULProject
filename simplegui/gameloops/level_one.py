@@ -116,8 +116,8 @@ class LevelOne(GameLoop):
             attack.update()
 
         for entity in self._enemies:
+            entity.update()
             if self.is_entity_visible(self.__player, entity):
-                entity.update()
                 entity.interaction(self.__player)
                 entity.render(canvas, -self.__offset_x, -self.__offset_y)
 

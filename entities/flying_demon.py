@@ -62,11 +62,12 @@ class FlyingDemon(Enemy):
     def update(self) -> None:
         self._get_direction()
         self._gravity()
+        self.__death()
+
         if self.__animations.done():
             self.__idle()
             self.__move()
             self.__attack()
-            self.__death()
 
         self.pos.x += self.vel.x
         Block.collisions_x(self, self._level_id)
@@ -104,9 +105,7 @@ class FlyingDemon(Enemy):
 
 
     def remove(self) -> bool:
-        if self.__animations.done() and self.__dead:
-            return True
-        return False
+        return self.__dead and self.__animations.done()
 
 
     def __death(self) -> None:
@@ -119,12 +118,14 @@ class FlyingDemon(Enemy):
                 owner=self,
             )
 
-            self.vel.x = 0
-            self.__animations.set_one_iteration(False)
-            self.__animations.set_animation(f"DEATH_{self.direction}")
-            self.__animations.set_one_iteration(True)
-            self.__dead = True
+            if not self.__dead:
+                self.__animations.set_one_iteration(False)
 
+            if self.__animations.done():
+                self.vel.x = 0
+                self.__animations.set_animation(f"DEATH_{self.direction}")
+                self.__animations.set_one_iteration(True)
+                self.__dead = True
 
     def __move(self) -> None:
         if abs(self.__distance_x) > self.__detection_range:

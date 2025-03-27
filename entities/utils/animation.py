@@ -190,6 +190,7 @@ class MultiAnimation:
                     self.__start_frame = 0
                 self.__frame_index = [self.__start_frame, self.__animations[self.__current_animation][0]]
                 self.__frames_per_animation = self.__animations[self.__current_animation][2]
+                self.__one_iteration_counter = 0
                 self.__counter = 0
 
     def get_animation(self) -> None:

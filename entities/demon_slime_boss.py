@@ -65,12 +65,13 @@ class DemonSlimeBoss(Enemy):
     def update(self) -> None:
         self._get_direction()
         self._gravity()
+        self.__death()
+
         if self.__animations.done():
             self.__idle()
             self.__move()
             self.__attack()
             self.__fire()
-            self.__death()
         for fire in self.__fires:
             fire.interaction(self.__player)
             fire.update()
@@ -115,6 +116,8 @@ class DemonSlimeBoss(Enemy):
             pos=Vector(int(self.pos.x + offset), int(self.pos.y + 20)),
             hitbox=Vector(69, 200),
             hitbox_offset=None,
+            start_frame=7,
+            end_frame=7,
             damage=40,
             owner=self,
         )
@@ -124,26 +127,26 @@ class DemonSlimeBoss(Enemy):
 
 
     def remove(self) -> bool:
-        if self.__animations.done() and self.__dead:
-            return True
-        return False
-
+        return self.__dead and self.__animations.done()
 
     def __death(self) -> None:
         if not self.is_alive:
             Attack(
                 pos=Vector(int(self.pos.x), int(self.pos.y + 20)),
-                hitbox=Vector(120, 200),
+                hitbox=Vector(100, 100),
                 hitbox_offset=None,
                 damage=1000,
                 owner=self,
             )
 
-            self.vel.x = 0
-            self.__animations.set_one_iteration(False)
-            self.__animations.set_animation(f"DEATH_{self.direction}")
-            self.__animations.set_one_iteration(True)
-            self.__dead = True
+            if not self.__dead:
+                self.__animations.set_one_iteration(False)
+
+            if self.__animations.done():
+                self.vel.x = 0
+                self.__animations.set_animation(f"DEATH_{self.direction}")
+                self.__animations.set_one_iteration(True)
+                self.__dead = True
 
 
     def __move(self) -> None:
