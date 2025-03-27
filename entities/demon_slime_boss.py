@@ -162,5 +162,8 @@ class DemonSlimeBoss(Enemy):
         self.__player = entity
         print("Health: ", self.hp)
 
+    def __str__(self) -> str:
+        return "DEMON SLIME BOSS"
+
 
 

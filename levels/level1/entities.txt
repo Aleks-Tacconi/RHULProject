@@ -130,3 +130,5 @@ assets\blocks\grass.jpg,14,19
 assets\blocks\grass.jpg,13,19
 assets\blocks\grass.jpg,15,18
 assets\blocks\stone.png,16,17
+assets\blocks\grass.jpg,9,8
+assets\blocks\grass.jpg,10,8

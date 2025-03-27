@@ -24,7 +24,7 @@ class MainLoop(GameLoop):
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         # TODO: 400 is half the screen width - not good magic number
-        self.__offset_x += (self.__player.pos.x - 400 - self.__offset_x) // 30
+        self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 30
         self.__offset_y += (self.__player.pos.y - 180 - self.__offset_y) // 30
 
         self.__player.update()

@@ -140,5 +140,8 @@ class FlyingDemon(Enemy):
         self.__distance_x = self.pos.x - entity.pos.x
         print("Health: ", self.hp)
 
+    def __str__(self) -> str:
+        return "FLYING DEMON"
+
 
 
