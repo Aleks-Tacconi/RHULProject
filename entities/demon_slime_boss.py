@@ -97,7 +97,7 @@ class DemonSlimeBoss(Enemy):
         if abs(self.__distance_x) > self.__detection_range:
             return
         if random.randint(1,20) == 1:
-            self.__fires.append(Fire(self.__player_x + random.randint(-20,20)))
+            self.__fires.append(Fire(self.__player_x + random.randint(-20,20), level_id="LevelEditor"))
 
 
 

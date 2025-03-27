@@ -1,4 +1,4 @@
-"""
+
 import threading
 import os
 
@@ -27,4 +27,4 @@ class PlaySounds:
         self.event.set()
         self.thread.join()
         self.thread = None
-"""
+

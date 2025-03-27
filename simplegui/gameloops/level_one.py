@@ -38,11 +38,11 @@ class LevelOne(GameLoop):
         for i in range(0, 10):
             self.__environment.append(
                 Background(
-                    pos=Vector(0 + (828 * i), 360),
+                    pos=Vector(0 + (1656 * i), 400),
                     img=os.path.join("assets", "background", "HELL_BACKGROUND.png"),
                     size_x=828,
                     size_y=358,
-                    scale_factor=1,
+                    scale_factor=2,
                     frames=4,
                     cols=8,
                 )
@@ -90,8 +90,8 @@ class LevelOne(GameLoop):
         self.__scoreboard.update()
 
         # TODO: 400 is half the screen width - not good magic number
-        self.__offset_x += (self.__player.pos.x - 400 - self.__offset_x) // 30
-        self.__offset_y += (self.__player.pos.y - 400 - self.__offset_y) // 30
+        self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 30
+        self.__offset_y += (self.__player.pos.y - 180 - self.__offset_y) // 30
 
         self.__offset_x_light += (self.__player_light.pos.x - 400 - self.__offset_x) // 30
         self.__offset_y_light += (self.__player_light.pos.y - 400 - self.__offset_y) // 30
