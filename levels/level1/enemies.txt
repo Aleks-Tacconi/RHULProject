@@ -1,0 +1,5 @@
+<entities.abyssal_revenant.AbyssalRevenant object at 0x0000027B26081090>,336,514
+<entities.abyssal_revenant.AbyssalRevenant object at 0x0000027B26080550>,502,505
+<entities.abyssal_revenant.AbyssalRevenant object at 0x0000027B25FDB230>,637,434
+<entities.abyssal_revenant.AbyssalRevenant object at 0x0000027B25FDAD70>,724,361
+<entities.abyssal_revenant.AbyssalRevenant object at 0x0000027B25FDAC40>,828,405

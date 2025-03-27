@@ -13,13 +13,14 @@ from .fire import Fire
 import random
 
 class DemonSlimeBoss(Enemy):
-    def __init__(self, pos: Vector) -> None:
+    def __init__(self, pos: Vector, level_id: str) -> None:
         super().__init__(
             pos=pos,
             size=Vector(576, 320),
             hitbox=Vector(120, 200),
             vel=Vector(0, 0),
             hp=300,
+            level_id=level_id,
             hitbox_offset=Vector(0, 20),
         )
 
@@ -77,9 +78,9 @@ class DemonSlimeBoss(Enemy):
                 self.__fires.remove(fire)
 
         self.pos.x += self.vel.x
-        Block.collisions_x(self)
+        Block.collisions_x(self, self._level_id)
         self.pos.y += self.vel.y
-        Block.collisions_y(self)
+        Block.collisions_y(self, self._level_id)
         self.__animations.update()
 
 

@@ -1,4 +1,5 @@
 import os
+import threading
 
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 
@@ -13,13 +14,14 @@ from .utils import MultiAnimation, SpriteSheet
 
 
 class AbyssalRevenant(Enemy):
-    def __init__(self, pos: Vector) -> None:
+    def __init__(self, pos: Vector, level_id: str) -> None:
         super().__init__(
             pos=pos,
             size=Vector(200, 200),
             hitbox=Vector(50, 80),
             vel=Vector(0, 0),
             hp=3000,
+            level_id=level_id,
             hitbox_offset=Vector(0, 20),
         )
 
@@ -69,9 +71,9 @@ class AbyssalRevenant(Enemy):
             self.__death()
 
         self.pos.x += self.vel.x
-        Block.collisions_x(self)
+        Block.collisions_x(self, self._level_id)
         self.pos.y += self.vel.y
-        Block.collisions_y(self)
+        Block.collisions_y(self, self._level_id)
         self.__animations.update()
 
 
@@ -122,6 +124,20 @@ class AbyssalRevenant(Enemy):
                 owner=self,
             )
 
+    def remove(self) -> bool:
+        if self.__animations.done() and not self.is_alive:
+            return True
+        return False
+
+    def interaction(self, entity: PhysicsEntity) -> None:
+        distance_x = self.pos.x - entity.pos.x
+        print(distance_x)
+        print("Health: ", self.hp)
+
+        self.__animations.set_animation(self.__current_animation)
+        self.__animations.update()
+
+        if not self.is_alive:
             self.vel.x = 0
             self.vel.y = 12
             self.__animations.set_one_iteration(False)
@@ -143,7 +159,7 @@ class AbyssalRevenant(Enemy):
         print("Health: ", self.hp)
 
 
-
+        return
 
 
 

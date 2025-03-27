@@ -16,11 +16,13 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
         hitbox: Vector,
         vel: Vector,
         hp: int,
+        level_id: str,
         hitbox_offset: Vector = Vector(0, 0),
     ) -> None:
         super().__init__(pos, size, hitbox, hitbox_offset)
 
         self.vel = vel
+        self._level_id = level_id
         self.hp = hp
         self.immune = False
         self.direction = None

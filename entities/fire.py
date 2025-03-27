@@ -10,13 +10,14 @@ from .utils import Animation, SpriteSheet
 
 
 class Fire(Enemy):
-    def __init__(self, x) -> None:
+    def __init__(self, x, level_id: str) -> None:
         super().__init__(
             pos=Vector(x, 0),
             size=Vector(50, 50),
             hitbox=Vector(0, 0),
             vel=Vector(0, 10),
             hp=1,
+            level_id=level_id,
         )
 
         spritesheet = SpriteSheet(

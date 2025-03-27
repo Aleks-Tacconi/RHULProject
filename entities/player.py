@@ -11,13 +11,14 @@ from .utils import MultiAnimation, SpriteSheet
 
 
 class Player(PhysicsEntity):
-    def __init__(self, pos: Vector) -> None:
+    def __init__(self, pos: Vector, level_id: str) -> None:
         super().__init__(
             pos=pos,
             size=Vector(200, 200),
             vel=Vector(0, 0),
             hitbox=Vector(40, 92),
             hp=10000,
+            level_id=level_id,
             hitbox_offset=Vector(-5, 55),
         )
 
@@ -125,10 +126,10 @@ class Player(PhysicsEntity):
         self._gravity()
 
         self.pos.x += self.vel.x
-        Block.collisions_x(self)
+        Block.collisions_x(self, self._level_id)
 
         self.pos.y += self.vel.y
-        Block.collisions_y(self)
+        Block.collisions_y(self, self._level_id)
 
         self.__current_animation = f"{self.__current_animation}_{self.direction}"
         self.__animations.set_animation(self.__current_animation)

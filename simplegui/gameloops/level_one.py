@@ -2,14 +2,28 @@ import os
 from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
+
+from entities import (
+    AbyssalRevenant,
+    Attack,
+    Background,
+    Block,
+    DemonSlimeBoss,
+    Fire,
+    FlyingDemon,
+    ImpalerBoss,
+    Mage,
+    Player,
+    PlayerHealthBar,
+)
 from simplegui.components import ScoreBoard
-from entities import Block, Player, Attack, AbyssalRevenant, Fire, PlayerHealthBar, Background, ImpalerBoss, FlyingDemon, DemonSlimeBoss, Mage
 from utils import Vector
 #from OpenGL.GL import *
 #OpenGL.GLUT import *
 #from OpenGL.GLU import *
 from .abstract import GameLoop
 
+ID = "LevelOne"
 
 class LevelOne(GameLoop):
     def __init__(self, reset: Callable) -> None:
@@ -22,51 +36,65 @@ class LevelOne(GameLoop):
         self.__environment = []
 
         for i in range(0, 10):
-            self.__environment.append(Background(pos=Vector(0 + (1656 * i), 450),
-                                                 img=os.path.join("assets", "background", "HELL_BACKGROUND.png"),
-                                                 size_x=828, size_y=358, scale_factor=2,frames=4, cols=8))
+            self.__environment.append(
+                Background(
+                    pos=Vector(0 + (828 * i), 360),
+                    img=os.path.join("assets", "background", "HELL_BACKGROUND.png"),
+                    size_x=828,
+                    size_y=358,
+                    scale_factor=1,
+                    frames=4,
+                    cols=8,
+                )
+            )
 
+        self.__player = Player(pos=Vector(400, 400), level_id=ID)
+        self.__player_light = Background(
+            pos=Vector(0, 0),
+            img=os.path.join("assets", "player", "FRAME_HARD.png"),
+            size_x=1200,
+            size_y=1200,
+            scale_factor=1,
+        )
+        self.__player_light_flip = Background(
+            pos=Vector(0, 0),
+            img=os.path.join("assets", "player", "FRAME_HARD_FLIPPED.png"),
+            size_x=1200,
+            size_y=1200,
+            scale_factor=1,
+        )
 
-
-
-        self.__player = Player(pos=Vector(400, 400))
-        self.__player_light = Background(pos=Vector(0, 0),
-                                             img=os.path.join("assets", "player", "FRAME_HARD.png"),
-                                             size_x=1200, size_y=1200, scale_factor=1)
-        self.__player_light_flip = Background(pos=Vector(0, 0),
-                                             img=os.path.join("assets", "player", "FRAME_HARD_FLIPPED.png"),
-                                             size_x=1200, size_y=1200, scale_factor=1)
-
-        self.__enemies = []
-        self.__enemies.append(AbyssalRevenant(pos=Vector(90, 200)))
-        self.__enemies.append(FlyingDemon(pos=Vector(700, 200)))
-        self.__enemies.append(DemonSlimeBoss(pos=Vector(1000, 300)))
-        self.__enemies.append(Mage(pos=Vector(120,200)))
+        self._enemies.append(AbyssalRevenant(pos=Vector(90, 200), level_id=ID))
+        self._enemies.append(FlyingDemon(pos=Vector(700, 200), level_id=ID))
+        self._enemies.append(DemonSlimeBoss(pos=Vector(1000, 300), level_id=ID))
+        self._enemies.append(Mage(pos=Vector(120, 200), level_id=ID))
 
         self.__gui = []
         self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 360), player=self.__player)
         self.__gui.append(self.__player_healthbar)
 
-        self.__entities = []
-
-
-        block_path = os.path.join("assets", "blocks", "BLOCK1.png")
+        block_path = os.path.join("assets", "blocks", "stone.png")
         for i in range(0, 80):
-            self.__entities.append(Block(Vector(i - 20, 15), block_path))
+            Block(Vector(i - 20, 15), block_path, ID)
 
-        self.__entities.append(Block(Vector(14, 14), block_path))
-        self.__entities.append(Block(Vector(14, 24), block_path))
+        Block(Vector(14, 14), block_path, ID)
+        Block(Vector(14, 24), block_path, ID)
 
         self.__offset_x = 0
         self.__offset_y = 0
+        self.__offset_x_light = 0
+        self.__offset_y_light = 0
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
 
         self.__scoreboard.update()
 
         # TODO: 400 is half the screen width - not good magic number
-        self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 30
-        self.__offset_y += (self.__player.pos.y - 180 - self.__offset_y)
+        self.__offset_x += (self.__player.pos.x - 400 - self.__offset_x) // 30
+        self.__offset_y += (self.__player.pos.y - 400 - self.__offset_y) // 30
+
+        self.__offset_x_light += (self.__player_light.pos.x - 400 - self.__offset_x) // 30
+        self.__offset_y_light += (self.__player_light.pos.y - 400 - self.__offset_y) // 30
 
         self.__player.update()
 
@@ -75,7 +103,10 @@ class LevelOne(GameLoop):
                 entity.update()
                 entity.render(canvas, -self.__offset_x, -self.__offset_y)
 
-        for entity in self.__entities:
+        for k, entity in Block.all.items():
+            if ID not in k:
+                continue
+
             if self.is_entity_visible(self.__player, entity):
                 entity.render(canvas, -self.__offset_x, -self.__offset_y)
                 entity.update()
@@ -84,7 +115,7 @@ class LevelOne(GameLoop):
             attack.render(canvas, -self.__offset_x, -self.__offset_y)
             attack.update()
 
-        for entity in self.__enemies:
+        for entity in self._enemies:
             if self.is_entity_visible(self.__player, entity):
                 entity.update()
                 entity.interaction(self.__player)
@@ -93,7 +124,7 @@ class LevelOne(GameLoop):
             if not entity.is_alive:
                 self.__scoreboard.enemy_killed_score(entity)
             if entity.remove():
-                self.__enemies.remove(entity)
+                self._enemies.remove(entity)
 
         if self.__player.remove():
             self.__scoreboard.calculate_score("LEVEL ONE")
@@ -103,11 +134,17 @@ class LevelOne(GameLoop):
             self.__reset()
 
         if self.__player.direction == "LEFT":
-            self.__player_light.render(canvas, self.__player.pos.x - self.__offset_x,
-                                       self.__player.pos.y - self.__offset_y)
+            self.__player_light.render(
+                canvas,
+                self.__player.pos.x - self.__offset_x,
+                self.__player.pos.y - self.__offset_y,
+            )
         else:
-            self.__player_light_flip.render(canvas, self.__player.pos.x - self.__offset_x,
-                                       self.__player.pos.y - self.__offset_y)
+            self.__player_light_flip.render(
+                canvas,
+                self.__player.pos.x - self.__offset_x,
+                self.__player.pos.y - self.__offset_y,
+            )
 
         for entity in self.__gui:
             entity.update()

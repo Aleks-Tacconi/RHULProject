@@ -26,8 +26,11 @@ SURROUNDINGS = [
 class Block(Entity):
     all = {}
 
-    def __init__(self, pos: Vector, img: str) -> None:
-        key = f"{pos.x}|{pos.y}"
+    def __init__(self, pos: Vector, img: str, id: str) -> None:
+        # id refers to the current level
+        key = f"{id}|{pos.x}|{pos.y}"
+
+        self.img = img
 
         super().__init__(
             pos=Vector(int(pos.x * SIZE), int(pos.y * SIZE)),
@@ -74,28 +77,35 @@ class Block(Entity):
                 entity.vel.y = 0
                 entity.jumps = 2
 
+            if entity.vel.y < 0:
+                entity.pos.y = (
+                    (self.pos.y + (self.hitbox.y // 2))
+                    + (entity.hitbox.y // 2)
+                    - entity.hitbox_offset.y
+                )
+
     @classmethod
-    def __get_surroundings(cls, x: int, y: int) -> list:
+    def __get_surroundings(cls, x: int, y: int, id: str) -> list:
         surroundings = []
         for sx, sy in SURROUNDINGS:
-            key = f"{int(x + sx)}|{int(y + sy)}"
+            key = f"{id}|{int(x + sx)}|{int(y + sy)}"
             if key in cls.all:
                 surroundings.append(cls.all[key])
 
         return surroundings
 
     @classmethod
-    def collisions_x(cls, entity: PhysicsEntity) -> None:
+    def collisions_x(cls, entity: PhysicsEntity, id: str) -> None:
         x = int((entity.pos.x + entity.hitbox_offset.x) // SIZE)
         y = int((entity.pos.y + entity.hitbox_offset.y) // SIZE)
 
-        for block in cls.__get_surroundings(x, y):
+        for block in cls.__get_surroundings(x, y, id):
             block.handle_collision_x(entity)
 
     @classmethod
-    def collisions_y(cls, entity: PhysicsEntity) -> None:
+    def collisions_y(cls, entity: PhysicsEntity, id: str) -> None:
         x = int((entity.pos.x + entity.hitbox_offset.x) // SIZE)
         y = int((entity.pos.y + entity.hitbox_offset.y) // SIZE)
 
-        for block in cls.__get_surroundings(x, y):
+        for block in cls.__get_surroundings(x, y, id):
             block.handle_collision_y(entity)

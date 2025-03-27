@@ -8,6 +8,7 @@ from utils import Vector
 
 from .abstract import GameLoop
 
+ID = "MainLoop"
 
 class MainLoop(GameLoop):
     def __init__(self, reset: Callable) -> None:
@@ -15,19 +16,8 @@ class MainLoop(GameLoop):
 
         self.__reset = reset
 
-        self.__player = Player(pos=Vector(400, 400))
-
-        self.__enemies = []
-        self.__enemies.append(AbyssalRevenant(pos=Vector(90, 200)))
-        self.__enemies.append(Fire(400))
-
-        self.__entities = []
-
-        block_path = os.path.join("assets", "blocks", "block.jpg")
-        for i in range(0, 80):
-            self.__entities.append(Block(Vector(i, 15), block_path))
-
-        self.__entities.append(Block(Vector(14, 14), block_path))
+        self.__player = Player(pos=Vector(400, 200), level_id=ID)
+        self._load_level(os.path.join("levels", "level1"), ID)
 
         self.__offset_x = 0
         self.__offset_y = 0
@@ -35,7 +25,7 @@ class MainLoop(GameLoop):
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         # TODO: 400 is half the screen width - not good magic number
         self.__offset_x += (self.__player.pos.x - 400 - self.__offset_x) // 30
-        self.__offset_y += (self.__player.pos.y - 400 - self.__offset_y) // 30
+        self.__offset_y += (self.__player.pos.y - 180 - self.__offset_y) // 30
 
         self.__player.update()
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
@@ -43,15 +33,16 @@ class MainLoop(GameLoop):
         if self.__player.remove():
             self.__reset()
 
-        for entity in self.__entities:
-            entity.render(canvas, -self.__offset_x, -self.__offset_y)
-            entity.update()
+        for k, entity in Block.all.items():
+            if ID in k:
+                entity.render(canvas, -self.__offset_x, -self.__offset_y)
+                entity.update()
 
         for attack in Attack.all:
             attack.render(canvas, -self.__offset_x, -self.__offset_y)
             attack.update()
 
-        for entity in self.__enemies:
+        for entity in self._enemies:
             entity.update()
             entity.interaction(self.__player)
             entity.render(canvas, -self.__offset_x, -self.__offset_y)
