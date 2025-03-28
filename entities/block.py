@@ -54,7 +54,7 @@ class Block(Entity):
 
     def handle_collision_x(self, entity: PhysicsEntity) -> None:
         if entity.collides_with(self):
-            if entity.vel.x > 0:
+            if entity.vel.x >= 0:
                 entity.pos.x = (
                     self.pos.x - (self.hitbox.x // 2) - (entity.hitbox.x // 2)
                 ) + entity.hitbox_offset.x
@@ -62,7 +62,7 @@ class Block(Entity):
             if entity.vel.x < 0:
                 entity.pos.x = (
                     self.pos.x + (self.hitbox.x // 2) + (entity.hitbox.x // 2)
-                ) + entity.hitbox_offset.x
+                ) - entity.hitbox_offset.x
                 entity.set_idle()
 
     def handle_collision_y(self, entity: PhysicsEntity) -> None:

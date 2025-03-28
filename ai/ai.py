@@ -18,8 +18,6 @@ import elevenlabs
 import openai
 from playsound3 import playsound
 
-from utils import speak
-
 
 class AI:
     """AI Object.
@@ -80,14 +78,18 @@ class AI:
     def __listen_and_respond(self) -> None:
         """Captures voice input through microphone and responds by playing an audio file"""
 
-        speech = speak()
-        print(speech)
+        #speech = speak()
+        #print(speech)
         # speech = "Hello"
-        response = self.text_prompt(self.__prompt + speech)
-        print(response)
+        #response = self.text_prompt(self.__prompt + speech)
+        #print(response)
 
-        if response is not None:
-            self.__generate_response_voice(response)
+        #if response is not None:
+            #self.__generate_response_voice(response)
+
+    def generate_response_voice(self, prompt: str) -> None:
+        """Generates an audio file using OpenAI's text-to-speech."""
+        threading.Thread(target=self.__generate_response_voice, args=(prompt,)).start()
 
     def __generate_response_voice(self, prompt: str) -> None:
         """Generates an audio file using OpenAI's text-to-speech.

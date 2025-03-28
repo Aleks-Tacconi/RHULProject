@@ -1,10 +1,11 @@
 import os
 from abc import ABCMeta, abstractmethod
 from typing import Tuple
+from unittest import case
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from entities import AbyssalRevenant, Mage
+from entities import AbyssalRevenant, Mage, EvilHand, EvilKnight, DemonSlimeBoss, FlyingDemon
 from entities.abstract import Entity
 from entities.block import Block
 from utils import Mouse, Vector
@@ -18,6 +19,14 @@ def get_enemy(enemy: str, x: int, y: int, _id: str) -> Entity | None:
             return AbyssalRevenant(pos, _id)
         case "Mage":
             return Mage(pos, _id)
+        case "EvilHand":
+            return EvilHand(pos, _id)
+        case "EvilKnight":
+            return EvilKnight(pos, _id)
+        case "DemonSlimeBoss":
+            return DemonSlimeBoss(pos, _id)
+        case "FlyingDemon":
+            return FlyingDemon(pos, _id)
 
 class GameLoop(metaclass=ABCMeta):
     def __init__(self) -> None:

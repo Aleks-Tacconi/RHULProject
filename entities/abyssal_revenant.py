@@ -1,5 +1,4 @@
 import os
-import threading
 
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 

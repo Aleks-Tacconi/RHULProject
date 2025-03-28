@@ -3,32 +3,24 @@ from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from entities import (
-    AbyssalRevenant,
-    Attack,
-    Background,
-    Block,
-    DemonSlimeBoss,
-    Fire,
-    FlyingDemon,
-    ImpalerBoss,
-    Mage,
-    Player,
-    PlayerHealthBar,
-    EvilKnight,
-    EvilHand
-)
-from simplegui.components import ScoreBoard
+from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, DemonSlimeBoss, FlyingDemon, EvilHand,
+                      Mage, EvilKnight, PlayerHealthBar)
 from utils import Vector
+
 from .abstract import GameLoop
+from simplegui.components import ScoreBoard, Subtitles
+from ai import AI
+import time
 
-ID = "LevelOne"
+ID = "tutorial"
 
-class LevelOne(GameLoop):
+class Tutorial(GameLoop):
     def __init__(self, reset: Callable) -> None:
         super().__init__()
 
         self.__reset = reset
+
+        self._load_level(os.path.join("levels", "tutorial"), ID)
 
         self.__scoreboard = ScoreBoard()
 
@@ -37,17 +29,17 @@ class LevelOne(GameLoop):
         for i in range(0, 10):
             self.__environment.append(
                 Background(
-                    pos=Vector(0 + (1656 * i), 400),
+                    pos=Vector(0 + (1863 * i), 0),
                     img=os.path.join("assets", "background", "HELL_BACKGROUND.png"),
                     size_x=828,
                     size_y=358,
-                    scale_factor=2,
+                    scale_factor=2.25,
                     frames=4,
                     cols=8,
                 )
             )
 
-        self.__player = Player(pos=Vector(-300, 400), level_id=ID)
+        self.__player = Player(pos=Vector(69, 0), level_id=ID)
 
         """"
         self.__player_light = Background(
@@ -66,28 +58,20 @@ class LevelOne(GameLoop):
         )
         """
 
-        self._enemies.append(AbyssalRevenant(pos=Vector(90, 200), level_id=ID))
-        self._enemies.append(FlyingDemon(pos=Vector(700, 200), level_id=ID))
-        self._enemies.append(DemonSlimeBoss(pos=Vector(1000, 300), level_id=ID))
-        self._enemies.append(Mage(pos=Vector(60, 200), level_id=ID))
-        self._enemies.append(EvilKnight(pos=Vector(150, 200), level_id=ID))
-        self._enemies.append(EvilHand(pos=Vector(180, 200), level_id=ID))
-
         self.__gui = []
         self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 360), player=self.__player)
         self.__gui.append(self.__player_healthbar)
-
-        block_path = os.path.join("assets", "blocks", "stone.png")
-        for i in range(0, 360):
-            Block(Vector(i - 20, 15), block_path, ID)
-
-        Block(Vector(14, 14), block_path, ID)
-        Block(Vector(14, 24), block_path, ID)
 
         self.__offset_x = 0
         self.__offset_y = 0
         #self.__offset_x_light = 0
         #self.__offset_y_light = 0
+        self.__ai = AI()
+        self.__count = 0
+        self.__cutscene_1 = False
+        self.__can_speak = True #Open AI not working right now
+        self.__subtitles = None
+
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
 
@@ -158,10 +142,29 @@ class LevelOne(GameLoop):
 
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
 
+        if not self.__cutscene_1 and self.__count >= 20:
+            self.__player.pos.x = 0
+            self.__player.pos.y = 0
+            self.__player.vel.x = 0
+            self.__player.vel.y = 0
+            if self.__can_speak:
+                self.__subtitles = Subtitles("A cold wind howls through the abyss, whispering secrets of "
+                "forgotten warriors. The darkness is thick, suffocating—yet something stirs within it. You.From the void, "
+                "a voice emerges, neither friend nor foe. It is ancient, hollow, yet filled with grim purpose.",
+                          Vector(200, 360))
+                self.__can_speak = False
+                #self.__ai.generate_response_voice()
+            if self.__subtitles is not None:
+                self.__subtitles.render(canvas)
+
+
+
+            if self.__count == 1200:
+                self.__cutscene_1 = True
+        self.__count += 1
+
     def keyup_handler(self, key: int) -> None:
         self.__player.keyup_handler(key)
 
     def keydown_handler(self, key: int) -> None:
         self.__player.keydown_handler(key)
-
-

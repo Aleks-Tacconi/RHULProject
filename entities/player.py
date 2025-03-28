@@ -164,7 +164,7 @@ class Player(PhysicsEntity):
 
     def __jump(self) -> None:
         if self.__jumps > 0:
-            self.vel.y = -12
+            self.vel.y = -12.91
             self.__jumps -= 1
 
 
