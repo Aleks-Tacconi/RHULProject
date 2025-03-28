@@ -24,7 +24,7 @@ class EvilKnight(PhysicsEntity):
         )
 
         spritesheet = SpriteSheet(
-            os.path.join("assets", "player", "KNIGHT.png"),
+            os.path.join("assets", "evil_knight", "KNIGHT.png"),
             rows=30,
             cols=12,
         )

@@ -23,7 +23,7 @@ class Player(PhysicsEntity):
         )
 
         spritesheet = SpriteSheet(
-            os.path.join("assets", "player", "KNIGHT.png"),
+            os.path.join("assets", "player", "PLAYER.png"),
             rows=30,
             cols=12,
         )
@@ -39,7 +39,7 @@ class Player(PhysicsEntity):
             "CROUCH_ATTACK_RIGHT": (7, 4, 2, False),
             "CROUCH_FULL_RIGHT": (8, 3, 1, False),
             "CROUCH_TRANSITION_RIGHT": (9, 1, 1, False),
-            "CROUCH_WALK_RIGHT": (10, 8, 8, False),
+            "CROUCH_WALK_RIGHT": (10, 8, 2, False),
             "DASH_RIGHT": (11, 2, 2, False),
             "DEATH_RIGHT": (12, 10, 10, False),
             "DEATH_NO_MOVEMENT_RIGHT": (13, 10, 10, False),
@@ -54,7 +54,7 @@ class Player(PhysicsEntity):
             "SLIDE_FULL_RIGHT": (22, 4, 4, False),
             "SLIDE_TRANSITION_END_RIGHT": (23, 1, 1, False),
             "SLIDE_TRANSITION_START_RIGHT": (24, 1, 1, False),
-            "TURN_AROUND_RIGHT": (25, 3, 3, False),
+            "TURN_AROUND_RIGHT": (25, 1, 1, False),
             "WALL_CLIMB_RIGHT": (26, 7, 7, False),
             "WALL_CLIMB_NO_MOVEMENT_RIGHT": (27, 7, 7, False),
             "WALL_HANG_RIGHT": (28, 1, 1, False),
@@ -69,7 +69,7 @@ class Player(PhysicsEntity):
             "CROUCH_ATTACK_LEFT": (7, 4, 2, True),
             "CROUCH_FULL_LEFT": (8, 3, 1, True),
             "CROUCH_TRANSITION_LEFT": (9, 1, 1, True),
-            "CROUCH_WALK_LEFT": (10, 8, 8, True),
+            "CROUCH_WALK_LEFT": (10, 8, 2, True),
             "DASH_LEFT": (11, 2, 2, True),
             "DEATH_LEFT": (12, 10, 10, True),
             "DEATH_NO_MOVEMENT_LEFT": (13, 10, 10, True),
@@ -84,7 +84,7 @@ class Player(PhysicsEntity):
             "SLIDE_FULL_LEFT": (22, 4, 4, True),
             "SLIDE_TRANSITION_END_LEFT": (23, 1, 1, True),
             "SLIDE_TRANSITION_START_LEFT": (24, 1, 1, True),
-            "TURN_AROUND_LEFT": (25, 3, 3, True),
+            "TURN_AROUND_LEFT": (25, 1, 1, True),
             "WALL_CLIMB_LEFT": (26, 7, 7, True),
             "WALL_CLIMB_NO_MOVEMENT_LEFT": (27, 7, 7, True),
             "WALL_HANG_LEFT": (28, 1, 1, True),
@@ -171,9 +171,9 @@ class Player(PhysicsEntity):
     def __horizontal_movement(self) -> None:
         if not self.__movement_x:
             if self.direction == "LEFT":
-                self.vel.x = min(self.vel.x + self.__speed * 0.5, 0)
+                self.vel.x = min(self.vel.x + self.__speed * 0.25, 0)
             else:
-                self.vel.x = max(self.vel.x - self.__speed * 0.5, 0)
+                self.vel.x = max(self.vel.x - self.__speed * 0.25, 0)
             return
 
         if self.__rolling:
@@ -201,13 +201,23 @@ class Player(PhysicsEntity):
             if self.__running and not self.crouched:
                 if direction_x == "A":
                     self.vel.x = max(self.vel.x - self.__speed * multiplier, -15)
+                    if self.direction == "RIGHT":
+                        self.__current_animation = "TURN_AROUND"
                 if direction_x == "D":
                     self.vel.x = min(self.vel.x + self.__speed * multiplier, 15)
+                    if self.direction == "LEFT":
+                        self.__current_animation = "TURN_AROUND"
             else:
                 if direction_x == "A":
                     self.vel.x = max(self.vel.x - self.__speed * multiplier, -10)
+                    if self.direction == "RIGHT":
+                        self.__current_animation = "TURN_AROUND"
                 if direction_x == "D":
                     self.vel.x = min(self.vel.x + self.__speed * multiplier, 10)
+                    if self.direction == "LEFT":
+                        self.__current_animation = "TURN_AROUND"
+
+
 
     def __vertical_movement(self) -> None:
         if self.__jumping:
@@ -263,7 +273,10 @@ class Player(PhysicsEntity):
         self.crouched = True
         self.hitbox = Vector(40, 66)
         self.hitbox_offset = Vector(-5, 68)
-        self.__current_animation = "CROUCH"
+        if self.vel.x == 0:
+            self.__current_animation = "CROUCH"
+        else:
+            self.__current_animation = "CROUCH_WALK"
 
     def __roll(self):
         if self.vel.x == 0:
