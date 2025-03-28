@@ -11,6 +11,7 @@ from .demon_slime_boss import DemonSlimeBoss
 from .mage import Mage
 from .block import SIZE
 from .evil_knight import EvilKnight
+from .evil_hand import EvilHand
 
 __all__ = ["Player", "Block", "Attack", "AbyssalRevenant", "Fire", "PlayerHealthBar", "Background", "ImpalerBoss",
-           "FlyingDemon", "DemonSlimeBoss", "Mage", "SIZE", "EvilKnight"]
+           "FlyingDemon", "DemonSlimeBoss", "Mage", "SIZE", "EvilKnight", "EvilHand"]

@@ -3,7 +3,7 @@ from typing import Callable, Iterable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from entities import SIZE, AbyssalRevenant, Block, Mage, DemonSlimeBoss, FlyingDemon, EvilKnight
+from entities import SIZE, AbyssalRevenant, Block, Mage, DemonSlimeBoss, FlyingDemon, EvilKnight, EvilHand
 from entities.abstract.entity import Entity
 from entities.attack import Attack
 from utils import Vector
@@ -41,7 +41,8 @@ class LevelEditor(GameLoop):
         self.__labels[13].set_text("[5] flying demon")
         self.__labels[14].set_text("[6] demon slime boss")
         self.__labels[15].set_text("[7] evil knight")
-        self.__labels[16].set_text("[9] toggle lines")
+        self.__labels[16].set_text("[8] evil hand")
+        self.__labels[17].set_text("[9] toggle lines")
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         self.__set_text()
@@ -94,6 +95,8 @@ class LevelEditor(GameLoop):
                         self._enemies.append(FlyingDemon(pos=Vector(x, y), level_id="LevelEditor"))
                     if self.__current == "EVIL KNIGHT":
                         self._enemies.append(EvilKnight(pos=Vector(x, y), level_id="LevelEditor"))
+                    if self.__current == "EVIL HAND":
+                        self._enemies.append(EvilHand(pos=Vector(x, y), level_id="LevelEditor"))
 
             self._mouse.clicked = False
 
@@ -159,6 +162,9 @@ class LevelEditor(GameLoop):
             self.__type = "enemy"
             if key == 55:
                 self.__current = "EVIL KNIGHT"
+                self.__type = "enemy"
+            if key == 56:
+                self.__current = "EVIL HAND"
                 self.__type = "enemy"
         if key == 57:
             self.__toggle = not self.__toggle

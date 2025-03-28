@@ -108,6 +108,7 @@ class Player(PhysicsEntity):
         self.friendly = False
         self.is_attacking = False
         self.__running = False
+        self.__jumping = False
 
 
     def remove(self) -> bool:
@@ -156,7 +157,7 @@ class Player(PhysicsEntity):
             self._render_hitbox(canvas, offset_x, offset_y)
 
     def __idle(self) -> None:
-        if (not self.__movement_x and not self.__movement_y and
+        if (not self.__movement_x and not self.__movement_y and not self.__jumping and
                 not self.__movement_x_locked and not self.__movement_y_locked):
             self.hitbox = Vector(40, 92)
             self.hitbox_offset = Vector(-5, 55)
@@ -189,7 +190,13 @@ class Player(PhysicsEntity):
             multiplier = 1.2
 
         if not self.__movement_x_locked:
-            if self.__running:
+            if self.__crouched:
+                if direction_x == "A":
+                    self.vel.x = max(self.vel.x - self.__speed * multiplier, -5)
+                if direction_x == "D":
+                    self.vel.x = min(self.vel.x + self.__speed * multiplier, 5)
+                return
+            if self.__running and not self.__crouched:
                 if direction_x == "A":
                     self.vel.x = max(self.vel.x - self.__speed * multiplier, -15)
                 if direction_x == "D":
@@ -201,14 +208,23 @@ class Player(PhysicsEntity):
                     self.vel.x = min(self.vel.x + self.__speed * multiplier, 10)
 
     def __vertical_movement(self) -> None:
+        if self.__jumping:
+            if self.vel.y == 0:
+                self.__current_animation = "FALL"
+                self.__jumping = False
+
+
         if not self.__movement_y:
             return
 
         direction_y = self.__movement_y[-1]
 
         if not self.__movement_y_locked:
-            if direction_y == "W":
+            if direction_y == "W" and not self.__jumping:
                 self.__jump()
+                self.__current_animation = "JUMP"
+                self.__jumping = True
+
             if direction_y == "S":
                 self.__crouch()
             if self.vel.y == 0 and self.__animations.done():

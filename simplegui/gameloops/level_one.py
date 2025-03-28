@@ -16,6 +16,7 @@ from entities import (
     Player,
     PlayerHealthBar,
     EvilKnight,
+    EvilHand
 )
 from simplegui.components import ScoreBoard
 from utils import Vector
@@ -67,6 +68,7 @@ class LevelOne(GameLoop):
         self._enemies.append(DemonSlimeBoss(pos=Vector(1000, 300), level_id=ID))
         self._enemies.append(Mage(pos=Vector(120, 200), level_id=ID))
         self._enemies.append(EvilKnight(pos=Vector(150, 200), level_id=ID))
+        self._enemies.append(EvilHand(pos=Vector(180, 200), level_id=ID))
 
         self.__gui = []
         self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 360), player=self.__player)
