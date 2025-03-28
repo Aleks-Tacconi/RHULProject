@@ -15,12 +15,10 @@ from entities import (
     Mage,
     Player,
     PlayerHealthBar,
+    EvilKnight,
 )
 from simplegui.components import ScoreBoard
 from utils import Vector
-#from OpenGL.GL import *
-#OpenGL.GLUT import *
-#from OpenGL.GLU import *
 from .abstract import GameLoop
 
 ID = "LevelOne"
@@ -68,13 +66,14 @@ class LevelOne(GameLoop):
         self._enemies.append(FlyingDemon(pos=Vector(700, 200), level_id=ID))
         self._enemies.append(DemonSlimeBoss(pos=Vector(1000, 300), level_id=ID))
         self._enemies.append(Mage(pos=Vector(120, 200), level_id=ID))
+        self._enemies.append(EvilKnight(pos=Vector(150, 200), level_id=ID))
 
         self.__gui = []
         self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 360), player=self.__player)
         self.__gui.append(self.__player_healthbar)
 
         block_path = os.path.join("assets", "blocks", "stone.png")
-        for i in range(0, 80):
+        for i in range(0, 360):
             Block(Vector(i - 20, 15), block_path, ID)
 
         Block(Vector(14, 14), block_path, ID)
@@ -90,8 +89,8 @@ class LevelOne(GameLoop):
         self.__scoreboard.update()
 
         # TODO: 400 is half the screen width - not good magic number
-        self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 30
-        self.__offset_y += (self.__player.pos.y - 180 - self.__offset_y) // 30
+        self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 10
+        self.__offset_y += (self.__player.pos.y - 180 - self.__offset_y) // 10
 
         self.__offset_x_light += (self.__player_light.pos.x - 400 - self.__offset_x) // 30
         self.__offset_y_light += (self.__player_light.pos.y - 400 - self.__offset_y) // 30

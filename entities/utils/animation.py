@@ -176,8 +176,10 @@ class MultiAnimation:
 
         return False
 
-    def set_animation(self, animation_name: str):
+    def set_animation(self, animation_name: str, frames = -1):
         if not self.__one_iteration:
+            if frames != -1:
+                self.__frames_per_animation = frames
             if animation_name in self.__animations and animation_name != self.__current_animation:
                 self.__current_animation = animation_name
                 if self.__animations[animation_name][3]:
@@ -189,9 +191,13 @@ class MultiAnimation:
                     self.__end_frame = self.__animations[self.__current_animation][1]
                     self.__start_frame = 0
                 self.__frame_index = [self.__start_frame, self.__animations[self.__current_animation][0]]
-                self.__frames_per_animation = self.__animations[self.__current_animation][2]
+                if frames == -1:
+                    self.__frames_per_animation = self.__animations[self.__current_animation][2]
+                else:
+                    self.__frames_per_animation = frames
                 self.__one_iteration_counter = 0
                 self.__counter = 0
+
 
     def get_animation(self) -> None:
         return self.__current_animation

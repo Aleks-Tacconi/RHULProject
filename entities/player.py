@@ -17,7 +17,7 @@ class Player(PhysicsEntity):
             size=Vector(200, 200),
             vel=Vector(0, 0),
             hitbox=Vector(40, 92),
-            hp=1000,
+            hp=10000,
             level_id=level_id,
             hitbox_offset=Vector(-5, 55),
         )
@@ -48,7 +48,7 @@ class Player(PhysicsEntity):
             "IDLE_RIGHT": (16, 10, 10, False),
             "JUMP_RIGHT": (17, 3, 3, False),
             "JUMP_FALL_IN_BETWEEN_RIGHT": (18, 2, 2, False),
-            "ROLL_RIGHT": (19, 12, 3, False),
+            "ROLL_RIGHT": (19, 12, 1, False),
             "RUN_RIGHT": (20, 10, 3, False),
             "SLIDE_RIGHT": (21, 2, 2, False),
             "SLIDE_FULL_RIGHT": (22, 4, 4, False),
@@ -78,7 +78,7 @@ class Player(PhysicsEntity):
             "IDLE_LEFT": (16, 10, 10, True),
             "JUMP_LEFT": (17, 3, 3, True),
             "JUMP_FALL_IN_BETWEEN_LEFT": (18, 2, 2, True),
-            "ROLL_LEFT": (19, 12, 3, True),
+            "ROLL_LEFT": (19, 12, 1, True),
             "RUN_LEFT": (20, 10, 3, True),
             "SLIDE_LEFT": (21, 2, 2, True),
             "SLIDE_FULL_LEFT": (22, 4, 4, True),
@@ -98,7 +98,7 @@ class Player(PhysicsEntity):
         self.__jumps = 1
         self.__movement_x = []
         self.__movement_y = []
-        self.__speed = 5
+        self.__speed = 1
         self.__crouched = False
         self.__rolling = False
         self.__dead = False
@@ -106,6 +106,8 @@ class Player(PhysicsEntity):
         self.__movement_x_locked = False
         self.__movement_y_locked = False
         self.friendly = False
+        self.is_attacking = False
+        self.__running = False
 
 
     def remove(self) -> bool:
@@ -116,6 +118,7 @@ class Player(PhysicsEntity):
     def update(self) -> None:
         self._get_direction()
         if self.__animations.done():
+            self.is_attacking = False
             self.immune = False
             self.__movement_x_locked = False
             self.__movement_y_locked = False
@@ -131,8 +134,13 @@ class Player(PhysicsEntity):
         self.pos.y += self.vel.y
         Block.collisions_y(self, self._level_id)
 
-        self.__current_animation = f"{self.__current_animation}_{self.direction}"
-        self.__animations.set_animation(self.__current_animation)
+
+        if self.__running:
+            self.__current_animation = f"{self.__current_animation}_{self.direction}"
+            self.__animations.set_animation(self.__current_animation, 1)
+        else:
+            self.__current_animation = f"{self.__current_animation}_{self.direction}"
+            self.__animations.set_animation(self.__current_animation)
         self.__animations.update()
 
         print(f"{self.hp=}")
@@ -175,12 +183,22 @@ class Player(PhysicsEntity):
             self.__current_animation = "CROUCH_WALK"
 
         direction_x = self.__movement_x[-1]
+        multiplier = 1.1
+
+        if self.__running:
+            multiplier = 1.2
 
         if not self.__movement_x_locked:
-            if direction_x == "A":
-                self.vel.x = -self.__speed
-            if direction_x == "D":
-                self.vel.x = self.__speed
+            if self.__running:
+                if direction_x == "A":
+                    self.vel.x = max(self.vel.x - self.__speed * multiplier, -15)
+                if direction_x == "D":
+                    self.vel.x = min(self.vel.x + self.__speed * multiplier, 15)
+            else:
+                if direction_x == "A":
+                    self.vel.x = max(self.vel.x - self.__speed * multiplier, -10)
+                if direction_x == "D":
+                    self.vel.x = min(self.vel.x + self.__speed * multiplier, 10)
 
     def __vertical_movement(self) -> None:
         if not self.__movement_y:
@@ -199,7 +217,7 @@ class Player(PhysicsEntity):
 
     def __attack(self) -> None:
         offset = 50
-
+        self.is_attacking = True
         if self.direction == "LEFT":
             offset *= -1
 
@@ -258,6 +276,8 @@ class Player(PhysicsEntity):
                 self.__dead = True
 
     def keydown_handler(self, key: int) -> None:
+        if key == 17: #SHIFT
+            self.__running = True
         if key == 32: # SPACE
             self.__movement_x.append("SPACE")
             self.__rolling = True
@@ -275,6 +295,8 @@ class Player(PhysicsEntity):
 
 
     def keyup_handler(self, key: int) -> None:
+        if key == 17: #SHIFT
+            self.__running = False
         if key == 32: # SPACE
             self.__movement_x.remove("SPACE")
             self.__rolling = False

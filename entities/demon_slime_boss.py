@@ -56,6 +56,8 @@ class DemonSlimeBoss(Enemy):
         self.__fires = []
         self.__dead = False
         self.boss = True
+        self.__player = None
+        self.__player_x = None
 
     def __idle(self) -> None:
         if abs(self.__distance_x) > self.__detection_range:

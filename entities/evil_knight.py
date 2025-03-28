@@ -8,6 +8,7 @@ from .abstract import PhysicsEntity
 from .attack import Attack
 from .block import Block
 from .utils import MultiAnimation, SpriteSheet
+import random
 
 
 class EvilKnight(PhysicsEntity):
@@ -17,7 +18,7 @@ class EvilKnight(PhysicsEntity):
             size=Vector(200, 200),
             vel=Vector(0, 0),
             hitbox=Vector(40, 92),
-            hp=1000,
+            hp=10000,
             level_id=level_id,
             hitbox_offset=Vector(-5, 55),
         )
@@ -48,7 +49,7 @@ class EvilKnight(PhysicsEntity):
             "IDLE_RIGHT": (16, 10, 10, False),
             "JUMP_RIGHT": (17, 3, 3, False),
             "JUMP_FALL_IN_BETWEEN_RIGHT": (18, 2, 2, False),
-            "ROLL_RIGHT": (19, 12, 3, False),
+            "ROLL_RIGHT": (19, 12, 1, False),
             "RUN_RIGHT": (20, 10, 3, False),
             "SLIDE_RIGHT": (21, 2, 2, False),
             "SLIDE_FULL_RIGHT": (22, 4, 4, False),
@@ -78,7 +79,7 @@ class EvilKnight(PhysicsEntity):
             "IDLE_LEFT": (16, 10, 10, True),
             "JUMP_LEFT": (17, 3, 3, True),
             "JUMP_FALL_IN_BETWEEN_LEFT": (18, 2, 2, True),
-            "ROLL_LEFT": (19, 12, 3, True),
+            "ROLL_LEFT": (19, 12, 1, True),
             "RUN_LEFT": (20, 10, 3, True),
             "SLIDE_LEFT": (21, 2, 2, True),
             "SLIDE_FULL_LEFT": (22, 4, 4, True),
@@ -105,9 +106,10 @@ class EvilKnight(PhysicsEntity):
         self.__dead = False
         self.immune = True
         self.__distance_x = 1000
-        self.__detection_range = 200
+        self.__detection_range = 300
         self.__attack_distance = 70
         self.__base_hp = self.hp
+        self.__player = None
 
 
     def remove(self) -> bool:
@@ -117,27 +119,22 @@ class EvilKnight(PhysicsEntity):
 
     def update(self) -> None:
         self._get_direction()
-        if self.__animations.done():
-            self.immune = False
-            self.__movement_x_locked = False
-            self.__movement_y_locked = False
-        self.__death()
-        self.__idle()
-        self.__vertical_movement()
-        self.__horizontal_movement()
         self._gravity()
+        self.__death()
+
+        self.__roll()
+        if self.__animations.done():
+            self.__rolling = False
+            self.immune = False
+            self.__idle()
+            self.__move()
+            self.__attack()
 
         self.pos.x += self.vel.x
         Block.collisions_x(self, self._level_id)
-
         self.pos.y += self.vel.y
         Block.collisions_y(self, self._level_id)
-
-        self.__current_animation = f"{self.__current_animation}_{self.direction}"
-        self.__animations.set_animation(self.__current_animation)
         self.__animations.update()
-
-        print(f"{self.hp=}")
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         if self.direction == "LEFT":
@@ -148,25 +145,17 @@ class EvilKnight(PhysicsEntity):
             pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
             self.__animations.render(canvas, pos, self.size)
             self._render_hitbox(canvas, offset_x, offset_y)
+        self.healthbar(canvas, offset_x, offset_y)
 
     def __idle(self) -> None:
-        if (not self.__movement_x and not self.__movement_y and
-                not self.__movement_x_locked and not self.__movement_y_locked):
-            self.hitbox = Vector(40, 92)
-            self.hitbox_offset = Vector(-5, 55)
+        if abs(self.__distance_x) > self.__detection_range:
             self.vel.x = 0
-            self.__current_animation = "IDLE"
+            self.__animations.set_animation(f"IDLE_{self.direction}")
 
     def __jump(self) -> None:
         if self.__jumps > 0:
             self.vel.y = -12
             self.__jumps -= 1
-
-    def interaction(self, entity: PhysicsEntity) -> None:
-        distance_x = self.pos.x - entity.pos.x
-        print(distance_x)
-        print("Health: ", self.hp)
-
 
     def __move(self) -> None:
         if abs(self.__distance_x) > self.__detection_range:
@@ -178,10 +167,17 @@ class EvilKnight(PhysicsEntity):
         self.__animations.set_animation(f"RUN_{self.direction}")
 
     def __attack(self) -> None:
+        if abs(self.__distance_x) > self.__attack_distance:
+            return
+
+        self.vel.x = 0
         offset = 50
 
-        if self.direction == "LEFT":
+        if self.__distance_x > 0:
+            self.direction = "LEFT"
             offset *= -1
+        else:
+            self.direction = "RIGHT"
 
         Attack(
             pos=Vector(int(self.pos.x + offset), int(self.pos.y + 30)),
@@ -210,17 +206,20 @@ class EvilKnight(PhysicsEntity):
         self.__current_animation = "CROUCH"
 
     def __roll(self):
-        if self.vel.x == 0:
+        if (random.randint(1,10) == 1 and abs(self.__distance_x) <= self.__attack_distance and
+                self.__player.is_attacking and self.vel.x == 0):
             if self.direction == "RIGHT":
                 self.vel.x += self.__speed
             else:
                 self.vel.x -= self.__speed
-        self.__current_animation = f"ROLL_{self.direction}"
-        self.__animations.set_animation(self.__current_animation)
-        self.immune = True
-        self.__movement_x_locked = True
-        self.__movement_y_locked = True
-        self.__animations.set_one_iteration(True)
+
+            if not self.__rolling:
+                self.__animations.set_one_iteration(False)
+            self.__current_animation = f"ROLL_{self.direction}"
+            self.__animations.set_animation(self.__current_animation)
+            self.immune = True
+            self.__rolling = True
+            self.__animations.set_one_iteration(True)
 
     def __death(self) -> None:
         if not self.is_alive:
@@ -236,4 +235,12 @@ class EvilKnight(PhysicsEntity):
                 self.__animations.set_one_iteration(True)
                 self.__movement_x = []
                 self.__dead = True
+
+    def interaction(self, entity: PhysicsEntity) -> None:
+        self.__distance_x = self.pos.x - entity.pos.x
+        self.__player = entity
+        print("Health: ", self.hp)
+
+    def __str__(self) -> str:
+        return "EVIL KNIGHT"
 
