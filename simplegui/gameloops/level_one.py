@@ -47,7 +47,7 @@ class LevelOne(GameLoop):
                 )
             )
 
-        self.__player = Player(pos=Vector(400, 400), level_id=ID)
+        self.__player = Player(pos=Vector(-300, 400), level_id=ID)
         self.__player_light = Background(
             pos=Vector(0, 0),
             img=os.path.join("assets", "player", "FRAME_HARD.png"),
@@ -66,7 +66,7 @@ class LevelOne(GameLoop):
         self._enemies.append(AbyssalRevenant(pos=Vector(90, 200), level_id=ID))
         self._enemies.append(FlyingDemon(pos=Vector(700, 200), level_id=ID))
         self._enemies.append(DemonSlimeBoss(pos=Vector(1000, 300), level_id=ID))
-        self._enemies.append(Mage(pos=Vector(120, 200), level_id=ID))
+        self._enemies.append(Mage(pos=Vector(60, 200), level_id=ID))
         self._enemies.append(EvilKnight(pos=Vector(150, 200), level_id=ID))
         self._enemies.append(EvilHand(pos=Vector(180, 200), level_id=ID))
 

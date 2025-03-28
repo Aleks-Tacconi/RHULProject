@@ -39,9 +39,13 @@ class Attack(Entity):
 
         if (self.__counter == self.__start_frame and self.__counter % self.__frames_per_damage == 0):
             for entity in PhysicsEntity.all:
+                if not entity.seen_player:
+                    critical_multiplier = 10
+                else:
+                    critical_multiplier = 1
                 if not entity.immune and not self.__owner.friendly:
                     if entity.id != self.__owner.id and entity.collides_with(self):
-                        entity.hp -= self.__damage
+                        entity.hp -= self.__damage * critical_multiplier
                 elif not entity.immune and not entity.friendly:
                     if entity.id != self.__owner.id and entity.collides_with(self):
                         entity.hp -= self.__damage

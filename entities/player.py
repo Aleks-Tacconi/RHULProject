@@ -99,7 +99,7 @@ class Player(PhysicsEntity):
         self.__movement_x = []
         self.__movement_y = []
         self.__speed = 1
-        self.__crouched = False
+        self.crouched = False
         self.__rolling = False
         self.__dead = False
         self.immune = True
@@ -124,9 +124,10 @@ class Player(PhysicsEntity):
             self.__movement_x_locked = False
             self.__movement_y_locked = False
         self.__death()
-        self.__idle()
-        self.__vertical_movement()
-        self.__horizontal_movement()
+        if self.is_alive:
+            self.__idle()
+            self.__vertical_movement()
+            self.__horizontal_movement()
         self._gravity()
 
         self.pos.x += self.vel.x
@@ -136,12 +137,9 @@ class Player(PhysicsEntity):
         Block.collisions_y(self, self._level_id)
 
 
-        if self.__running:
-            self.__current_animation = f"{self.__current_animation}_{self.direction}"
-            self.__animations.set_animation(self.__current_animation, 1)
-        else:
-            self.__current_animation = f"{self.__current_animation}_{self.direction}"
-            self.__animations.set_animation(self.__current_animation)
+
+        self.__current_animation = f"{self.__current_animation}_{self.direction}"
+        self.__animations.set_animation(self.__current_animation)
         self.__animations.update()
 
         print(f"{self.hp=}")
@@ -157,8 +155,8 @@ class Player(PhysicsEntity):
             self._render_hitbox(canvas, offset_x, offset_y)
 
     def __idle(self) -> None:
-        if (not self.__movement_x and not self.__movement_y and not self.__jumping and
-                not self.__movement_x_locked and not self.__movement_y_locked):
+        if (not self.__movement_x and not self.__movement_y and not self.__jumping and self.vel.x == 0 and
+                self.vel.y == 0 and not self.__movement_x_locked and not self.__movement_y_locked):
             self.hitbox = Vector(40, 92)
             self.hitbox_offset = Vector(-5, 55)
             self.vel.x = 0
@@ -172,13 +170,17 @@ class Player(PhysicsEntity):
 
     def __horizontal_movement(self) -> None:
         if not self.__movement_x:
+            if self.direction == "LEFT":
+                self.vel.x = min(self.vel.x + self.__speed * 0.5, 0)
+            else:
+                self.vel.x = max(self.vel.x - self.__speed * 0.5, 0)
             return
 
         if self.__rolling:
             self.__roll()
             return
 
-        if self.__animations.done() and not self.__crouched:
+        if self.__animations.done() and not self.crouched:
             self.__current_animation = "RUN"
         else:
             self.__current_animation = "CROUCH_WALK"
@@ -190,13 +192,13 @@ class Player(PhysicsEntity):
             multiplier = 1.2
 
         if not self.__movement_x_locked:
-            if self.__crouched:
+            if self.crouched:
                 if direction_x == "A":
                     self.vel.x = max(self.vel.x - self.__speed * multiplier, -5)
                 if direction_x == "D":
                     self.vel.x = min(self.vel.x + self.__speed * multiplier, 5)
                 return
-            if self.__running and not self.__crouched:
+            if self.__running and not self.crouched:
                 if direction_x == "A":
                     self.vel.x = max(self.vel.x - self.__speed * multiplier, -15)
                 if direction_x == "D":
@@ -247,7 +249,7 @@ class Player(PhysicsEntity):
             owner=self,
         )
 
-        if self.__crouched:
+        if self.crouched:
             self.__animations.set_animation(f"CROUCH_ATTACK_{self.direction}")
             self.__animations.set_one_iteration(True)
             return
@@ -258,7 +260,7 @@ class Player(PhysicsEntity):
 
     def __crouch(self) -> None:
         self.vel.y = 12
-        self.__crouched = True
+        self.crouched = True
         self.hitbox = Vector(40, 66)
         self.hitbox_offset = Vector(-5, 68)
         self.__current_animation = "CROUCH"
@@ -303,7 +305,7 @@ class Player(PhysicsEntity):
             self.__movement_x.append("D")
         if key == 83:  # S
             self.__movement_y.append("S")
-            self.__crouched = True
+            self.crouched = True
         if key == 87:  # W
             self.__movement_y.append("W")
         if key == 69:  # E
@@ -325,7 +327,7 @@ class Player(PhysicsEntity):
         if key == 83:  # S
             if "S" in self.__movement_y:
                 self.__movement_y.remove("S")
-                self.__crouched = False
+                self.crouched = False
         if key == 87:  # W
             if "W" in self.__movement_y:
                 self.__movement_y.remove("W")

@@ -24,6 +24,7 @@ class Entity(metaclass=ABCMeta):
         self.points = 0
         self.give_points = True
         self.friendly = True
+        self.seen_player = False
         self.id = Entity.id
         Entity.blocks.append(self)
         Entity.id += 1

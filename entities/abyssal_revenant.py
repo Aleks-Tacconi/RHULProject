@@ -20,7 +20,7 @@ class AbyssalRevenant(Enemy):
             size=Vector(200, 200),
             hitbox=Vector(50, 80),
             vel=Vector(0, 0),
-            hp=3000,
+            hp=1000,
             level_id=level_id,
             hitbox_offset=Vector(0, 20),
         )
@@ -50,11 +50,13 @@ class AbyssalRevenant(Enemy):
         self.__current_animation = f"IDLE_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
         self.__distance_x = 1000
-        self.__detection_range = 200
+        self.__detection_range = 300
         self.__attack_distance = 70
         self.__speed = 3
         self.__base_hp = self.hp
         self.__dead = False
+        self.__player = None
+        self.seen_player = False
 
     def __idle(self) -> None:
         if abs(self.__distance_x) > self.__detection_range:
@@ -62,6 +64,8 @@ class AbyssalRevenant(Enemy):
             self.__animations.set_animation(f"IDLE_{self.direction}")
 
     def update(self) -> None:
+        if self.hp != self.__base_hp:
+            self.seen_player = True
         self._get_direction()
         self._gravity()
         self.__death()
@@ -85,8 +89,13 @@ class AbyssalRevenant(Enemy):
         self.healthbar(canvas, offset_x, offset_y)
 
     def __attack(self) -> None:
-        if abs(self.__distance_x) > self.__attack_distance:
+        if abs(self.__distance_x) > self.__attack_distance or not self.seen_player:
             return
+
+        if self.__distance_x > 0:
+            self.direction = "LEFT"
+        else:
+            self.direction = "RIGHT"
 
         self.vel.x = 0
         offset = 50
@@ -130,19 +139,21 @@ class AbyssalRevenant(Enemy):
                 self.__dead = True
 
     def interaction(self, entity: PhysicsEntity) -> None:
-        distance_x = self.pos.x - entity.pos.x
-        print(distance_x)
+        self.__distance_x = self.pos.x - entity.pos.x
+        self.__player = entity
         print("Health: ", self.hp)
 
     def __move(self) -> None:
-        if abs(self.__distance_x) > self.__detection_range:
+        if abs(self.__distance_x) > self.__detection_range or self.__player is None:
             return
+
+        if self.__player.crouched and not self.seen_player:
+            if not(self.direction == "LEFT" and self.__distance_x > 0 or
+                   self.direction == "RIGHT" and self.__distance_x < 0):
+                return
         if self.__distance_x > 0:
             self.vel.x = -self.__speed
         else:
             self.vel.x = self.__speed
+        self.seen_player = True
         self.__animations.set_animation(f"RUN_{self.direction}")
-
-    def interaction(self, entity: PhysicsEntity) -> None:
-        self.__distance_x = self.pos.x - entity.pos.x
-        print("Health: ", self.hp)

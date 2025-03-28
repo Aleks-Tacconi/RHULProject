@@ -52,7 +52,8 @@ class FlyingDemon(Enemy):
         self.__speed = 1
         self.__base_hp = self.hp
         self.__dead = False
-
+        self.__player = None
+        self.__seen_player = False
 
     def __idle(self) -> None:
         if abs(self.__distance_x) > self.__detection_range:
@@ -60,6 +61,8 @@ class FlyingDemon(Enemy):
             self.__animations.set_animation(f"IDLE_{self.direction}")
 
     def update(self) -> None:
+        if self.hp != self.__base_hp:
+            self.__seen_player = True
         self._get_direction()
         self._gravity()
         self.__death()
@@ -83,8 +86,13 @@ class FlyingDemon(Enemy):
 
 
     def __attack(self) -> None:
-        if abs(self.__distance_x) > self.__attack_distance:
+        if abs(self.__distance_x) > self.__attack_distance or not self.__seen_player:
             return
+
+        if self.__distance_x > 0:
+            self.direction = "LEFT"
+        else:
+            self.direction = "RIGHT"
 
         self.vel.x = 0
         offset = 50
@@ -128,17 +136,24 @@ class FlyingDemon(Enemy):
                 self.__dead = True
 
     def __move(self) -> None:
-        if abs(self.__distance_x) > self.__detection_range:
+        if abs(self.__distance_x) > self.__detection_range or self.__player is None:
             return
+
+        if self.__player.crouched and not self.__seen_player:
+            if not (self.direction == "LEFT" and self.__distance_x > 0 or
+                    self.direction == "RIGHT" and self.__distance_x < 0):
+                return
         if self.__distance_x > 0:
             self.vel.x = -self.__speed
         else:
             self.vel.x = self.__speed
+        self.__seen_player = True
         self.__animations.set_animation(f"RUN_{self.direction}")
 
 
     def interaction(self, entity: PhysicsEntity) -> None:
         self.__distance_x = self.pos.x - entity.pos.x
+        self.__player = entity
         print("Health: ", self.hp)
 
     def __str__(self) -> str:
