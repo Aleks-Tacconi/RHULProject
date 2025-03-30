@@ -131,11 +131,12 @@ class LevelOne(GameLoop):
                 self._enemies.remove(entity)
 
         if self.__player.remove():
-            self.__scoreboard.calculate_score("LEVEL ONE")
+            self.__scoreboard.calculate_score(ID)
             print("|||||||||||||||||||||||||||||||||")
             self.__scoreboard.print_score()
             print("|||||||||||||||||||||||||||||||||")
-            self.__reset()
+            self.__reset(self.__scoreboard.return_score(ID))
+            canvas.draw_text(f"Score: {self.__scoreboard.return_score(ID)}", (400, 50), 30, "White")
 
         """
         if self.__player.direction == "LEFT":

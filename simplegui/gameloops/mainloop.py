@@ -31,6 +31,7 @@ class MainLoop(GameLoop):
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
 
         if self.__player.remove():
+            self
             self.__reset()
 
         for k, entity in Block.all.items():

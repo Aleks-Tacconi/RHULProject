@@ -1,13 +1,15 @@
 from entities.abstract import Entity
+from collections import defaultdict
 
 class ScoreBoard:
     def __init__(self) -> None:
         self.__count = 0
         self.__time = 0
         self.__base_score = 1000
-        self.__scores = {"LEVEL ONE": 0,
-                         "LEVEL TWO": 0,
-                         "LEVEL THREE": 0}
+        self.__scores = defaultdict()
+        self.__scores["LevelOne"] = 0
+        self.__scores["LevelTwo"] = 0
+        self.__scores["LevelThree"] = 0
         self.__enemy_killed_score = 0
 
     def update(self) -> None:
@@ -24,3 +26,6 @@ class ScoreBoard:
         if entity.give_points:
             entity.give_points = False
             self.__enemy_killed_score += entity.points
+    
+    def return_score(self, level: str) -> int:
+        return self.__scores[level]

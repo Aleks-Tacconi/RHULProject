@@ -3,6 +3,7 @@ import os
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from entities.attack import Attack
+from entities.block import Block
 from utils import Vector
 
 from .abstract import Enemy, PhysicsEntity
@@ -37,6 +38,12 @@ class Fire(Enemy):
             self.pos.y = self.pos.y
         self.__animation.update()
         self.remove()
+
+        self.pos.x += self.vel.x
+        Block.collisions_x(self, self._level_id)
+        self.pos.y += self.vel.y
+        Block.collisions_y(self, self._level_id)
+        self.__animations.update()
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))

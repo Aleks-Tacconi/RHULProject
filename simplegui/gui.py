@@ -17,7 +17,7 @@ class GUI:
         self.__frame.set_keydown_handler(gameloop.keydown_handler)
         self.__frame.set_mouseclick_handler(gameloop.mouseclick_handler)
 
-    def __reset_game(self) -> None:
+    def __reset_game(self, score=0) -> None:
         mainloop = MainLoop(self.__reset_game)
         level_one = LevelOne(self.__reset_game)
         tutorial = Tutorial(self.__reset_game)
