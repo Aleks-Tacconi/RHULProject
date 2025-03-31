@@ -11,7 +11,7 @@ from .block import Block
 from .utils import MultiAnimation, SpriteSheet
 
 class FlyingDemon(Enemy):
-    def __init__(self, pos: Vector, level_id: str) -> None:
+    def __init__(self, pos: Vector, level_id: str, start_direction = "LEFT") -> None:
         super().__init__(
             pos=pos,
             size=Vector(158, 98),
@@ -43,7 +43,7 @@ class FlyingDemon(Enemy):
                                            )
 
         self.points = 100
-        self.direction = "RIGHT"
+        self.direction = start_direction
         self.__current_animation = f"IDLE_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
         self.__distance_x = 1000

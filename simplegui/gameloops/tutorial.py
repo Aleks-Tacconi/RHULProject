@@ -75,6 +75,7 @@ class Tutorial(GameLoop):
                                                " your hands gripping the cold stone as the darkness presses"
                                                " close. Rise, or be trapped in the depths below.", Vector(0,60))
         self.__cutscenes.new_cutscene(Vector(850, 0),4, "Press E to attack.", Vector(0,300))
+        self._enemies.append(AbyssalRevenant(Vector(1283,14), "tutorial", "RIGHT"))
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
