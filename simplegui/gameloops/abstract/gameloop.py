@@ -52,6 +52,12 @@ class GameLoop(metaclass=ABCMeta):
 
         for line in entities:
             entity, x, y = line.split(",")
+            if "\\" in entity:
+                entity = entity.split("\\")
+                entity = os.path.join(*entity)
+            elif "/" in entity:
+                entity = entity.split("/")
+                entity = os.path.join(*entity)
             Block(pos=Vector(int(x), int(y)), img=entity, id=_id)
 
     def mouseclick_handler(self, pos: Tuple[int, int]) -> None:
