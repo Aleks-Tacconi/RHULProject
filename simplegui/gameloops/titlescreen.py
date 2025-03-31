@@ -4,6 +4,9 @@ import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from simplegui.components import Button, ButtonStyle, PlaySounds
 from .abstract import GameLoop
+import os
+from entities import Background
+from utils import Vector
 
 
 class TitleScreen(GameLoop):
@@ -43,8 +46,20 @@ class TitleScreen(GameLoop):
         self.__start_game = start_game
         self.__level_editor = level_editor
 
+        self.__title_background = Background(
+                pos=Vector(404, 200),
+                img=os.path.join("assets", "background", "titlescreen.png"),
+                size_x=540,
+                size_y=304,
+                scale_factor=1.5,
+                frames=3,
+                cols=9,
+            )
+
     def mainloop(self, canvas: simplegui.Canvas) -> None:
-        canvas.draw_text("Knightborne", (200, 200), 50, "White")
+        self.__title_background.render(canvas, 0, 0)
+        self.__title_background.update()
+        canvas.draw_text("Knightborne", (280, 50), 50, "White")
         self.__start.render(canvas)
         self.__editor.render(canvas)
         self.__music.play_sound()

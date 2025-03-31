@@ -150,7 +150,7 @@ class Tutorial(GameLoop):
             self.__player.vel.y = 0
             if self.__can_speak:
                 self.__subtitles = Subtitles("A cold wind howls through the abyss, whispering secrets of "
-                "forgotten warriors. The darkness is thick, suffocating—yet something stirs within it. You.From the void, "
+                "forgotten warriors. The darkness is thick, suffocating—yet something stirs within it. You. From the void, "
                 "a voice emerges, neither friend nor foe. It is ancient, hollow, yet filled with grim purpose.",
                           Vector(200, 360))
                 self.__can_speak = False
