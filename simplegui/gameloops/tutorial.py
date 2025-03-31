@@ -67,7 +67,8 @@ class Tutorial(GameLoop):
         #self.__offset_y_light = 0
         self.__ai = AI()
         self.__count = 0
-        self.__cutscene_1 = False
+        self.__cutscene = 0
+        self.__cutscenes = [True] * 10
         self.__can_speak = True #Open AI not working right now
         self.__subtitles = None
         self.__cinematic = Cinematic()
@@ -145,31 +146,51 @@ class Tutorial(GameLoop):
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
         self.__cinematic.render(canvas, 0, 0)
 
-        if not self.__cutscene_1:
-            self.__player.pos.x = 0
-            self.__player.pos.y = 0
-            self.__player.vel.x = 0
-            self.__player.vel.y = 0
-            self.__player.block_animation_change(True)
+        if self.__cutscenes[0]:
+            self.__player.in_cutscene(True)
             if self.__can_speak:
-                self.__prompt = "A cold wind howls through the abyss, whispering secrets of "
-                "forgotten warriors. The darkness is thick, suffocating—yet something stirs within it. You. From the void, "
-                "a voice emerges, neither friend nor foe. It is ancient, hollow, yet filled with grim purpose."
+                self.__prompt = ("Welcome to Knightborne. The void stirs, whispering your name. Shadows coil,"
+                                 " hungry for the weary and the weak."
+                                 " Press A to drift left, D to wade right. Keep moving… or be swallowed whole.")
                 self.__subtitles = Subtitles(self.__prompt, Vector(200, 360))
                 self.__can_speak = False
                 self.__cinematic.cinematic_bars = True
                 self.__subtitles.start_subtitles()
-                self.__ai.generate_response_voice(self.__prompt)
+                #self.__ai.generate_response_voice(self.__prompt)
             if self.__subtitles is not None:
                 self.__subtitles.render(canvas)
-
-
-
-            if self.__count == 1200:
-                self.__cutscene_1 = True
+            if self.__count == 360:
+                self.__count = 0
+                self.__cutscene += 1
+                self.__cutscenes[0] = False
+                self.__can_speak = True
                 self.__cinematic.cinematic_bars = False
-                self.__player.block_animation_change(False)
-        self.__count += 1
+                self.__player.in_cutscene(False)
+
+
+        if self.__cutscenes[1] and self.__player.pos.x >= 200:
+            self.__player.in_cutscene(True)
+            if self.__can_speak:
+                self.__prompt = ("Press W to scale the wall, your hands gripping the cold stone as the darkness presses"
+                                 "close. Rise, or be trapped in the depths below.")
+                self.__subtitles = Subtitles(self.__prompt, Vector(200, 360))
+                self.__can_speak = False
+                self.__cinematic.cinematic_bars = True
+                self.__subtitles.start_subtitles()
+                #self.__ai.generate_response_voice(self.__prompt)
+            if self.__subtitles is not None:
+                self.__subtitles.render(canvas)
+            if self.__count == 180:
+                self.__count = 0
+                self.__cutscene += 1
+                self.__cutscenes[1] = False
+                self.__can_speak = True
+                self.__cinematic.cinematic_bars = False
+                self.__player.in_cutscene(False)
+
+        print(self.__cinematic.cinematic_bars, "BARSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS")
+        if self.__cutscenes[self.__cutscene]:
+            self.__count += 1
 
     def keyup_handler(self, key: int) -> None:
         self.__player.keyup_handler(key)

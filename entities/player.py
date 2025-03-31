@@ -109,6 +109,7 @@ class Player(PhysicsEntity):
         self.is_attacking = False
         self.__running = False
         self.__jumping = False
+        self.__block_movement = False
 
 
     def remove(self) -> bool:
@@ -169,6 +170,8 @@ class Player(PhysicsEntity):
 
 
     def __horizontal_movement(self) -> None:
+        if self.__block_movement:
+            return
         if not self.__movement_x:
             if self.direction == "LEFT":
                 self.vel.x = min(self.vel.x + self.__speed * 0.25, 0)
@@ -201,25 +204,27 @@ class Player(PhysicsEntity):
             if self.__running and not self.crouched:
                 if direction_x == "A":
                     self.vel.x = max(self.vel.x - self.__speed * multiplier, -15)
-                    if self.direction == "RIGHT":
+                    if self.direction == "RIGHT" and self.vel.y == 0:
                         self.__current_animation = "TURN_AROUND"
                 if direction_x == "D":
                     self.vel.x = min(self.vel.x + self.__speed * multiplier, 15)
-                    if self.direction == "LEFT":
+                    if self.direction == "LEFT" and self.vel.y == 0:
                         self.__current_animation = "TURN_AROUND"
             else:
                 if direction_x == "A":
                     self.vel.x = max(self.vel.x - self.__speed * multiplier, -10)
-                    if self.direction == "RIGHT":
+                    if self.direction == "RIGHT" and self.vel.y == 0:
                         self.__current_animation = "TURN_AROUND"
                 if direction_x == "D":
                     self.vel.x = min(self.vel.x + self.__speed * multiplier, 10)
-                    if self.direction == "LEFT":
+                    if self.direction == "LEFT" and self.vel.y == 0:
                         self.__current_animation = "TURN_AROUND"
 
 
 
     def __vertical_movement(self) -> None:
+        if self.__block_movement:
+            return
         if self.__jumping:
             if self.vel.y == 0:
                 self.__current_animation = "FALL"
@@ -306,7 +311,11 @@ class Player(PhysicsEntity):
                 self.__movement_x = []
                 self.__dead = True
 
-    def block_animation_change(self, boolean: bool) -> None:
+    def in_cutscene(self, boolean: bool) -> None:
+        self.vel.x = 0
+        self.__block_movement = boolean
+        self.__animations.set_one_iteration(False)
+        self.__animations.set_animation(f"IDLE_{self.direction}")
         self.__animations.set_one_iteration(boolean)
 
     def keydown_handler(self, key: int) -> None:

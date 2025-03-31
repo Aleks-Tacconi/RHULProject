@@ -13,7 +13,7 @@ class Cinematic(Entity):
     def __init__(self) -> None:
 
         super().__init__(
-            pos=Vector(int(400), int(195)),
+            pos=Vector(int(405), int(205)),
             size=Vector(810, 410),
             hitbox=Vector(0, 0)
         )

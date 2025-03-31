@@ -4,7 +4,7 @@ from utils import Vector
 import threading
 
 class Subtitles:
-    def __init__(self, text: str, pos: Vector = Vector(0, 0), size = 20, max_words=5) -> None:
+    def __init__(self, text: str, pos: Vector = Vector(0, 0), size = 20, max_words=20, max_characters=30) -> None:
         self.text = ""
         self.__size = size
         self.__max_words = max_words
@@ -16,6 +16,8 @@ class Subtitles:
         self.__subtitle = []
         self.__sentence = []
         self.__prompt = text.split(" ")
+        self.__end_of_sentence = False
+        self.__max_characters = max_characters
 
 
 
@@ -32,10 +34,16 @@ class Subtitles:
                 for letter in word:
                     self.text = self.text + "".join(letter)
                     time.sleep(0.05)
+                    if letter == ".":
+                        self.__end_of_sentence = True
                 self.text = self.text + " "
-                if len(self.__words) >= self.__max_words:
-                    time.sleep(0.25)
+                if (len(self.__words) >= self.__max_words or len(self.__words) >= self.__max_characters or
+                        self.__end_of_sentence):
+                    self.__end_of_sentence = False
+                    time.sleep(0.5)
                     self.text = ""
                     self.__words.clear()
+                if word == self.__prompt[len(self.__prompt) - 1]:
+                    self.__generate = False
 
 
