@@ -74,6 +74,7 @@ class TitleScreen(GameLoop):
         self.__start_game = start_game
         self.__tutorial = tutorial
         self.__level_editor = level_editor
+        self.__music_is_playing = False
 
         self.__title_background = Background(
                 pos=Vector(404, 200),
@@ -93,7 +94,9 @@ class TitleScreen(GameLoop):
         self.__settings.render(canvas)
         self.__tutorials.render(canvas)
         self.__editor.render(canvas)
-        self.__music.play_sound()
+        if not self.__music_is_playing:
+            self.__music_is_playing = True
+            self.__music.play_sound()
 
         if self._mouse.clicked:
             self.__start.handle_click(self._mouse.last_click, self.__start_game)

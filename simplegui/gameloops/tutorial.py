@@ -75,7 +75,8 @@ class Tutorial(GameLoop):
                                                " your hands gripping the cold stone as the darkness presses"
                                                " close. Rise, or be trapped in the depths below.", Vector(0,60))
         self.__cutscenes.new_cutscene(Vector(850, 0),4, "Press E to attack.", Vector(0,300))
-        self._enemies.append(AbyssalRevenant(Vector(1283,14), "tutorial", "RIGHT"))
+
+        self._enemies.append(AbyssalRevenant(Vector(1600,14), "tutorial", "RIGHT"))
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
@@ -149,9 +150,9 @@ class Tutorial(GameLoop):
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
         for trigger in Cutscene.triggers:
             if self.is_entity_visible(self.__player, trigger[0]):
+                trigger[0].render(canvas, -self.__offset_x, -self.__offset_y)
                 self.__cutscenes.play_cutscene(trigger)
                 self.__cutscenes.render(canvas)
-                trigger[0].render(canvas, -self.__offset_x, -self.__offset_y)
 
     def keyup_handler(self, key: int) -> None:
         self.__player.keyup_handler(key)
