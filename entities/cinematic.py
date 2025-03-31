@@ -1,5 +1,4 @@
 import os
-import os
 
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 
@@ -27,8 +26,8 @@ class Cinematic(Entity):
     def update(self) -> None:
         ...
 
-    def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
+    def render(self, canvas: simplegui.Canvas) -> None:
         if self.cinematic_bars:
-            pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
+            pos = Vector(int(self.pos.x), int(self.pos.y))
             self.__animations.render(canvas, pos, self.size)
-            self._render_hitbox(canvas, offset_x, offset_y)
+            self._render_hitbox(canvas, 0, 0)

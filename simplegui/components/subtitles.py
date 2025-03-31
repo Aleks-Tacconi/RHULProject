@@ -4,7 +4,7 @@ from utils import Vector
 import threading
 
 class Subtitles:
-    def __init__(self, text: str, pos: Vector = Vector(0, 0), size = 20, max_words=20, max_characters=30) -> None:
+    def __init__(self, text: str, pos: Vector = Vector(0, 0), size = 20, max_words=12, max_characters=20) -> None:
         self.text = ""
         self.__size = size
         self.__max_words = max_words
@@ -19,10 +19,10 @@ class Subtitles:
         self.__end_of_sentence = False
         self.__max_characters = max_characters
 
-
-
     def render(self, canvas: simplegui.Canvas) -> None:
-        canvas.draw_text(self.text, (270, 370), self.__size, "White")
+        if self.__generate:
+            canvas.draw_text(self.text, (self.__text_pos[0], self.__text_pos[1]),
+                             self.__size, "White")
 
     def start_subtitles(self) -> None:
         threading.Thread(target=self.generate_subtitles).start()

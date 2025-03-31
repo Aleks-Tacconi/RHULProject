@@ -42,6 +42,12 @@ class Entity(metaclass=ABCMeta):
 
         return [x1, y1, x2, y2]
 
+    def collides_with(self, entity) -> bool:
+        x1, y1, x2, y2 = entity.hitbox_area
+        a1, b1, a2, b2 = self.hitbox_area
+
+        return x2 > a1 and x1 < a2 and y2 > b1 and y1 < b2
+
     def _render_hitbox(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         canvas.draw_polygon(
             [

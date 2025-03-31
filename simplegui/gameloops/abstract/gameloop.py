@@ -8,6 +8,7 @@ from entities import AbyssalRevenant, Mage, EvilHand, EvilKnight, DemonSlimeBoss
 from entities.abstract import Entity
 from entities.block import Block
 from utils import Mouse, Vector
+from simplegui.components import Cutscene, Subtitles
 
 
 def get_enemy(enemy: str, x: int, y: int, _id: str) -> Entity | None:
@@ -32,6 +33,8 @@ class GameLoop(metaclass=ABCMeta):
         self._mouse = Mouse()
         self._environment = []
         self._enemies = []
+        self.__cutscene = None
+        self.__subtitles = None
 
     def _load_level(self, path: str, _id: str) -> None:
         file = os.path.join(path, "enemies.txt")
@@ -69,11 +72,16 @@ class GameLoop(metaclass=ABCMeta):
         player_y = player.pos.y
         direction = player.direction
 
-        screen_right = player_x + 600
-        screen_left = player_x - 600
+        screen_right = player_x + 500
+        screen_left = player_x - 500
 
         if (hitbox[0] < screen_right and hitbox[2] > screen_left):
             return True
 
         return False
 
+    def cutscene(self, player: Entity) -> None:
+        self.__cutscene = Cutscene(player)
+
+    def subtitles(self, prompt: str) -> None:
+        self.__subtitles = Subtitles(prompt)

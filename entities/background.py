@@ -1,5 +1,3 @@
-import os
-
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 
 from utils import Vector

@@ -13,6 +13,7 @@ from .block import SIZE
 from .evil_knight import EvilKnight
 from .evil_hand import EvilHand
 from .cinematic import Cinematic
+from .trigger import Trigger
 
 __all__ = ["Player", "Block", "Attack", "AbyssalRevenant", "Fire", "PlayerHealthBar", "Background", "ImpalerBoss",
-           "FlyingDemon", "DemonSlimeBoss", "Mage", "SIZE", "EvilKnight", "EvilHand", "Cinematic"]
+           "FlyingDemon", "DemonSlimeBoss", "Mage", "SIZE", "EvilKnight", "EvilHand", "Cinematic", "Trigger"]
