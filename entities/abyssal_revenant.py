@@ -156,3 +156,6 @@ class AbyssalRevenant(Enemy):
             self.vel.x = self.__speed
         self.seen_player = True
         self.__animations.set_animation(f"RUN_{self.direction}")
+
+    def __str__(self) -> str:
+        return "AbyssalRevenant"

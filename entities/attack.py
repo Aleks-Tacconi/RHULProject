@@ -38,6 +38,8 @@ class Attack(Entity):
         self.__counter += 1
 
         if (self.__counter == self.__start_frame and self.__counter % self.__frames_per_damage == 0):
+            if len(PhysicsEntity.all) == 0 or self.__owner is None:
+                return
             for entity in PhysicsEntity.all:
                 if not entity.seen_player:
                     critical_multiplier = 10
