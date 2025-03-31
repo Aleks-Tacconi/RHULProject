@@ -47,9 +47,9 @@ class Cutscene:
                 self.__count = 0
                 self.__can_speak = True
                 self.__cinematic.cinematic_bars = False
-                self.__player.in_cutscene(False)
                 self.__cutscene_playing = False
                 Cutscene.triggers.remove(trigger)
+                self.__player.in_cutscene(False)
 
         if self.__cutscene_playing:
             self.__count += 1

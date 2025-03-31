@@ -75,8 +75,12 @@ class Tutorial(GameLoop):
                                                " your hands gripping the cold stone as the darkness presses"
                                                " close. Rise, or be trapped in the depths below.", Vector(0,60))
         self.__cutscenes.new_cutscene(Vector(850, 0),4, "Press E to attack.", Vector(0,300))
+        self.__cutscenes.new_cutscene(Vector(2000, 0), 8, "Press S to crouch to sneak behind an"
+                                                          " enemy undetected as long as they are not facing towards"
+                                                          " you. Press E whilst sneaking to deal a sneak attack that"
+                                                          " does critical-damage.", Vector(0, 300))
 
-        self._enemies.append(AbyssalRevenant(Vector(1600,14), "tutorial", "RIGHT"))
+        self._enemies.append(AbyssalRevenant(Vector(2400,104), "tutorial", "RIGHT"))
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
