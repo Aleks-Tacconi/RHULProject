@@ -30,13 +30,13 @@ class Fire(Enemy):
         self.__detection_range_y = 10
         self.__hascollided = False
 
-        self.__animation = Animation(spritesheet, 8)
+        self.__animations = Animation(spritesheet, 8)
 
     def update(self) -> None:
         self.pos += self.vel
         if not self.__hascollided:
             self.pos.y = self.pos.y
-        self.__animation.update()
+        self.__animations.update()
         self.remove()
 
         self.pos.x += self.vel.x
@@ -47,7 +47,7 @@ class Fire(Enemy):
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
-        self.__animation.render(canvas, pos, self.size)
+        self.__animations.render(canvas, pos, self.size)
 
     def __idle(self) -> None:
         self.vel.x = 0

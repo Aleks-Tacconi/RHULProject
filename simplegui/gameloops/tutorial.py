@@ -165,7 +165,7 @@ class Tutorial(GameLoop):
 
 
 
-            if self.__count == 1200:
+            if self.__count == 120:
                 self.__cutscene_1 = True
                 self.__cinematic.cinematic_bars = False
                 self.__player.block_animation_change(False)

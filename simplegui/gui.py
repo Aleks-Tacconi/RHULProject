@@ -23,7 +23,9 @@ class GUI:
         tutorial = Tutorial(self.__reset_game)
 
         level_editor = LevelEditor(self.__reset_game, self.__labels)
-        title_screen = TitleScreen(lambda: self.__set_draw_handler(tutorial), lambda: self.__set_draw_handler(level_editor))
+        title_screen = TitleScreen(lambda: self.__set_draw_handler(level_one),
+                                   lambda: self.__set_draw_handler(tutorial),
+                                   lambda: self.__set_draw_handler(level_editor))
         self.__set_draw_handler(title_screen)
 
     def start(self) -> None:

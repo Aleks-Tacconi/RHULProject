@@ -10,20 +10,48 @@ from utils import Vector
 
 
 class TitleScreen(GameLoop):
-    def __init__(self, start_game: Callable, level_editor: Callable) -> None:
+    def __init__(self, start_game: Callable, tutorial: Callable, level_editor: Callable) -> None:
         super().__init__()
 
         sound_path = "TITLE_MUSIC.wav"
         self.__music = PlaySounds(sound_path)
 
         self.__start = Button(
-            pos=[[300, 280], [500, 280], [500, 330], [300, 330]],
-            text="start",
+            pos=[[300, 240], [500, 240], [500, 270], [300, 270]],
+            text="Start",
             style=ButtonStyle(
                 border_color="Black",
                 border_width=2,
                 fill_color="White",
-                font_size=40,
+                font_size=20,
+                font_color="Black",
+                text_offset_x=-30,
+                text_offset_y=6,
+            ),
+        )
+
+        self.__settings = Button(
+            pos=[[300, 280], [500, 280], [500, 310], [300, 310]],
+            text="Settings",
+            style=ButtonStyle(
+                border_color="Black",
+                border_width=2,
+                fill_color="White",
+                font_size=20,
+                font_color="Black",
+                text_offset_x=-30,
+                text_offset_y=6,
+            ),
+        )
+
+        self.__tutorials = Button(
+            pos=[[300, 320], [500, 320], [500, 350], [300, 350]],
+            text="Tutorial",
+            style=ButtonStyle(
+                border_color="Black",
+                border_width=2,
+                fill_color="White",
+                font_size=20,
                 font_color="Black",
                 text_offset_x=-30,
                 text_offset_y=6,
@@ -31,7 +59,7 @@ class TitleScreen(GameLoop):
         )
 
         self.__editor = Button(
-            pos=[[300, 340], [500, 340], [500, 390], [300, 390]],
+            pos=[[300, 360], [500, 360], [500, 390], [300, 390]],
             text="Level Editor",
             style=ButtonStyle(
                 border_color="Black",
@@ -44,6 +72,7 @@ class TitleScreen(GameLoop):
             ),
         )
         self.__start_game = start_game
+        self.__tutorial = tutorial
         self.__level_editor = level_editor
 
         self.__title_background = Background(
@@ -61,11 +90,14 @@ class TitleScreen(GameLoop):
         self.__title_background.update()
         canvas.draw_text("Knightborne", (280, 50), 50, "White")
         self.__start.render(canvas)
+        self.__settings.render(canvas)
+        self.__tutorials.render(canvas)
         self.__editor.render(canvas)
         self.__music.play_sound()
 
         if self._mouse.clicked:
             self.__start.handle_click(self._mouse.last_click, self.__start_game)
+            self.__tutorials.handle_click(self._mouse.last_click, self.__tutorial)
             self.__editor.handle_click(self._mouse.last_click, self.__level_editor)
 
         self._mouse.update()
