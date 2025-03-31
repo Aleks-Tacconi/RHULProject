@@ -7,7 +7,7 @@ from utils import Vector
 from .abstract import PhysicsEntity
 from .attack import Attack
 from .block import Block
-from .utils import MultiAnimation, SpriteSheet
+from .utils import MultiAnimation, Animation, SpriteSheet
 
 
 class Player(PhysicsEntity):
@@ -305,6 +305,9 @@ class Player(PhysicsEntity):
                 self.__animations.set_one_iteration(True)
                 self.__movement_x = []
                 self.__dead = True
+
+    def block_animation_change(self, boolean: bool) -> None:
+        self.__animations.set_one_iteration(boolean)
 
     def keydown_handler(self, key: int) -> None:
         if key == 17: #SHIFT

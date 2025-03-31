@@ -1,7 +1,6 @@
 import os
 from abc import ABCMeta, abstractmethod
 from typing import Tuple
-from unittest import case
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 

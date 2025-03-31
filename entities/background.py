@@ -6,7 +6,7 @@ from utils import Vector
 
 from .abstract import Entity
 
-from .utils import MultiAnimation, SpriteSheet
+from .utils import Animation, SpriteSheet
 
 class Background(Entity):
     def __init__(self, pos: Vector, img: str, size_x: int, size_y: int,
@@ -26,11 +26,7 @@ class Background(Entity):
 
         spritesheet = SpriteSheet(img, rows = rows, cols = cols)
 
-        self.__animations = MultiAnimation(spritesheet=spritesheet, animations={
-            "BACKGROUND": (rows - 1, cols, frames, False),
-        }
-                                           )
-        self.__animations.set_animation("BACKGROUND")
+        self.__animations = Animation(spritesheet, frames)
 
     def update(self) -> None:
         self.__animations.update()

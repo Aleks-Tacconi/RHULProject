@@ -4,13 +4,12 @@ from typing import Callable
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, DemonSlimeBoss, FlyingDemon, EvilHand,
-                      Mage, EvilKnight, PlayerHealthBar)
+                      Mage, EvilKnight, PlayerHealthBar, Cinematic)
 from utils import Vector
 
 from .abstract import GameLoop
 from simplegui.components import ScoreBoard, Subtitles
 from ai import AI
-import time
 
 ID = "tutorial"
 
@@ -39,7 +38,7 @@ class Tutorial(GameLoop):
                 )
             )
 
-        self.__player = Player(pos=Vector(69, 0), level_id=ID)
+        self.__player = Player(pos=Vector(100, 0), level_id=ID)
 
         """"
         self.__player_light = Background(
@@ -71,6 +70,8 @@ class Tutorial(GameLoop):
         self.__cutscene_1 = False
         self.__can_speak = True #Open AI not working right now
         self.__subtitles = None
+        self.__cinematic = Cinematic()
+        self.__prompt = ""
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
@@ -142,19 +143,23 @@ class Tutorial(GameLoop):
             entity.render(canvas, 0, 0)
 
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
+        self.__cinematic.render(canvas, 0, 0)
 
-        if not self.__cutscene_1 and self.__count >= 20:
+        if not self.__cutscene_1:
             self.__player.pos.x = 0
             self.__player.pos.y = 0
             self.__player.vel.x = 0
             self.__player.vel.y = 0
+            self.__player.block_animation_change(True)
             if self.__can_speak:
-                self.__subtitles = Subtitles("A cold wind howls through the abyss, whispering secrets of "
+                self.__prompt = "A cold wind howls through the abyss, whispering secrets of "
                 "forgotten warriors. The darkness is thick, suffocating—yet something stirs within it. You. From the void, "
-                "a voice emerges, neither friend nor foe. It is ancient, hollow, yet filled with grim purpose.",
-                          Vector(200, 360))
+                "a voice emerges, neither friend nor foe. It is ancient, hollow, yet filled with grim purpose."
+                self.__subtitles = Subtitles(self.__prompt, Vector(200, 360))
                 self.__can_speak = False
-                #self.__ai.generate_response_voice()
+                self.__cinematic.cinematic_bars = True
+                self.__subtitles.start_subtitles()
+                self.__ai.generate_response_voice(self.__prompt)
             if self.__subtitles is not None:
                 self.__subtitles.render(canvas)
 
@@ -162,6 +167,8 @@ class Tutorial(GameLoop):
 
             if self.__count == 1200:
                 self.__cutscene_1 = True
+                self.__cinematic.cinematic_bars = False
+                self.__player.block_animation_change(False)
         self.__count += 1
 
     def keyup_handler(self, key: int) -> None:

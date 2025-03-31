@@ -12,6 +12,7 @@ from .mage import Mage
 from .block import SIZE
 from .evil_knight import EvilKnight
 from .evil_hand import EvilHand
+from .cinematic import Cinematic
 
 __all__ = ["Player", "Block", "Attack", "AbyssalRevenant", "Fire", "PlayerHealthBar", "Background", "ImpalerBoss",
-           "FlyingDemon", "DemonSlimeBoss", "Mage", "SIZE", "EvilKnight", "EvilHand"]
+           "FlyingDemon", "DemonSlimeBoss", "Mage", "SIZE", "EvilKnight", "EvilHand", "Cinematic"]
