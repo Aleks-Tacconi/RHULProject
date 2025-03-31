@@ -66,14 +66,15 @@ class Tutorial(GameLoop):
         #self.__offset_x_light = 0
         #self.__offset_y_light = 0
         self.__cutscenes = Cutscene(self.__player)
-        self.__cutscenes.new_cutscene(Vector(0, 0), 7, "Welcome to Knightborne."
+        self.__cutscenes.new_cutscene(Vector(-50, 0), 7, "Welcome to Knightborne."
                                              " The void stirs, whispering your name. Shadows coil,"
                                              " hungry for the weary and the weak."
                                              " Press A to drift left, D to wade right."
-                                             " Keep moving… or be swallowed whole.")
-        self.__cutscenes.new_cutscene(Vector(300, 0),4, "Press W to scale the wall,"
+                                             " Keep moving… or be swallowed whole.", Vector(0,60))
+        self.__cutscenes.new_cutscene(Vector(300, 0),4, "Press W to jump the wall,"
                                                " your hands gripping the cold stone as the darkness presses"
-                                               " close. Rise, or be trapped in the depths below.")
+                                               " close. Rise, or be trapped in the depths below.", Vector(0,60))
+        self.__cutscenes.new_cutscene(Vector(850, 0),4, "Press E to attack.", Vector(0,300))
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:

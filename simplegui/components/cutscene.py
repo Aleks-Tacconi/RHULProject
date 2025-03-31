@@ -22,9 +22,10 @@ class Cutscene:
         hitbox = trigger
         return hitbox.collides_with(self.__player)
 
-    def new_cutscene(self, pos = Vector(0,0), seconds=1, subtitles="", subtitles_pos = Vector(260,360)) -> None:
+    def new_cutscene(self, pos = Vector(0,0), seconds=1, subtitles="", size = Vector(0,60),
+                     subtitles_pos = Vector(260,360)) -> None:
         self.__cutscenes.append((seconds, subtitles, subtitles_pos))
-        Cutscene.triggers.append((Trigger(pos), self.__index))
+        Cutscene.triggers.append((Trigger(pos, size), self.__index))
         self.__index += 1
         self.__trigger_original_size +=1
 

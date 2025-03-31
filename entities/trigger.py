@@ -5,12 +5,12 @@ from utils import Vector
 from .abstract import Entity
 
 class Trigger(Entity):
-    def __init__(self, pos: Vector, size_x = 64, size_y = 64) -> None:
+    def __init__(self, pos: Vector, size = Vector(0,0)) -> None:
 
         super().__init__(
             pos=Vector(int(pos.x), int(pos.y)),
             size=Vector(0, 0),
-            hitbox=Vector(size_x, size_y)
+            hitbox=Vector(size.x + 2, size.y + 2)
         )
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
