@@ -1,5 +1,7 @@
-from entities.abstract import Entity
 from collections import defaultdict
+
+from entities.abstract import Entity
+
 
 class ScoreBoard:
     def __init__(self) -> None:
@@ -17,7 +19,9 @@ class ScoreBoard:
             self.__time += 1
 
     def calculate_score(self, level: str) -> None:
-        self.__scores[level] = self.__base_score - min(self.__time, 1000) + self.__enemy_killed_score
+        self.__scores[level] = (
+            self.__base_score - min(self.__time, 1000) + self.__enemy_killed_score
+        )
 
     def print_score(self) -> None:
         print(self.__scores)
@@ -26,6 +30,6 @@ class ScoreBoard:
         if entity.give_points:
             entity.give_points = False
             self.__enemy_killed_score += entity.points
-    
+
     def return_score(self, level: str) -> int:
         return self.__scores[level]

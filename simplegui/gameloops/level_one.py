@@ -66,13 +66,7 @@ class LevelOne(GameLoop):
         )
         """
 
-        self._enemies.append(AbyssalRevenant(pos=Vector(90, 200), level_id=ID))
-        self._enemies.append(FlyingDemon(pos=Vector(700, 200), level_id=ID))
-        self._enemies.append(DemonSlimeBoss(pos=Vector(1000, 300), level_id=ID))
-        self._enemies.append(Mage(pos=Vector(60, 200), level_id=ID))
-        self._enemies.append(EvilKnight(pos=Vector(150, 200), level_id=ID))
-        self._enemies.append(EvilHand(pos=Vector(180, 200), level_id=ID))
-
+        self._load_level(os.path.join("levels", "level1"), ID)
         self.__gui = []
         self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 360), player=self.__player)
         self.__gui.append(self.__player_healthbar)
