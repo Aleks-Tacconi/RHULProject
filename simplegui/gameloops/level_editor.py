@@ -12,7 +12,7 @@ from .abstract import GameLoop
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 800
-LEVEL = "level3"
+LEVEL = "level1"
 
 
 class LevelEditor(GameLoop):
@@ -22,7 +22,7 @@ class LevelEditor(GameLoop):
         self.__reset = reset
         self.__camera = Vector(0, 0)
 
-        self.__current = "HELL_BLOCK.png"
+        self.__current = "stone.png"
         self.__type = "block"
 
         self.__labels = labels
