@@ -1,6 +1,6 @@
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 
-from .gameloops import TitleScreen, LevelOne, LevelThree, Tutorial, Login
+from .gameloops import TitleScreen, LevelOne, LevelTwo, LevelThree, Tutorial, Login
 from .gameloops.abstract import GameLoop
 from .gameloops.level_editor import LevelEditor
 
@@ -18,12 +18,14 @@ class GUI:
         self.__frame.set_mouseclick_handler(gameloop.mouseclick_handler)
 
     def __reset_game(self, login_status = False, transition_screen = None) -> None:
+        level_one = LevelOne(self.__reset_game)
+        level_two = LevelTwo(self.__reset_game)
         level_three = LevelThree(self.__reset_game)
         tutorial = Tutorial(self.__reset_game)
         login = Login(lambda: self.__reset_game(login_status=True))
 
         level_editor = LevelEditor(self.__reset_game, self.__labels)
-        title_screen = TitleScreen(lambda: self.__set_draw_handler(level_one),
+        title_screen = TitleScreen(lambda: self.__set_draw_handler(level_two),
                                    lambda: self.__set_draw_handler(tutorial),
                                    lambda: self.__set_draw_handler(level_editor),
                                    lambda: self.__set_draw_handler(login), login_status)
