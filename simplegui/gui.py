@@ -17,8 +17,7 @@ class GUI:
         self.__frame.set_keydown_handler(gameloop.keydown_handler)
         self.__frame.set_mouseclick_handler(gameloop.mouseclick_handler)
 
-    def __reset_game(self, score=0, login_status = False) -> None:
-        level_one = LevelOne(self.__reset_game)
+    def __reset_game(self, login_status = False, transition_screen = None) -> None:
         level_three = LevelThree(self.__reset_game)
         tutorial = Tutorial(self.__reset_game)
         login = Login(lambda: self.__reset_game(login_status=True))
@@ -28,7 +27,11 @@ class GUI:
                                    lambda: self.__set_draw_handler(tutorial),
                                    lambda: self.__set_draw_handler(level_editor),
                                    lambda: self.__set_draw_handler(login), login_status)
-        self.__set_draw_handler(title_screen)
+        
+        if transition_screen is not None:
+            self.__set_draw_handler(transition_screen)
+        else:
+            self.__set_draw_handler(title_screen)
 
     def start(self) -> None:
         self.__frame.start()

@@ -5,6 +5,7 @@ import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, DemonSlimeBoss, FlyingDemon, EvilHand,
                       Mage, EvilKnight, PlayerHealthBar, Cinematic)
+from simplegui.gameloops.transition_screen import TransitionScreen
 from utils import Vector
 
 from .abstract import GameLoop
@@ -14,10 +15,14 @@ from simplegui.components import ScoreBoard, Cutscene
 ID = "tutorial"
 
 class Tutorial(GameLoop):
-    def __init__(self, reset: Callable) -> None:
+    def __init__(self, reset: Callable, proceed: Callable = None) -> None:
         super().__init__()
 
         self.__reset = reset
+        if proceed is None:
+            self.__proceed = reset
+        else:
+            self.__proceed = proceed
 
         self._load_level(os.path.join("levels", "tutorial"), ID)
 
@@ -129,12 +134,17 @@ class Tutorial(GameLoop):
                 self._enemies.remove(entity)
 
         if self.__player.remove():
-            self.__scoreboard.calculate_score("LevelOne")
+            self.__scoreboard.calculate_score(ID)
             print("|||||||||||||||||||||||||||||||||")
             self.__scoreboard.print_score()
             print("|||||||||||||||||||||||||||||||||")
-            self.__reset(self.__scoreboard.return_score("LevelOne"))
-            canvas.draw_text(f"Score: {self.__scoreboard.return_score("LevelOne")}", (400, 50), 30, "White")
+            self.__reset(self.__scoreboard.return_score(ID))
+            self.__reset(transition_screen=TransitionScreen(
+                    ID,
+                    [self.__reset, self.__proceed],
+                    self.__player.hp > 0,
+                    self.__scoreboard.return_score(ID)
+                ))
 
         """
         if self.__player.direction == "LEFT":
