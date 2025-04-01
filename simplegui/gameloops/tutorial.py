@@ -66,12 +66,12 @@ class Tutorial(GameLoop):
         #self.__offset_x_light = 0
         #self.__offset_y_light = 0
         self.__cutscenes = Cutscene(self.__player)
-        self.__cutscenes.new_cutscene(Vector(-50, 0), 7, "Welcome to Knightborne."
+        self.__cutscenes.new_cutscene(Vector(-50, 0), 8, "Welcome to Knightborne."
                                              " The void stirs, whispering your name. Shadows coil,"
                                              " hungry for the weary and the weak."
                                              " Press A to drift left, D to wade right."
                                              " Keep moving… or be swallowed whole.", Vector(0,60))
-        self.__cutscenes.new_cutscene(Vector(300, 0),4, "Press W to jump the wall,"
+        self.__cutscenes.new_cutscene(Vector(300, 0), 4, "Press W to jump the wall,"
                                                " your hands gripping the cold stone as the darkness presses"
                                                " close. Rise, or be trapped in the depths below.", Vector(0,60))
         self.__cutscenes.new_cutscene(Vector(850, 0),2, "Press E to attack.", Vector(0,300))
@@ -79,6 +79,9 @@ class Tutorial(GameLoop):
                                                           " enemy undetected as long as they are not facing towards"
                                                           " you. Press E whilst sneaking to deal a sneak attack that"
                                                           " does critical-damage.", Vector(0, 300))
+        self.__cutscenes.new_cutscene(Vector(2800, 0), 5, "This is a big gap"
+                                                          " To cross you will need to run and jump"
+                                                          " Press Shift to run.", Vector(0, 300))
 
         self._enemies.append(AbyssalRevenant(Vector(2400,104), "tutorial", "RIGHT"))
 

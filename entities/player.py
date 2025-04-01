@@ -142,8 +142,6 @@ class Player(PhysicsEntity):
         self.pos.y += self.vel.y
         Block.collisions_y(self, self._level_id)
 
-
-
         self.__current_animation = f"{self.__current_animation}_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
         self.__animations.update()
@@ -302,6 +300,8 @@ class Player(PhysicsEntity):
         self.__animations.set_one_iteration(True)
 
     def __death(self) -> None:
+        if self.pos.y > 350:
+            self.hp = 0
         if not self.is_alive:
             self.vel.x = 0
             self.vel.y = 12
@@ -319,6 +319,7 @@ class Player(PhysicsEntity):
     def in_cutscene(self, boolean: bool) -> None:
         self.vel.x = 0
         self.__block_movement = boolean
+        self.immune = boolean
         self.__animations.set_one_iteration(False)
         self.__animations.set_animation(f"IDLE_{self.direction}")
         self.__animations.set_one_iteration(boolean)
