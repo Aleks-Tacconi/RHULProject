@@ -9,6 +9,7 @@ class ScoreBoard:
         self.__time = 0
         self.__base_score = 1000
         self.__scores = defaultdict()
+        self.__scores["tutorial"] = 0
         self.__scores["LevelOne"] = 0
         self.__scores["LevelTwo"] = 0
         self.__scores["LevelThree"] = 0
