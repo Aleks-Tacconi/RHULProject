@@ -32,7 +32,7 @@ class LevelOne(GameLoop):
                     img=os.path.join("assets", "background", "CASTLE_BACKGROUND.png"),
                     size_x=828,
                     size_y=358,
-                    scale_factor=2,
+                    scale_factor=2.25,
                     frames=4,
                     cols=6,
                 )
