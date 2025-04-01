@@ -79,7 +79,7 @@ class Tutorial(GameLoop):
                                                           " enemy undetected as long as they are not facing towards"
                                                           " you. Press E whilst sneaking to deal a sneak attack that"
                                                           " does critical-damage.", Vector(0, 300))
-        self.__cutscenes.new_cutscene(Vector(2800, 0), 5, "This is a big gap"
+        self.__cutscenes.new_cutscene(Vector(3000, 0), 5, "This is a big gap"
                                                           " To cross you will need to run and jump"
                                                           " Press Shift to run.", Vector(0, 300))
 
@@ -156,10 +156,10 @@ class Tutorial(GameLoop):
             entity.render(canvas, 0, 0)
 
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
-        for trigger in Cutscene.triggers:
-            if self.is_entity_visible(self.__player, trigger[0]):
-                trigger[0].render(canvas, -self.__offset_x, -self.__offset_y)
-                self.__cutscenes.play_cutscene(trigger)
+        for cutscene in self.__cutscenes.cutscenes:
+            if self.is_entity_visible(self.__player, cutscene[3]):
+                self.__cutscenes.play_cutscene(cutscene)
+                cutscene[3].render(canvas, -self.__offset_x, -self.__offset_y)
                 self.__cutscenes.render(canvas)
 
     def keyup_handler(self, key: int) -> None:

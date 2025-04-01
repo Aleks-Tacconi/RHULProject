@@ -115,6 +115,7 @@ class Player(PhysicsEntity):
         self.knockback_received_multiplier_x = 3
         self.knockback_given_multiplier_x = 4
         self.knockback_given_multiplier_x = 4
+        self.interacting = False
 
 
     def remove(self) -> bool:
@@ -341,6 +342,8 @@ class Player(PhysicsEntity):
             self.__movement_y.append("W")
         if key == 69:  # E
             self.__attack()
+        if key == 70:  # F
+            self.interacting = True
 
 
     def keyup_handler(self, key: int) -> None:
@@ -355,6 +358,8 @@ class Player(PhysicsEntity):
         if key == 68:  # D
             if "D" in self.__movement_x:
                 self.__movement_x.remove("D")
+        if key == 70:  # F
+            self.interacting = False
         if key == 83:  # S
             if "S" in self.__movement_y:
                 self.__movement_y.remove("S")
