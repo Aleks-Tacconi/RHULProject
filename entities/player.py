@@ -110,6 +110,11 @@ class Player(PhysicsEntity):
         self.__running = False
         self.__jumping = False
         self.__block_movement = False
+        self.knockback_chance = 0.1
+        self.knockback_received_multiplier_x = 3
+        self.knockback_received_multiplier_x = 3
+        self.knockback_given_multiplier_x = 4
+        self.knockback_given_multiplier_x = 4
 
 
     def remove(self) -> bool:

@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 from utils import Vector
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 from .entity import Entity
-import math
+import random
 
 class PhysicsEntity(Entity, metaclass=ABCMeta):
     all = []
@@ -29,8 +29,15 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
         self.__max_gravity = 10
         self.__gravity_strength = 0.8
         self.__original_hp = self.hp
+        self.__new_hp = self.hp
         self.boss = False
         self.id = PhysicsEntity.id
+        self.knockback_received_multiplier_x = 10
+        self.knockback_received_multiplier_y = 10
+        self.knockback_given_multiplier_x = 2
+        self.knockback_given_multiplier_y = 2
+        self.knockback_chance = 0.3
+        self.knockback_chance_multiplier = 1
         PhysicsEntity.id += 1
 
         PhysicsEntity.all.append(self)
@@ -72,6 +79,17 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
             self.direction = "RIGHT"
         elif self.vel.x < 0:
             self.direction = "LEFT"
+
+    def _knockback(self, entity) -> None:
+        if self.__new_hp != self.hp:
+            self.__new_hp = self.hp
+            if random.random() < self.knockback_chance * self.knockback_chance_multiplier:
+                if entity.direction == "RIGHT":
+                    self.vel.x += 1 * (self.knockback_received_multiplier_x + entity.knockback_given_multiplier_x)
+                    self.vel.y -= 1 * (self.knockback_received_multiplier_y + entity.knockback_given_multiplier_y)
+                else:
+                    self.vel.x -= 1 * (self.knockback_received_multiplier_x + entity.knockback_given_multiplier_x)
+                    self.vel.y -= 1 * (self.knockback_received_multiplier_y + entity.knockback_given_multiplier_y)
 
     @abstractmethod
     def remove(self) -> bool: ...

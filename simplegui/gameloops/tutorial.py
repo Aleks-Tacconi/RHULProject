@@ -74,7 +74,7 @@ class Tutorial(GameLoop):
         self.__cutscenes.new_cutscene(Vector(300, 0),4, "Press W to jump the wall,"
                                                " your hands gripping the cold stone as the darkness presses"
                                                " close. Rise, or be trapped in the depths below.", Vector(0,60))
-        self.__cutscenes.new_cutscene(Vector(850, 0),4, "Press E to attack.", Vector(0,300))
+        self.__cutscenes.new_cutscene(Vector(850, 0),2, "Press E to attack.", Vector(0,300))
         self.__cutscenes.new_cutscene(Vector(2000, 0), 8, "Press S to crouch to sneak behind an"
                                                           " enemy undetected as long as they are not facing towards"
                                                           " you. Press E whilst sneaking to deal a sneak attack that"
@@ -115,6 +115,7 @@ class Tutorial(GameLoop):
 
         for entity in self._enemies:
             entity.update()
+            self.__player._knockback(entity)
             if self.is_entity_visible(self.__player, entity):
                 entity.interaction(self.__player)
                 entity.render(canvas, -self.__offset_x, -self.__offset_y)

@@ -59,6 +59,7 @@ class DemonSlimeBoss(Enemy):
         self.__player = None
         self.__player_x = None
         self.__seen_player = False
+        self.knockback_chance = 0.01
 
     def __idle(self) -> None:
         if abs(self.__distance_x) > self.__detection_range:
@@ -69,6 +70,7 @@ class DemonSlimeBoss(Enemy):
         if self.hp != self.__base_hp:
             self.__seen_player = True
         self._get_direction()
+        self._knockback(self.__player)
         self._gravity()
         self.__death()
 

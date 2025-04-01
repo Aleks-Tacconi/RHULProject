@@ -66,6 +66,7 @@ class AbyssalRevenant(Enemy):
         if self.hp != self.__base_hp:
             self.seen_player = True
         self._get_direction()
+        self._knockback(self.__player)
         self._gravity()
         self.__death()
 
