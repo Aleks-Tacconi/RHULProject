@@ -3,32 +3,23 @@ from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from entities import (
-    AbyssalRevenant,
-    Attack,
-    Background,
-    Block,
-    DemonSlimeBoss,
-    Fire,
-    FlyingDemon,
-    ImpalerBoss,
-    Mage,
-    Player,
-    PlayerHealthBar,
-    EvilKnight,
-    EvilHand
-)
-from simplegui.components import ScoreBoard
+from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, DemonSlimeBoss, FlyingDemon, EvilHand,
+                      Mage, EvilKnight, PlayerHealthBar, Cinematic)
 from utils import Vector
+
 from .abstract import GameLoop
+from simplegui.components import ScoreBoard, Cutscene
 
-ID = "LevelOne"
 
-class LevelOne(GameLoop):
+ID = "LevelThree"
+
+class LevelThree(GameLoop):
     def __init__(self, reset: Callable) -> None:
         super().__init__()
 
         self.__reset = reset
+
+        self._load_level(os.path.join("levels", "level3"), ID)
 
         self.__scoreboard = ScoreBoard()
 
@@ -37,17 +28,17 @@ class LevelOne(GameLoop):
         for i in range(0, 10):
             self.__environment.append(
                 Background(
-                    pos=Vector(0 + (1656 * i), 400),
+                    pos=Vector(-420 + (1863 * i), 0),
                     img=os.path.join("assets", "background", "HELL_BACKGROUND.png"),
                     size_x=828,
                     size_y=358,
-                    scale_factor=2,
+                    scale_factor=2.25,
                     frames=4,
                     cols=8,
                 )
             )
 
-        self.__player = Player(pos=Vector(-300, 400), level_id=ID)
+        self.__player = Player(pos=Vector(100, -100), level_id=ID)
 
         """"
         self.__player_light = Background(
@@ -66,28 +57,15 @@ class LevelOne(GameLoop):
         )
         """
 
-        self._enemies.append(AbyssalRevenant(pos=Vector(90, 200), level_id=ID))
-        self._enemies.append(FlyingDemon(pos=Vector(700, 200), level_id=ID))
-        self._enemies.append(DemonSlimeBoss(pos=Vector(1000, 300), level_id=ID))
-        self._enemies.append(Mage(pos=Vector(60, 200), level_id=ID))
-        self._enemies.append(EvilKnight(pos=Vector(150, 200), level_id=ID))
-        self._enemies.append(EvilHand(pos=Vector(180, 200), level_id=ID))
-
         self.__gui = []
         self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 360), player=self.__player)
         self.__gui.append(self.__player_healthbar)
-
-        block_path = os.path.join("assets", "blocks", "stone.png")
-        for i in range(0, 360):
-            Block(Vector(i - 20, 15), block_path, ID)
-
-        Block(Vector(14, 14), block_path, ID)
-        Block(Vector(14, 24), block_path, ID)
 
         self.__offset_x = 0
         self.__offset_y = 0
         #self.__offset_x_light = 0
         #self.__offset_y_light = 0
+
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
 
@@ -121,6 +99,7 @@ class LevelOne(GameLoop):
 
         for entity in self._enemies:
             entity.update()
+            self.__player._knockback(entity)
             if self.is_entity_visible(self.__player, entity):
                 entity.interaction(self.__player)
                 entity.render(canvas, -self.__offset_x, -self.__offset_y)
@@ -131,12 +110,12 @@ class LevelOne(GameLoop):
                 self._enemies.remove(entity)
 
         if self.__player.remove():
-            self.__scoreboard.calculate_score(ID)
+            self.__scoreboard.calculate_score("LevelThree")
             print("|||||||||||||||||||||||||||||||||")
             self.__scoreboard.print_score()
             print("|||||||||||||||||||||||||||||||||")
-            self.__reset(self.__scoreboard.return_score(ID))
-            canvas.draw_text(f"Score: {self.__scoreboard.return_score(ID)}", (400, 50), 30, "White")
+            self.__reset(self.__scoreboard.return_score("LevelThree"))
+            canvas.draw_text(f"Score: {self.__scoreboard.return_score("LevelThree")}", (400, 50), 30, "White")
 
         """
         if self.__player.direction == "LEFT":
@@ -164,5 +143,3 @@ class LevelOne(GameLoop):
 
     def keydown_handler(self, key: int) -> None:
         self.__player.keydown_handler(key)
-
-

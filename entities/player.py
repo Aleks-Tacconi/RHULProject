@@ -301,12 +301,13 @@ class Player(PhysicsEntity):
         self.__animations.set_one_iteration(True)
 
     def __death(self) -> None:
-        if self.pos.y > 350:
-            self.hp = 0
+
+        #if self.pos.y > 350:
+            #self.hp = 0
         if not self.is_alive:
             self.vel.x = 0
             self.vel.y = 12
-
+        
             if not self.__dead:
                 self.__animations.set_one_iteration(False)
 

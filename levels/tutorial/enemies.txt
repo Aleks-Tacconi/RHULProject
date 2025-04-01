@@ -1,2 +1,0 @@
-AbyssalRevenant,1232,17
-AbyssalRevenant,-398,19
