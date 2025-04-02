@@ -4,11 +4,11 @@ from typing import Callable
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, DemonSlimeBoss, FlyingDemon, EvilHand,
-                      Mage, EvilKnight, PlayerHealthBar, Cinematic)
+                      Mage, EvilKnight, PlayerHealthBar, Cinematic, Teleport)
 from utils import Vector
 
 from .abstract import GameLoop
-from simplegui.components import ScoreBoard, Cutscene
+from simplegui.components import ScoreBoard, Cutscene, Interactable
 
 
 ID = "LevelOne"
@@ -28,17 +28,17 @@ class LevelOne(GameLoop):
         for i in range(0, 10):
             self.__environment.append(
                 Background(
-                    pos=Vector(-420 + (1279 * i), 0),
+                    pos=Vector(-420 + (960 * i), 70),
                     img=os.path.join("assets", "background", "BATTLEFIELD_BACKGROUND.png"),
                     size_x=1280,
                     size_y=566,
-                    scale_factor=1,
-                    frames=12,
+                    scale_factor=0.75,
+                    frames=4,
                     cols=17,
                 )
             )
 
-        self.__player = Player(pos=Vector(100, -100), level_id=ID)
+        self.__player = Player(pos=Vector(100, 0), level_id=ID)
 
         """"
         self.__player_light = Background(
@@ -65,7 +65,10 @@ class LevelOne(GameLoop):
         self.__offset_y = 0
         #self.__offset_x_light = 0
         #self.__offset_y_light = 0
-        self.yo = 5 # delete this
+        self.__teleport = Teleport(Vector(0, 0), self.__player)
+        self.__interactions = Interactable(self.__teleport.teleport(),
+                                           os.path.join("assets", "portal", "red_portal.png"),
+                                           1, 23, 4, self.__player)
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
@@ -132,6 +135,9 @@ class LevelOne(GameLoop):
                 self.__player.pos.y - self.__offset_y,
             )
         """
+
+        for interactable in self.__interactions.interactables:
+            self.__interactions.update(interactable)
 
         for entity in self.__gui:
             entity.update()

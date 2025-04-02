@@ -14,6 +14,8 @@ from .evil_knight import EvilKnight
 from .evil_hand import EvilHand
 from .cinematic import Cinematic
 from .trigger import Trigger
+from .teleport import Teleport
 
 __all__ = ["Player", "Block", "Attack", "AbyssalRevenant", "Fire", "PlayerHealthBar", "Background", "ImpalerBoss",
-           "FlyingDemon", "DemonSlimeBoss", "Mage", "SIZE", "EvilKnight", "EvilHand", "Cinematic", "Trigger"]
+           "FlyingDemon", "DemonSlimeBoss", "Mage", "SIZE", "EvilKnight", "EvilHand", "Cinematic", "Trigger",
+           "Teleport"]
