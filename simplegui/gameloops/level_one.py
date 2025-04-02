@@ -75,6 +75,7 @@ class LevelOne(GameLoop):
                                            Vector(128, 128))
 
 
+
     def mainloop(self, canvas: simplegui.Canvas) -> None:
 
         self.__scoreboard.update()
