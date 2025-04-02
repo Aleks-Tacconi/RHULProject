@@ -34,7 +34,7 @@ class TransitionScreen(GameLoop):
         self.__score = score
 
         if passed_level:
-            self.__elements = [f"You passed {prev_level}.", f"Proceed to {next_level[prev_level]}"]
+            self.__elements = [f"You passed {this_level[prev_level]}.", f"Proceed to {next_level[prev_level]}"]
         else:
             self.__elements = [f"You died.", f"Retry {this_level[prev_level]}."]
                 
