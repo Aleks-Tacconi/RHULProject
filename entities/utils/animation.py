@@ -198,8 +198,15 @@ class MultiAnimation:
     def get_animation(self) -> None:
         return self.__current_animation
 
+
+    def get_frame(self):
+        return self.__frame_index
+
     def set_one_iteration(self, boolean: bool) -> None:
         self.__one_iteration = boolean
+
+    def able_to_change_frame(self):
+        return self.__counter == self.__frames_per_animation
 
     def update(self) -> None:
         if self.__current_animation is None:
@@ -208,7 +215,7 @@ class MultiAnimation:
         self.__counter += 1
 
 
-        if self.__counter == self.__frames_per_animation:
+        if self.able_to_change_frame():
             self.__update_frame_index()
 
     def __update_frame_index(self) -> None:

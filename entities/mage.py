@@ -4,6 +4,7 @@ import threading
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 
 from entities.abstract.physics_entity import PhysicsEntity
+from entities.fireball import LeftFireball, RightFireball
 from utils import Vector
 
 from .abstract import Enemy
@@ -24,6 +25,8 @@ class Mage(Enemy):
             level_id=level_id,
             hitbox_offset=Vector(0, 60),
         )
+        self.__left_fireball = None
+        self.__right_fireball = None
 
         spritesheet = SpriteSheet(
             os.path.join("assets", "mage", "MAGE.png"),
@@ -36,8 +39,8 @@ class Mage(Enemy):
             "IDLE_LEFT": (0, 8, 8, True),
             "RUN_RIGHT": (1, 8, 8, False),
             "RUN_LEFT": (1, 8, 8, True),
-            "ATTACK_RIGHT": (4, 17, 8, False),
-            "ATTACK_LEFT": (4, 17, 8, True),
+            "ATTACK_RIGHT": (4, 17, 2, False),
+            "ATTACK_LEFT": (4, 17, 2, True),
             "HURT_RIGHT": (5, 5, 5, False),
             "HURT_LEFT": (5, 5, 5, True),
             "DEATH_RIGHT": (6, 9, 8, False),
@@ -50,8 +53,8 @@ class Mage(Enemy):
         self.__current_animation = f"IDLE_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
         self.__distance_x = 1000
-        self.__detection_range = 200
-        self.__attack_distance = 70
+        self.__detection_range = 400
+        self.__attack_distance = 400
         self.__speed = 3
         self.__base_hp = self.hp
         self.__dead = False
@@ -82,12 +85,32 @@ class Mage(Enemy):
         Block.collisions_y(self, self._level_id)
         self.__animations.update()
 
+        if self.__animations.get_animation() == "ATTACK_LEFT" and self.__animations.get_frame() == [6, 4]:
+            self.__left_fireball = LeftFireball(self.pos.x, self.pos.y+35, "LevelThree")
+
+        if self.__animations.get_animation() == "ATTACK_RIGHT" and self.__animations.get_frame() == [11, 4]:
+            self.__right_fireball = RightFireball(self.pos.x, self.pos.y+35, "LevelThree")
+
+        if self.__left_fireball is not None:
+            self.__left_fireball.update()
+            
+
+        if self.__right_fireball is not None:
+            self.__right_fireball.update()
+            
+
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         pos = Vector(int(self.pos.x + offset_x), int(self.pos.y + offset_y))
         self.__animations.render(canvas, pos, self.size)
         self._render_hitbox(canvas, offset_x, offset_y)
         self.healthbar(canvas, offset_x, offset_y)
+
+        if self.__left_fireball is not None:
+            self.__left_fireball.render(canvas, offset_x, offset_y)
+
+        if self.__right_fireball is not None:
+            self.__right_fireball.render(canvas, offset_x, offset_y)
 
     def __attack(self) -> None:
         if abs(self.__distance_x) > self.__attack_distance or not self.__seen_player:
@@ -150,7 +173,12 @@ class Mage(Enemy):
     def interaction(self, entity: PhysicsEntity) -> None:
         self.__distance_x = self.pos.x - entity.pos.x
         self.__player = entity
-        print("Health: ", self.hp)
+
+        if self.__left_fireball is not None:
+            self.__left_fireball.interaction(entity)
+
+        if self.__right_fireball is not None:
+            self.__right_fireball.interaction(entity)
 
 
     def __str__(self) -> str:
