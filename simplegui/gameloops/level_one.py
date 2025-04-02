@@ -65,10 +65,11 @@ class LevelOne(GameLoop):
         self.__offset_y = 0
         #self.__offset_x_light = 0
         #self.__offset_y_light = 0
-        self.__teleport = Teleport(Vector(0, 0), self.__player)
-        self.__interactions = Interactable(self.__teleport.teleport(),
+        self.__teleport = Teleport(Vector(0, -500), self.__player)
+        self.__interactions = Interactable(self.__teleport.teleport,
                                            os.path.join("assets", "portal", "red_portal.png"),
-                                           1, 23, 4, self.__player)
+                                           1, 24, 4, self.__player, Vector(300, 100),
+                                           Vector(128, 128))
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
@@ -138,6 +139,7 @@ class LevelOne(GameLoop):
 
         for interactable in self.__interactions.interactables:
             self.__interactions.update(interactable)
+            self.__interactions.render(canvas, -self.__offset_x, -self.__offset_y)
 
         for entity in self.__gui:
             entity.update()

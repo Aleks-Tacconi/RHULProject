@@ -184,7 +184,7 @@ class DemonSlimeBoss(Enemy):
         print("Health: ", self.hp)
 
     def __str__(self) -> str:
-        return "DEMONSLIMEBOSS"
+        return "DemonSlimeBoss"
 
 
 

@@ -1,0 +1,2 @@
+AbyssalRevenant,2246,116,RIGHT
+AbyssalRevenant,1216,22,LEFT

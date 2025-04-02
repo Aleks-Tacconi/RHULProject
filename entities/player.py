@@ -300,8 +300,8 @@ class Player(PhysicsEntity):
 
     def __death(self) -> None:
 
-        #if self.pos.y > 350:
-            #self.hp = 0
+        if self.pos.y > 350:
+            self.hp = 0
         if not self.is_alive:
             self.vel.x = 0
             self.vel.y = 12

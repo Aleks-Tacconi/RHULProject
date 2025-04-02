@@ -1,5 +1,5 @@
 import os
-from typing import Callable, Iterable
+from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
@@ -13,7 +13,7 @@ from entities import (
     FlyingDemon,
     Mage,
 )
-from entities.abstract.entity import Entity
+
 from entities.attack import Attack
 from utils import Vector
 
@@ -21,7 +21,7 @@ from .abstract import GameLoop
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 800
-LEVEL = "level2"
+LEVEL = "tutorial"
 
 
 class LevelEditor(GameLoop):
@@ -44,10 +44,10 @@ class LevelEditor(GameLoop):
         self.__all_eneimes = [
             "AbyssalRevenant",
             "Mage",
-            "FLYINGDEMON",
-            "DEMONSLIMEBOSS",
-            "EVILKNIGHT",
-            "EVILHAND",
+            "FlyingDemon",
+            "DemonSlimeBoss",
+            "EvilKnight",
+            "EvilHand",
         ]
         self.__all_entities = os.listdir(os.path.join("assets", "blocks"))
 
