@@ -15,14 +15,12 @@ from simplegui.components import ScoreBoard, Cutscene, Interactable
 ID = "tutorial"
 
 class Tutorial(GameLoop):
-    def __init__(self, reset: Callable, proceed: Callable = None) -> None:
+    def __init__(self, reset: Callable, failed: Callable, passed: Callable) -> None:
         super().__init__()
 
         self.__reset = reset
-        if proceed is None:
-            self.__proceed = reset
-        else:
-            self.__proceed = proceed
+        self.__failed = failed
+        self.__passed = passed
 
         self._load_level(os.path.join("levels", "tutorial"), ID)
 
@@ -149,7 +147,9 @@ class Tutorial(GameLoop):
             self.__reset(self.__scoreboard.return_score(ID))
             self.__reset(transition_screen=TransitionScreen(
                     ID,
-                    [self.__reset, self.__proceed],
+                    self.__reset,
+                    self.__failed,
+                    self.__passed,
                     self.__player.hp > 0,
                     self.__scoreboard.return_score(ID)
                 ))

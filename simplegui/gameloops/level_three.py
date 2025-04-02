@@ -15,16 +15,14 @@ from simplegui.components import ScoreBoard, Cutscene
 ID = "LevelThree"
 
 class LevelThree(GameLoop):
-    def __init__(self, reset: Callable, proceed: Callable = None) -> None:
+    def __init__(self, reset: Callable, failed: Callable, passed: Callable) -> None:
         super().__init__()
 
         self.__reset = reset
 
-        if proceed is None:
-            self.__proceed = reset
-        else:
-            self.__proceed = proceed
-
+        self.__reset = reset
+        self.__failed = failed
+        self.__passed = passed
         self._load_level(os.path.join("levels", "level3"), ID)
 
         self.__scoreboard = ScoreBoard()
@@ -120,10 +118,14 @@ class LevelThree(GameLoop):
             print("|||||||||||||||||||||||||||||||||")
             self.__scoreboard.print_score()
             print("|||||||||||||||||||||||||||||||||")
-            self.__reset(transition_screen=TransitionScreen(ID, 
-                                          [self.__reset, self.__proceed], 
-                                          self.__player.hp > 0, 
-                                          self.__scoreboard.return_score(ID)))
+            self.__reset(transition_screen=TransitionScreen(
+                    prev_level=ID,
+                    title=self.__reset,
+                    failed=self.__failed,
+                    passed=self.__passed,
+                    passed_level=self.__player.hp > 0,
+                    score=self.__scoreboard.return_score(ID)
+                ))
 
         """
         if self.__player.direction == "LEFT":

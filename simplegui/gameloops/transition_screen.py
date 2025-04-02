@@ -9,33 +9,53 @@ from entities import Background
 from utils import Vector
 
 class TransitionScreen(GameLoop):
-    def __init__(self, prev_level: str, next_game: list, passed_level: bool, score: int) -> None:
+    def __init__(self, prev_level: str, title: Callable, failed: Callable, passed: Callable, passed_level: bool, score: int) -> None:
         super().__init__()
 
+        self.__title = title
+
         next_level = {
-            "tutorial": "the Title Screen",
+            "tutorial": "LevelOne",
             "LevelOne": "Level Two",
             "LevelTwo": "Level Three",
-            "LevelThree": "the Title Screen",
-            "the Main Loop": "the Title Screen"
+            "LevelThree": "the Title Screen"
+        }
+
+        this_level = {
+            "tutorial": "the Tutorial",
+            "LevelOne": "Level One",
+            "LevelTwo": "Level Two",
+            "LevelThree": "Level Three"
         }
         if passed_level:
-            self.__start_game = next_game[1]
-        else:            
-            self.__start_game = next_game[0]
+            self.__start_game = passed
+        else:
+            self.__start_game = failed
         self.__score = score
 
         if passed_level:
             self.__elements = [f"You passed {prev_level}.", f"Proceed to {next_level[prev_level]}"]
         else:
-            self.__elements = [f"You died.", f"Retry {prev_level}."]
-            if next_level[prev_level] == "the Title Screen":
-                self.__elements[1] = "Return to the Title Screen."
+            self.__elements = [f"You died.", f"Retry {this_level[prev_level]}."]
                 
         
         self.__start = Button(
             pos=[[290, 240], [510, 240], [510, 270], [290, 270]],
             text=self.__elements[1],
+            style=ButtonStyle(
+                border_color="Black",
+                border_width=2,
+                fill_color="White",
+                font_size=20,
+                font_color="Black",
+                text_offset_x=-105,
+                text_offset_y=6,
+            )
+        )
+
+        self.__title_screen = Button(
+            pos=[[290, 280], [510, 280], [510, 310], [290, 310]],
+            text="Return to the Title Screen.",
             style=ButtonStyle(
                 border_color="Black",
                 border_width=2,
@@ -63,9 +83,11 @@ class TransitionScreen(GameLoop):
         canvas.draw_text(self.__elements[0], (280, 50), 50, "White")
         canvas.draw_text(f"Score: {self.__score}", (280, 150), 50, "White")
         self.__start.render(canvas)
+        self.__title_screen.render(canvas)
 
         if self._mouse.clicked:
             self.__start.handle_click(self._mouse.last_click, self.__start_game)
+            self.__title_screen.handle_click(self._mouse.last_click, self.__title)
         
         self._mouse.update()
     
