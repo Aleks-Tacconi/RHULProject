@@ -1,5 +1,8 @@
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 
+from simplegui.gameloops.cutscene_screen import CutSceneScreen
+from simplegui.gameloops.cutscene_one import CutsceneOne
+
 from .gameloops import TitleScreen, LevelOne, LevelTwo, LevelThree, Tutorial, Login
 from .gameloops.abstract import GameLoop
 from .gameloops.level_editor import LevelEditor
@@ -18,30 +21,35 @@ class GUI:
         self.__frame.set_keydown_handler(gameloop.keydown_handler)
         self.__frame.set_mouseclick_handler(gameloop.mouseclick_handler)
 
-    def __reset_game(self, login_status = False, transition_screen = None) -> None:
-        tutorial = Tutorial(self.__reset_game, 
-                            failed=self.__reset_tutorial,
-                            passed=self.__reset_level_one)
-        level_one = LevelOne(reset=self.__reset_game,
-                            failed=self.__reset_level_one,
-                            passed=self.__reset_level_two)
-        level_two = LevelTwo(self.__reset_game,
-                            failed=self.__reset_level_two,
-                            passed=self.__reset_level_three)
-        level_three = LevelThree(self.__reset_game,
-                            failed=self.__reset_level_three,
-                            passed=self.__reset_game)
-        login = Login(lambda: self.__reset_game(login_status=True))
-
-        level_editor = LevelEditor(self.__reset_game, self.__labels)
-        title_screen = TitleScreen(lambda: self.__set_draw_handler(level_two),
-                                   lambda: self.__set_draw_handler(tutorial),
-                                   lambda: self.__set_draw_handler(level_editor),
-                                   lambda: self.__set_draw_handler(login), login_status)
-        
+    def __reset_game(self, login_status = False, transition_screen = None, cutscene = None) -> None:
         if transition_screen is not None:
             self.__set_draw_handler(transition_screen)
+        elif cutscene is not None:
+            self.__set_draw_handler(cutscene)
         else:
+            tutorial = Tutorial(reset=self.__reset_game, 
+                                failed=self.__reset_tutorial,
+                                passed=self.__reset_level_one)
+            level_one = LevelOne(reset=self.__reset_game,
+                                failed=self.__reset_level_one,
+                                passed=self.__reset_level_two)
+            level_two = LevelTwo(self.__reset_game,
+                                failed=self.__reset_level_two,
+                                passed=self.__reset_level_three)
+            level_three = LevelThree(self.__reset_game,
+                                failed=self.__reset_level_three,
+                                passed=self.__reset_game)
+            login = Login(lambda: self.__reset_game(login_status=True))
+
+            cutscene_1 = CutsceneOne(self.__reset_game,
+                                    self.__reset_level_one)
+
+            level_editor = LevelEditor(self.__reset_game, self.__labels)
+            title_screen = TitleScreen(lambda: self.__set_draw_handler(cutscene_1),
+                                    lambda: self.__set_draw_handler(tutorial),
+                                    lambda: self.__set_draw_handler(level_editor),
+                                    lambda: self.__set_draw_handler(login), login_status)
+        
             self.__set_draw_handler(title_screen)
     
     def __reset_tutorial(self, login_status = False):

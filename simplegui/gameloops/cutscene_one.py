@@ -5,6 +5,7 @@ import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, DemonSlimeBoss, FlyingDemon, EvilHand,
                       Mage, EvilKnight, PlayerHealthBar, Cinematic)
+from simplegui.gameloops.cutscene_screen import CutSceneScreen
 from simplegui.gameloops.transition_screen import TransitionScreen
 from utils import Vector
 
@@ -15,17 +16,10 @@ from simplegui.components import ScoreBoard, Cutscene
 ID = "CutsceneOne"
 
 class CutsceneOne(GameLoop):
-    def __init__(self, reset: Callable, failed: Callable, passed: Callable) -> None:
+    def __init__(self, reset: Callable, passed: Callable) -> None:
         super().__init__()
-
         self.__reset = reset
-
-        self.__reset = reset
-        self.__failed = failed
         self.__passed = passed
-        self.__scoreboard = ScoreBoard()
-
-
         self.__environment = []
 
 
@@ -97,13 +91,8 @@ class CutsceneOne(GameLoop):
                 self.__cutscenes.render(canvas)
 
         if self.__cutscenes.next_scene:
-            self.__reset(transition_screen=TransitionScreen(
-                ID,
-                self.__reset,
-                self.__failed,
-                self.__passed,
-                self.__player.hp > 0,
-                self.__scoreboard.return_score("LevelOne")
+            self.__reset(cutscene=CutSceneScreen(
+                next=self.__passed
             ))
 
     def keyup_handler(self, key: int) -> None:
