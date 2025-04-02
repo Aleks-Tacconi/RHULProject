@@ -49,10 +49,7 @@ class LevelEditor(GameLoop):
             "EVILKNIGHT",
             "EVILHAND",
         ]
-        self.__all_entities = [
-            "GREY_STONE_BLOCK.jpg",
-            "stone.png",
-        ]
+        self.__all_entities = os.listdir(os.path.join("assets", "blocks"))
 
     def __set_text(self) -> None:
         self.__labels[0].set_text(
