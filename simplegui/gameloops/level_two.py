@@ -28,7 +28,7 @@ class LevelTwo(GameLoop):
         for i in range(0, 10):
             self.__environment.append(
                 Background(
-                    pos=Vector(-420 + (1863 * i), 0),
+                    pos=Vector(-420 + (1862 * i), 0),
                     img=os.path.join("assets", "background", "SURFACE_HELL_BACKGROUND.png"),
                     size_x=828,
                     size_y=358,

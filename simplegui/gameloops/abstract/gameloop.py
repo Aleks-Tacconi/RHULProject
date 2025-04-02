@@ -80,8 +80,10 @@ class GameLoop(metaclass=ABCMeta):
 
         screen_right = player_x + 500
         screen_left = player_x - 500
+        screen_top = player_y - 400
+        screen_bottom = player_y + 300
 
-        if (hitbox[0] < screen_right and hitbox[2] > screen_left):
+        if (hitbox[0] < screen_right and hitbox[2] > screen_left) and (hitbox[1] < screen_bottom and hitbox[3] > screen_top):
             return True
 
         return False
