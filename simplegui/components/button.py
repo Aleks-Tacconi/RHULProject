@@ -28,6 +28,9 @@ class Button:
             (pos[0][1] + pos[2][1]) // 2 + style.text_offset_y,
         ]
 
+    def change_colour_border(self, colour):
+        self.__style.border_color = colour
+
     def render(self, canvas: simplegui.Canvas) -> None:
         canvas.draw_polygon(
             self.__pos,

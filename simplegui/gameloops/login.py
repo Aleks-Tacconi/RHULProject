@@ -1,3 +1,4 @@
+import string
 from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
@@ -15,6 +16,7 @@ class Login(GameLoop):
         self.__password = ""
         self.__focus = "username"
         self.__back = back
+        self.__confirm_text = " "
 
         pos = [[300, 320], [500, 320], [500, 350], [300, 350]]
         self.__username_button = Button(
@@ -63,9 +65,19 @@ class Login(GameLoop):
         self.__confirm.render(canvas)
         self.__password_button.render(canvas)
         self.__username_button.render(canvas)
+        
+        if self.__focus == "username":
+            canvas.draw_text(self.__username, [310, 180], 20, "Red")
+            canvas.draw_text("●" * len(self.__password), [310, 220], 20, "White")
+            self.__username_button.change_colour_border("Red")
+            self.__password_button.change_colour_border("White")
+        else:
+            canvas.draw_text(self.__username, [310, 180], 20, "White")
+            canvas.draw_text("●" * len(self.__password), [310, 220], 20, "Red")
+            self.__username_button.change_colour_border("White")
+            self.__password_button.change_colour_border("Red")
 
-        canvas.draw_text(self.__username, [310, 180], 20, "White")
-        canvas.draw_text(self.__password, [310, 220], 20, "White")
+        canvas.draw_text(self.__confirm_text, [350, 340], 20, "White")
 
         if self._mouse.clicked:
             self.__password_button.handle_click(
@@ -80,6 +92,8 @@ class Login(GameLoop):
     def __login(self) -> None:
         if SCORE.login(self.__username, self.__password):
             self.__back()
+        else:
+            self.__confirm_text = "Login failed."
 
     def __focus_username(self) -> None:
         self.__focus = "username"
@@ -100,14 +114,26 @@ class Login(GameLoop):
             return
 
         try:
+            print(key)
+            if (key == 13): # 13 is enter key
+                self.__confirm_text = "Logging in..."
+                self.__login()
+                return
+            if (key == 9): # 9 is tab key
+                if self.__focus == "username":
+                    self.__focus_password()
+                else:
+                    self.__focus_username()
+                return
             key = chr(key).lower()
             print(key)
-            if self.__focus == "username":
-                self.__username += key
-                self.__username = self.__username[:12]
-            if self.__focus == "password":
-                self.__password += key
-                self.__password = self.__password[:12]
+            if key in string.printable and not (key == "\t" or key == "\n"):
+                if self.__focus == "username":
+                    self.__username += key
+                    self.__username = self.__username[:12]
+                if self.__focus == "password":
+                    self.__password += key
+                    self.__password = self.__password[:12]
         except:
             pass
 
