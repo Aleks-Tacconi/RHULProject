@@ -24,6 +24,7 @@ class Mage(Enemy):
             hp=2000,
             level_id=level_id,
             hitbox_offset=Vector(0, 60),
+            direction=start_direction
         )
         self.__left_fireball = None
         self.__right_fireball = None

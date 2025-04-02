@@ -18,6 +18,7 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
         hp: int,
         level_id: str,
         hitbox_offset: Vector = Vector(0, 0),
+        direction="LEFT",
     ) -> None:
         super().__init__(pos, size, hitbox, hitbox_offset)
 
@@ -25,7 +26,6 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
         self._level_id = level_id
         self.hp = hp
         self.immune = False
-        self.direction = None
         self.__max_gravity = 10
         self.__gravity_strength = 0.8
         self.__original_hp = self.hp
@@ -38,6 +38,7 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
         self.knockback_given_multiplier_y = 2
         self.knockback_chance = 0.3
         self.knockback_chance_multiplier = 1
+        self.direction = direction
         PhysicsEntity.id += 1
 
         PhysicsEntity.all.append(self)

@@ -3,7 +3,16 @@ from typing import Callable, Iterable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from entities import SIZE, AbyssalRevenant, Block, Mage, DemonSlimeBoss, FlyingDemon, EvilKnight, EvilHand
+from entities import (
+    SIZE,
+    AbyssalRevenant,
+    Block,
+    DemonSlimeBoss,
+    EvilHand,
+    EvilKnight,
+    FlyingDemon,
+    Mage,
+)
 from entities.abstract.entity import Entity
 from entities.attack import Attack
 from utils import Vector
@@ -12,7 +21,7 @@ from .abstract import GameLoop
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 800
-LEVEL = "level3"
+LEVEL = "level2"
 
 
 class LevelEditor(GameLoop):
@@ -22,27 +31,48 @@ class LevelEditor(GameLoop):
         self.__reset = reset
         self.__camera = Vector(0, 0)
 
-        self.__current = "GREY_STONE_BLOCK.jpg"
-        self.__type = "block"
+        self.__current = "AbyssalRevenant"
+        self.__type = "enemy"
 
         self.__labels = labels
 
         self.__toggle = True
+        self.__direction = "LEFT"
 
         self._load_level(os.path.join("levels", LEVEL), "LevelEditor")
 
+        self.__all_eneimes = [
+            "AbyssalRevenant",
+            "Mage",
+            "FLYINGDEMON",
+            "DEMONSLIMEBOSS",
+            "EVILKNIGHT",
+            "EVILHAND",
+        ]
+        self.__all_entities = [
+            "GREY_STONE_BLOCK.jpg",
+            "stone.png",
+        ]
+
     def __set_text(self) -> None:
-        self.__labels[0].set_text("Press q to return to main menu, do this before closing application to ensure the level saves!")
+        self.__labels[0].set_text(
+            "Press q to return to main menu, do this before closing application to ensure the level saves!"
+        )
         self.__labels[7].set_text(f"current: {self.__current}")
-        self.__labels[9].set_text("[1] grey stone block")
-        self.__labels[10].set_text("[2] stone block")
-        self.__labels[11].set_text("[3] abyssal revenant")
-        self.__labels[12].set_text("[4] mage")
-        self.__labels[13].set_text("[5] flying demon")
-        self.__labels[14].set_text("[6] demon slime boss")
-        self.__labels[15].set_text("[7] evil knight")
-        self.__labels[16].set_text("[8] evil hand")
-        self.__labels[17].set_text("[9] toggle lines")
+        self.__labels[10].set_text(f"type: {self.__type}")
+        self.__labels[13].set_text(f"enemy direction: {self.__direction}")
+        self.__labels[16].set_text("[1] enemies")
+        self.__labels[17].set_text("[2] blocks")
+        self.__labels[18].set_text("[3] toggle guidelines")
+        self.__labels[19].set_text("[4] toggle enemy direction")
+
+    def __change_selected(self, dir, lst) -> None:
+        new_index = lst.index(self.__current) + dir
+
+        if new_index < 0:
+            new_index = len(lst) - 1
+
+        self.__current = lst[new_index % len(lst)]
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         self.__set_text()
@@ -86,17 +116,53 @@ class LevelEditor(GameLoop):
 
                 if not changes:
                     if self.__current == "AbyssalRevenant":
-                        self._enemies.append(AbyssalRevenant(pos=Vector(x, y), level_id="LevelEditor"))
+                        self._enemies.append(
+                            AbyssalRevenant(
+                                pos=Vector(x, y),
+                                level_id="LevelEditor",
+                                start_direction=self.__direction,
+                            )
+                        )
                     if self.__current == "Mage":
-                        self._enemies.append(Mage(pos=Vector(x, y), level_id="LevelEditor"))
-                    if self.__current == "DEMON SLIME BOSS":
-                        self._enemies.append(DemonSlimeBoss(pos=Vector(x, y), level_id="LevelEditor"))
-                    if self.__current == "FLYING DEMON":
-                        self._enemies.append(FlyingDemon(pos=Vector(x, y), level_id="LevelEditor"))
-                    if self.__current == "EVIL KNIGHT":
-                        self._enemies.append(EvilKnight(pos=Vector(x, y), level_id="LevelEditor"))
-                    if self.__current == "EVIL HAND":
-                        self._enemies.append(EvilHand(pos=Vector(x, y), level_id="LevelEditor"))
+                        self._enemies.append(
+                            Mage(
+                                pos=Vector(x, y),
+                                level_id="LevelEditor",
+                                start_direction=self.__direction,
+                            )
+                        )
+                    if self.__current == "DEMONSLIMEBOSS":
+                        self._enemies.append(
+                            DemonSlimeBoss(
+                                pos=Vector(x, y),
+                                level_id="LevelEditor",
+                                start_direction=self.__direction,
+                            )
+                        )
+                    if self.__current == "FLYINGDEMON":
+                        self._enemies.append(
+                            FlyingDemon(
+                                pos=Vector(x, y),
+                                level_id="LevelEditor",
+                                start_direction=self.__direction,
+                            )
+                        )
+                    if self.__current == "EVILKNIGHT":
+                        self._enemies.append(
+                            EvilKnight(
+                                pos=Vector(x, y),
+                                level_id="LevelEditor",
+                                start_direction=self.__direction,
+                            )
+                        )
+                    if self.__current == "EVILHAND":
+                        self._enemies.append(
+                            EvilHand(
+                                pos=Vector(x, y),
+                                level_id="LevelEditor",
+                                start_direction=self.__direction,
+                            )
+                        )
 
             self._mouse.clicked = False
 
@@ -127,12 +193,37 @@ class LevelEditor(GameLoop):
         ) as f:
             for enemy in self._enemies:
                 enemy_id = str(enemy)
-                f.write(f"{enemy_id},{enemy.pos.x},{enemy.pos.y}\n")
-
+                f.write(f"{enemy_id},{enemy.pos.x},{enemy.pos.y},{enemy.direction}\n")
 
     def keyup_handler(self, key: int) -> None: ...
 
     def keydown_handler(self, key: int) -> None:
+        print(key)
+
+        if key == 49:
+            self.__type = "enemy"
+            self.__current = self.__all_eneimes[0]
+        if key == 50:
+            self.__type = "block"
+            self.__current = self.__all_entities[0]
+
+        if key == 52:
+            if self.__direction == "LEFT":
+                self.__direction = "RIGHT"
+            elif self.__direction == "RIGHT":
+                self.__direction = "LEFT"
+
+        if self.__type == "enemy":
+            if key == 37:
+                self.__change_selected(-1, self.__all_eneimes)
+            if key == 39:
+                self.__change_selected(1, self.__all_eneimes)
+        elif self.__type == "block":
+            if key == 37:
+                self.__change_selected(-1, self.__all_entities)
+            if key == 39:
+                self.__change_selected(1, self.__all_entities)
+
         if key == 87:
             self.__camera.y += 1
         if key == 83:
@@ -142,31 +233,7 @@ class LevelEditor(GameLoop):
             self.__camera.x += 1
         if key == 68:
             self.__camera.x -= 1
-        if key == 49:
-            self.__current = "GREY_STONE_BLOCK.jpg"
-            self.__type = "block"
-        if key == 50:
-            self.__current = "stone.png"
-            self.__type = "block"
         if key == 51:
-            self.__current = "AbyssalRevenant"
-            self.__type = "enemy"
-        if key == 52:
-            self.__current = "Mage"
-            self.__type = "enemy"
-        if key == 53:
-            self.__current = "FLYING DEMON"
-            self.__type = "enemy"
-        if key == 54:
-            self.__current = "DEMON SLIME BOSS"
-            self.__type = "enemy"
-            if key == 55:
-                self.__current = "EVIL KNIGHT"
-                self.__type = "enemy"
-            if key == 56:
-                self.__current = "EVIL HAND"
-                self.__type = "enemy"
-        if key == 57:
             self.__toggle = not self.__toggle
         if key == 81:
             for label in self.__labels:

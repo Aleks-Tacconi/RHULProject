@@ -21,6 +21,7 @@ class EvilKnight(PhysicsEntity):
             hp=10000,
             level_id=level_id,
             hitbox_offset=Vector(-5, 55),
+            direction=start_direction,
         )
 
         spritesheet = SpriteSheet(
@@ -252,5 +253,5 @@ class EvilKnight(PhysicsEntity):
         print("Health: ", self.hp)
 
     def __str__(self) -> str:
-        return "EVIL KNIGHT"
+        return "EVILKNIGHT"
 
