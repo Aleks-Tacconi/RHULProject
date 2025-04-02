@@ -677,3 +677,9 @@ assets/blocks/GREY_STONE_BLOCK.jpg,63,7
 assets/blocks/GREY_STONE_BLOCK.jpg,65,7
 assets/blocks/GREY_STONE_BLOCK.jpg,57,7
 assets/blocks/GREY_STONE_BLOCK.jpg,59,7
+assets/blocks/grass.jpg,13,8
+assets/blocks/BLOCK1.png,14,8
+assets/blocks/main_lev_build.png,15,8
+assets/blocks/LAVA_BLOCK.png,16,8
+assets/blocks/HELL_BLOCK.png,17,8
+assets/blocks/BLACK.png,18,8
