@@ -65,6 +65,7 @@ class LevelOne(GameLoop):
         self.__offset_y = 0
         #self.__offset_x_light = 0
         #self.__offset_y_light = 0
+        self.yo = 5 # delete this
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
