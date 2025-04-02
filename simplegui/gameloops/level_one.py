@@ -28,13 +28,13 @@ class LevelOne(GameLoop):
         for i in range(0, 10):
             self.__environment.append(
                 Background(
-                    pos=Vector(-420 + (1279 * i), 0),
-                    img=os.path.join("assets", "background", "BATTLEFIELD_BACKGROUND.png"),
-                    size_x=1280,
-                    size_y=566,
-                    scale_factor=1,
-                    frames=12,
-                    cols=17,
+                    pos=Vector(-420 + (1920 * i), 0),
+                    img=os.path.join("assets", "background", "BATTLE_BACKGROUND.png"),
+                    size_x=1920,
+                    size_y=1080,
+                    scale_factor=0.5,
+                    frames=4,
+                    cols=6,
                 )
             )
 
