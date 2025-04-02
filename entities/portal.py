@@ -1,7 +1,6 @@
-from entities.utils import SpriteSheet
-from simplegui.components import Interactable
+class Portal:
+    def __init__(self, coordinate):
+        self.__coordinate = coordinate
 
-
-class Portal(Interactable):
-    def __init__(self, spritesheet: SpriteSheet, animations: Animation):
-        super().__init__(spritesheet, animations)
+    def teleport(self):
+        ...
