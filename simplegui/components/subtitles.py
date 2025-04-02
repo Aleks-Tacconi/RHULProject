@@ -20,9 +20,9 @@ class Subtitles:
         self.__end_of_sentence = False
         self.__max_characters = max_characters
 
-    def render(self, canvas: simplegui.Canvas) -> None:
+    def render(self, canvas: simplegui.Canvas, offset_x = 0, offset_y = 0) -> None:
         if self.generate:
-            canvas.draw_text(self.text, (self.__text_pos[0], self.__text_pos[1]),
+            canvas.draw_text(self.text, (self.__text_pos[0] + offset_x, self.__text_pos[1] + offset_y),
                              self.__size, "White")
 
     def start_subtitles(self) -> None:
@@ -48,6 +48,7 @@ class Subtitles:
                     self.__letters.clear()
                 if word == self.__prompt[len(self.__prompt) - 1]:
                     time.sleep(1)
+                    self.text=""
                     self.generate = False
 
 

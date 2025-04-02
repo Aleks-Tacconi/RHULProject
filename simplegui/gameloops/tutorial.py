@@ -77,12 +77,15 @@ class Tutorial(GameLoop):
         self.__cutscenes.new_cutscene(Vector(300, 0), 0, "Press W to jump the wall,"
                                                " your hands gripping the cold stone as the darkness presses"
                                                " close. Rise, or be trapped in the depths below.", Vector(0,60))
-        self.__cutscenes.new_cutscene(Vector(850, 0),0, "Press E to attack.", Vector(0,300))
+        self.__cutscenes.new_cutscene(Vector(850, 0),0, "Press E to attack. Press Space to roll"
+                                                        " enemy attacks, whilst rolling you are immune to damage."
+                                                        , Vector(0,300))
         self.__cutscenes.new_cutscene(Vector(2000, 0), 0, "Press S to crouch to sneak behind an"
                                                           " enemy undetected as long as they are not facing towards"
-                                                          " you. Press E whilst sneaking to deal a sneak attack that"
+                                                          " you. Crouching can also help dodge projectile attacks. "
+                                                          "Press E whilst sneaking to deal a sneak attack that"
                                                           " does critical-damage.", Vector(0, 300))
-        self.__cutscenes.new_cutscene(Vector(3000, 0), 0, "This is a big gap"
+        self.__cutscenes.new_cutscene(Vector(3000, 0), 0, "This is a big gap."
                                                           " To cross you will need to run and jump"
                                                           " Press Shift to run.", Vector(0, 300))
         self.__cutscenes.new_cutscene(Vector(4000, 0), 0, "Press F to interact with objects"
@@ -90,10 +93,9 @@ class Tutorial(GameLoop):
                                                           " tutorial. Now you are ready, chosen one."
                                                           , Vector(0, 300))
 
-        self.__teleport = Teleport(Vector(6000, 0), self.__player)
-        self.__interactions = Interactable(self.__teleport.teleport,
+        self.__interactions = Interactable(self.__next_scene, "Press F to end tutorial",
                                            os.path.join("assets", "portal", "red_portal.png"),
-                                           1, 24, 4, self.__player, Vector(4500, 0),
+                                           1, 24, 4, self.__player, Vector(4700, 100),
                                            Vector(128, 128))
 
 
@@ -173,11 +175,10 @@ class Tutorial(GameLoop):
             entity.update()
             entity.render(canvas, 0, 0)
 
-        self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
-
         for interactable in self.__interactions.interactables:
-            self.__interactions.update(interactable)
-            self.__interactions.render(canvas, -self.__offset_x, -self.__offset_y)
+            if self.is_entity_visible(self.__player, interactable[6]):
+                self.__interactions.update(interactable)
+                self.__interactions.render(canvas, -self.__offset_x, -self.__offset_y)
 
         for cutscene in self.__cutscenes.cutscenes:
             if self.is_entity_visible(self.__player, cutscene[3]):
@@ -185,8 +186,25 @@ class Tutorial(GameLoop):
                 cutscene[3].render(canvas, -self.__offset_x, -self.__offset_y)
                 self.__cutscenes.render(canvas)
 
+        self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
+
     def keyup_handler(self, key: int) -> None:
         self.__player.keyup_handler(key)
 
     def keydown_handler(self, key: int) -> None:
         self.__player.keydown_handler(key)
+
+    def __next_scene(self):
+        self.__scoreboard.calculate_score(ID)
+        print("|||||||||||||||||||||||||||||||||")
+        self.__scoreboard.print_score()
+        print("|||||||||||||||||||||||||||||||||")
+        self.__reset(self.__scoreboard.return_score(ID))
+        self.__reset(transition_screen=TransitionScreen(
+            ID,
+            self.__reset,
+            self.__failed,
+            self.__passed,
+            self.__player.hp > 0,
+            self.__scoreboard.return_score(ID)
+        ))
