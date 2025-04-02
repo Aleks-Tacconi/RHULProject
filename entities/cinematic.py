@@ -9,7 +9,7 @@ from .abstract import Entity
 from .utils import Animation, SpriteSheet
 
 class Cinematic(Entity):
-    def __init__(self) -> None:
+    def __init__(self, size = Vector(0, 0)) -> None:
 
         super().__init__(
             pos=Vector(int(405), int(205)),
@@ -22,6 +22,10 @@ class Cinematic(Entity):
         self.__animations = Animation(spritesheet, 1)
 
         self.cinematic_bars = False
+
+
+        if size != Vector(0, 0):
+            self.size = size
 
     def update(self) -> None:
         ...

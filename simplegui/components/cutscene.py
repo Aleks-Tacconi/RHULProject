@@ -11,13 +11,16 @@ class Cutscene:
         self.__can_speak = True
         self.__cutscene_playing = False
         self.__subtitles = None
-        self.__cinematic = Cinematic()
+        self.__cinematic = None
         self.__current_cutscene = None
         self.__end_cutscene = False
+        self.next_scene = False
 
     def new_cutscene(self, pos = Vector(0,0), seconds=1, subtitles="", size = Vector(0,60),
-                     subtitles_pos = Vector(260,360)) -> None:
+                     subtitles_pos = Vector(260,360), black_bar_size = Vector(0, 0)) -> None:
         self.cutscenes.append((seconds, subtitles, subtitles_pos, Trigger(self.__player, pos, size)))
+
+        self.__cinematic = Cinematic(black_bar_size)
 
     def play_cutscene(self, cutscene: tuple) -> None:
         self.__current_cutscene = cutscene
@@ -36,13 +39,14 @@ class Cutscene:
             if self.__count // 60 == self.__current_cutscene[0]:
                 self.__end_cutscene = True
 
-            if not self.__subtitles.generate and self.__end_cutscene:
+            if (not self.__subtitles.generate and self.__end_cutscene) or self.__player.interacting:
                 self.__count = 0
                 self.__can_speak = True
                 self.__cinematic.cinematic_bars = False
                 self.__cutscene_playing = False
                 self.cutscenes.remove(self.__current_cutscene)
                 self.__player.in_cutscene(False)
+                self.next_scene = True
 
             if self.__cutscene_playing:
                 self.__count += 1
