@@ -1,0 +1,4 @@
+AbyssalRevenant,1669,76
+AbyssalRevenant,2450,79
+Mage,4275,28
+Mage,246,-14

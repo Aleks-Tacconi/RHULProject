@@ -12,7 +12,7 @@ from .abstract import GameLoop
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 800
-LEVEL = "tutorial"
+LEVEL = "level3"
 
 
 class LevelEditor(GameLoop):
@@ -22,7 +22,7 @@ class LevelEditor(GameLoop):
         self.__reset = reset
         self.__camera = Vector(0, 0)
 
-        self.__current = "grass.jpg"
+        self.__current = "GREY_STONE_BLOCK.jpg"
         self.__type = "block"
 
         self.__labels = labels
@@ -34,7 +34,7 @@ class LevelEditor(GameLoop):
     def __set_text(self) -> None:
         self.__labels[0].set_text("Press q to return to main menu, do this before closing application to ensure the level saves!")
         self.__labels[7].set_text(f"current: {self.__current}")
-        self.__labels[9].set_text("[1] grass block")
+        self.__labels[9].set_text("[1] grey stone block")
         self.__labels[10].set_text("[2] stone block")
         self.__labels[11].set_text("[3] abyssal revenant")
         self.__labels[12].set_text("[4] mage")
@@ -143,7 +143,7 @@ class LevelEditor(GameLoop):
         if key == 68:
             self.__camera.x -= 1
         if key == 49:
-            self.__current = "grass.jpg"
+            self.__current = "GREY_STONE_BLOCK.jpg"
             self.__type = "block"
         if key == 50:
             self.__current = "stone.png"

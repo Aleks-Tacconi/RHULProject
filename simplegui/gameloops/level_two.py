@@ -11,15 +11,15 @@ from .abstract import GameLoop
 from simplegui.components import ScoreBoard, Cutscene
 
 
-ID = "LevelOne"
+ID = "LevelTwo"
 
-class LevelOne(GameLoop):
+class LevelTwo(GameLoop):
     def __init__(self, reset: Callable) -> None:
         super().__init__()
 
         self.__reset = reset
 
-        self._load_level(os.path.join("levels", "level1"), ID)
+        self._load_level(os.path.join("levels", "level2"), ID)
 
         self.__scoreboard = ScoreBoard()
 
@@ -29,16 +29,16 @@ class LevelOne(GameLoop):
             self.__environment.append(
                 Background(
                     pos=Vector(-420 + (1863 * i), 0),
-                    img=os.path.join("assets", "background", "CASTLE_BACKGROUND.png"),
+                    img=os.path.join("assets", "background", "SURFACE_HELL_BACKGROUND.png"),
                     size_x=828,
                     size_y=358,
                     scale_factor=2.25,
                     frames=4,
-                    cols=6,
+                    cols=8,
                 )
             )
 
-        self.__player = Player(pos=Vector(100, -100), level_id=ID)
+        self.__player = Player(pos=Vector(100, -150), level_id=ID)
 
         """"
         self.__player_light = Background(
@@ -110,12 +110,12 @@ class LevelOne(GameLoop):
                 self._enemies.remove(entity)
 
         if self.__player.remove():
-            self.__scoreboard.calculate_score("LevelOne")
+            self.__scoreboard.calculate_score("LevelTwo")
             print("|||||||||||||||||||||||||||||||||")
             self.__scoreboard.print_score()
             print("|||||||||||||||||||||||||||||||||")
-            self.__reset(self.__scoreboard.return_score("LevelOne"))
-            canvas.draw_text(f"Score: {self.__scoreboard.return_score("LevelOne")}", (400, 50), 30, "White")
+            self.__reset(self.__scoreboard.return_score("LevelTwo"))
+            canvas.draw_text(f"Score: {self.__scoreboard.return_score("LevelTwo")}", (400, 50), 30, "White")
 
         """
         if self.__player.direction == "LEFT":
