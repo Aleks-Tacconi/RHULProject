@@ -1,0 +1,2 @@
+AbyssalRevenant,462,15,RIGHT
+AbyssalRevenant,634,24,LEFT

@@ -1,7 +1,7 @@
-from entities import Background
-from utils import Vector
+from entities.utils import SpriteSheet
+from simplegui.components import Interactable
 
 
-class Portal(Background):
-    def __init__(self, pos: Vector, img: str, size_x: int, size_y: int, scale_factor: int) -> None:
-        super().__init__(pos=pos, img=img, size_x= size_x, size_y=size_y, scale_factor=scale_factor)
+class Portal(Interactable):
+    def __init__(self, spritesheet: SpriteSheet, animations: Animation):
+        super().__init__(spritesheet, animations)

@@ -22,6 +22,7 @@ class AbyssalRevenant(Enemy):
             hp=1000,
             level_id=level_id,
             hitbox_offset=Vector(0, 20),
+            direction=start_direction,
         )
 
         spritesheet = SpriteSheet(

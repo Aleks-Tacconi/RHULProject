@@ -11,22 +11,22 @@ from utils import Mouse, Vector
 from simplegui.components import Cutscene, Subtitles
 
 
-def get_enemy(enemy: str, x: int, y: int, _id: str) -> Entity | None:
+def get_enemy(enemy: str, x: int, y: int, _id: str, direction: str) -> Entity | None:
     pos = Vector(x, y)
 
     match enemy:
         case "AbyssalRevenant":
-            return AbyssalRevenant(pos, _id)
+            return AbyssalRevenant(pos, _id, start_direction=direction)
         case "Mage":
-            return Mage(pos, _id)
+            return Mage(pos, _id, start_direction=direction)
         case "EvilHand":
-            return EvilHand(pos, _id)
+            return EvilHand(pos, _id, start_direction=direction)
         case "EvilKnight":
-            return EvilKnight(pos, _id)
+            return EvilKnight(pos, _id, start_direction=direction)
         case "DemonSlimeBoss":
-            return DemonSlimeBoss(pos, _id)
+            return DemonSlimeBoss(pos, _id, start_direction=direction)
         case "FlyingDemon":
-            return FlyingDemon(pos, _id)
+            return FlyingDemon(pos, _id, start_direction=direction)
 
 class GameLoop(metaclass=ABCMeta):
     def __init__(self) -> None:
@@ -46,8 +46,8 @@ class GameLoop(metaclass=ABCMeta):
             entities = [entity.strip() for entity in f.readlines()]
 
         for line in enemies:
-            enemy, x, y = line.split(",")
-            enemy = get_enemy(enemy, int(x), int(y), _id)
+            enemy, x, y, direction = line.split(",")
+            enemy = get_enemy(enemy, int(x), int(y), _id, direction)
             self._enemies.append(enemy)
 
         for line in entities:
@@ -80,8 +80,10 @@ class GameLoop(metaclass=ABCMeta):
 
         screen_right = player_x + 500
         screen_left = player_x - 500
+        screen_top = player_y - 400
+        screen_bottom = player_y + 300
 
-        if (hitbox[0] < screen_right and hitbox[2] > screen_left):
+        if (hitbox[0] < screen_right and hitbox[2] > screen_left) and (hitbox[1] < screen_bottom and hitbox[3] > screen_top):
             return True
 
         return False

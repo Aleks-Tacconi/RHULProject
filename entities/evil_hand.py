@@ -23,6 +23,7 @@ class EvilHand(Enemy):
             hp=3000,
             level_id=level_id,
             hitbox_offset=Vector(-10, 0),
+            direction=start_direction,
         )
 
         spritesheet = SpriteSheet(
@@ -142,4 +143,4 @@ class EvilHand(Enemy):
         print("Health: ", self.hp)
 
     def __str__(self) -> str:
-        return "EVIL HAND"
+        return "EVILHAND"

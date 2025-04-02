@@ -13,7 +13,7 @@ from .utils import MultiAnimation, SpriteSheet
 
 
 class ImpalerBoss(Enemy):
-    def __init__(self, pos: Vector, level_id: str) -> None:
+    def __init__(self, pos: Vector, level_id: str, start_direction="LEFT") -> None:
         super().__init__(
             pos=pos,
             size=Vector(256, 106),
@@ -22,6 +22,7 @@ class ImpalerBoss(Enemy):
             hp=300,
             level_id=level_id,
             hitbox_offset=Vector(0, 20),
+            direction=start_direction,
         )
 
         #TODO Update the spritesheet with higher resolution version for better quality

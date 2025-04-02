@@ -20,6 +20,7 @@ class FlyingDemon(Enemy):
             hp=300,
             level_id=level_id,
             hitbox_offset=Vector(0, 20),
+            direction=start_direction,
         )
 
         spritesheet = SpriteSheet(
@@ -157,7 +158,7 @@ class FlyingDemon(Enemy):
         print("Health: ", self.hp)
 
     def __str__(self) -> str:
-        return "FLYING DEMON"
+        return "FLYINGDEMON"
 
 
 

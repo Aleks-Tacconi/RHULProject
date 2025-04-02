@@ -7,7 +7,6 @@ class Cutscene:
     def __init__(self, player):
         self.cutscenes = []
         self.__player = player
-        self.__index = 0
         self.__count = 0
         self.__can_speak = True
         self.__cutscene_playing = False
@@ -18,7 +17,6 @@ class Cutscene:
     def new_cutscene(self, pos = Vector(0,0), seconds=1, subtitles="", size = Vector(0,60),
                      subtitles_pos = Vector(260,360)) -> None:
         self.cutscenes.append((seconds, subtitles, subtitles_pos, Trigger(self.__player, pos, size)))
-        self.__index += 1
 
     def play_cutscene(self, cutscene: tuple) -> None:
         self.__current_cutscene = cutscene
@@ -46,7 +44,6 @@ class Cutscene:
 
     def render(self, canvas: simplegui.Canvas) -> None:
         if self.__cutscene_playing:
-
             self.__cinematic.render(canvas)
             self.__subtitles.render(canvas)
 
