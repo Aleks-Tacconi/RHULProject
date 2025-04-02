@@ -87,14 +87,15 @@ class Tutorial(GameLoop):
         self.__cutscenes.new_cutscene(Vector(3000, 0), 0, "This is a big gap"
                                                           " To cross you will need to run and jump"
                                                           " Press Shift to run.", Vector(0, 300))
-        self.__cutscenes.new_cutscene(Vector(4000, 0), 0, "You have now completed the tutorial."
-                                                          " Press F to interact with the teleporter to end the level."
+        self.__cutscenes.new_cutscene(Vector(4000, 0), 0, "Press F to interact with objects"
+                                                          " in the world. And with this, you have completed the basic"
+                                                          " tutorial. Now you are ready, chosen one."
                                                           , Vector(0, 300))
 
-        self.__teleport = Teleport(Vector(0, -500), self.__player)
+        self.__teleport = Teleport(Vector(6000, 0), self.__player)
         self.__interactions = Interactable(self.__teleport.teleport,
                                            os.path.join("assets", "portal", "red_portal.png"),
-                                           1, 24, 4, self.__player, Vector(5000, 0),
+                                           1, 24, 4, self.__player, Vector(4500, 0),
                                            Vector(128, 128))
 
 
