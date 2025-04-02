@@ -109,3 +109,31 @@ class Block(Entity):
 
         for block in cls.__get_surroundings(x, y, id):
             block.handle_collision_y(entity)
+
+    @classmethod
+    def collisions_crouch_x(cls, entity: PhysicsEntity, id: str) -> bool:
+        x = int((entity.pos.x + entity.hitbox_offset.x) // SIZE)
+        y = int((entity.pos.y + entity.hitbox_offset.y) // SIZE)
+
+        for block in cls.__get_surroundings(x, y, id):
+            if block.handle_crouch_collision_y(entity):
+                return True
+        return False
+
+    @classmethod
+    def collisions_crouch_y(cls, entity: PhysicsEntity, id: str) -> bool:
+        x = int((entity.pos.x + entity.hitbox_offset.x) // SIZE)
+        y = int((entity.pos.y + entity.hitbox_offset.y) // SIZE)
+
+        for block in cls.__get_surroundings(x, y, id):
+           if block.handle_crouch_collision_y(entity):
+               return True
+        return False
+
+    def handle_crouch_collision_x(self, entity: PhysicsEntity) -> bool:
+        return entity.collides_with_crouch(self)
+
+
+    def handle_crouch_collision_y(self, entity: PhysicsEntity) -> bool:
+        return entity.collides_with_crouch(self)
+

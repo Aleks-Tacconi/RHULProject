@@ -253,5 +253,5 @@ class EvilKnight(PhysicsEntity):
         print("Health: ", self.hp)
 
     def __str__(self) -> str:
-        return "EVILKNIGHT"
+        return "EvilKnight"
 

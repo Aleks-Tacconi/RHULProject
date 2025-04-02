@@ -54,7 +54,7 @@ class Mage(Enemy):
         self.__current_animation = f"IDLE_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
         self.__distance_x = 1000
-        self.__detection_range = 400
+        self.__detection_range = 500
         self.__attack_distance = 400
         self.__speed = 3
         self.__base_hp = self.hp
@@ -128,15 +128,15 @@ class Mage(Enemy):
         if self.direction == "LEFT":
             offset *= -1
 
-        Attack(
-            pos=Vector(int(self.pos.x + offset), int(self.pos.y + 20)),
-            hitbox=Vector(69, 70),
-            hitbox_offset=None,
-            damage=40,
-            start_frame=7,
-            end_frame=7,
-            owner=self,
-        )
+        # Attack(
+        #     pos=Vector(int(self.pos.x + offset), int(self.pos.y + 20)),
+        #     hitbox=Vector(69, 70),
+        #     hitbox_offset=None,
+        #     damage=40,
+        #     start_frame=7,
+        #     end_frame=7,
+        #     owner=self,
+        # )
 
         self.__animations.set_animation(f"ATTACK_{self.direction}")
         self.__animations.set_one_iteration(True)

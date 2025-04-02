@@ -158,7 +158,7 @@ class FlyingDemon(Enemy):
         print("Health: ", self.hp)
 
     def __str__(self) -> str:
-        return "FLYINGDEMON"
+        return "FlyingDemon"
 
 
 

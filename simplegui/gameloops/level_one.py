@@ -4,20 +4,23 @@ from typing import Callable
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, DemonSlimeBoss, FlyingDemon, EvilHand,
-                      Mage, EvilKnight, PlayerHealthBar, Cinematic)
+                      Mage, EvilKnight, PlayerHealthBar, Cinematic, Teleport)
+from simplegui.gameloops.transition_screen import TransitionScreen
 from utils import Vector
 
 from .abstract import GameLoop
-from simplegui.components import ScoreBoard, Cutscene
+from simplegui.components import ScoreBoard, Cutscene, Interactable
 
 
 ID = "LevelOne"
 
 class LevelOne(GameLoop):
-    def __init__(self, reset: Callable) -> None:
+    def __init__(self, reset: Callable, failed: Callable, passed: Callable) -> None:
         super().__init__()
 
         self.__reset = reset
+        self.__failed = failed
+        self.__passed = passed
 
         self._load_level(os.path.join("levels", "level1"), ID)
 
@@ -28,17 +31,17 @@ class LevelOne(GameLoop):
         for i in range(0, 10):
             self.__environment.append(
                 Background(
-                    pos=Vector(-420 + (1920 * i), 0),
-                    img=os.path.join("assets", "background", "BATTLE_BACKGROUND.png"),
-                    size_x=1920,
-                    size_y=1080,
-                    scale_factor=0.5,
+                    pos=Vector(-420 + (960 * i), 70),
+                    img=os.path.join("assets", "background", "BATTLEFIELD_BACKGROUND.png"),
+                    size_x=1280,
+                    size_y=566,
+                    scale_factor=0.75,
                     frames=4,
-                    cols=6,
+                    cols=17,
                 )
             )
 
-        self.__player = Player(pos=Vector(100, -100), level_id=ID)
+        self.__player = Player(pos=Vector(100, 0), level_id=ID)
 
         """"
         self.__player_light = Background(
@@ -65,7 +68,11 @@ class LevelOne(GameLoop):
         self.__offset_y = 0
         #self.__offset_x_light = 0
         #self.__offset_y_light = 0
-        self.yo = 5 # delete this
+        self.__teleport = Teleport(Vector(0, -500), self.__player)
+        self.__interactions = Interactable(self.__teleport.teleport, "Press F to teleport",
+                                           os.path.join("assets", "portal", "red_portal.png"),
+                                           1, 24, 4, self.__player, Vector(300, 100),
+                                           Vector(128, 128))
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
@@ -115,8 +122,14 @@ class LevelOne(GameLoop):
             print("|||||||||||||||||||||||||||||||||")
             self.__scoreboard.print_score()
             print("|||||||||||||||||||||||||||||||||")
-            self.__reset(self.__scoreboard.return_score("LevelOne"))
-            canvas.draw_text(f"Score: {self.__scoreboard.return_score("LevelOne")}", (400, 50), 30, "White")
+            self.__reset(transition_screen=TransitionScreen(
+                    prev_level=ID,
+                    title=self.__reset,
+                    failed=self.__failed,
+                    passed=self.__passed,
+                    passed_level=self.__player.hp > 0,
+                    score=self.__scoreboard.return_score(ID)
+                ))
 
         """
         if self.__player.direction == "LEFT":
@@ -132,6 +145,11 @@ class LevelOne(GameLoop):
                 self.__player.pos.y - self.__offset_y,
             )
         """
+
+        for interactable in self.__interactions.interactables:
+            if self.is_entity_visible(self.__player, interactable[6]):
+                self.__interactions.update(interactable)
+                self.__interactions.render(canvas, -self.__offset_x, -self.__offset_y)
 
         for entity in self.__gui:
             entity.update()

@@ -18,10 +18,18 @@ class GUI:
         self.__frame.set_mouseclick_handler(gameloop.mouseclick_handler)
 
     def __reset_game(self, login_status = False, transition_screen = None) -> None:
-        level_one = LevelOne(self.__reset_game)
-        level_two = LevelTwo(self.__reset_game)
-        level_three = LevelThree(self.__reset_game)
-        tutorial = Tutorial(self.__reset_game)
+        tutorial = Tutorial(self.__reset_game, 
+                            failed=self.__reset_tutorial,
+                            passed=lambda: self.__set_draw_handler(level_one))
+        level_one = LevelOne(reset=self.__reset_game,
+                            failed=self.__reset_level_one,
+                            passed=lambda: self.__set_draw_handler(level_two))
+        level_two = LevelTwo(self.__reset_game,
+                            failed=self.__reset_level_two,
+                            passed=lambda: self.__set_draw_handler(level_three))
+        level_three = LevelThree(self.__reset_game,
+                            failed=self.__reset_level_three,
+                            passed=lambda: self.__set_draw_handler(tutorial))
         login = Login(lambda: self.__reset_game(login_status=True))
 
         level_editor = LevelEditor(self.__reset_game, self.__labels)
@@ -34,6 +42,30 @@ class GUI:
             self.__set_draw_handler(transition_screen)
         else:
             self.__set_draw_handler(title_screen)
+    
+    def __reset_tutorial(self, login_status = False):
+        tutorial = Tutorial(self.__reset_game, 
+                            failed=lambda: self.__reset_tutorial,
+                            passed=lambda: self.__reset_level_one)
+        self.__set_draw_handler(tutorial)
+
+    def __reset_level_one(self, login_status = False):
+        level_one = LevelOne(reset=self.__reset_game,
+                            failed=self.__reset_level_one,
+                            passed=lambda: self.__reset_level_two)
+        self.__set_draw_handler(level_one)
+    
+    def __reset_level_two(self, login_status = False):
+        level_two = Tutorial(self.__reset_game, 
+                            failed=lambda: self.__reset_level_two,
+                            passed=lambda: self.__set_draw_handler())
+        self.__set_draw_handler(level_two)
+
+    def __reset_level_three(self, login_status = False):
+        level_three = Tutorial(self.__reset_game, 
+                            failed=lambda: self.__reset_level_three,
+                            passed=lambda: self.__reset_game)
+        self.__set_draw_handler(level_three)
 
     def start(self) -> None:
         self.__frame.start()

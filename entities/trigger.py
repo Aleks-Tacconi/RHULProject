@@ -10,7 +10,7 @@ class Trigger(Entity):
         super().__init__(
             pos=Vector(int(pos.x), int(pos.y)),
             size=Vector(0, 0),
-            hitbox=Vector(size.x + 2, size.y + 2)
+            hitbox=Vector(size.x, size.y)
         )
         self.__entity = entity
 

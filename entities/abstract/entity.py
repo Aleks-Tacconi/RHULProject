@@ -48,8 +48,13 @@ class Entity(metaclass=ABCMeta):
 
         return x2 > a1 and x1 < a2 and y2 > b1 and y1 < b2
 
+    def collides_with_crouch(self, entity) -> bool:
+        x1, y1, x2, y2 = entity.hitbox_area
+        a1, b1, a2, b2 = self.hitbox_area
+
+        return y1 < b2
+
     def _render_hitbox(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
-        return
         canvas.draw_polygon(
             [
                 [self.hitbox_area[0] + offset_x, self.hitbox_area[1] + offset_y],

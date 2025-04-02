@@ -28,8 +28,8 @@ class LeftFireball(Enemy):
             cols=5,
         )
 
-        self.__detection_range_x = 20
-        self.__detection_range_y = 10
+        self.__detection_range_x = 30
+        self.__detection_range_y = 4
         self.__hascollided = False
 
         self.__animations = Animation(spritesheet, 1)
@@ -61,7 +61,7 @@ class LeftFireball(Enemy):
         if abs(distance_x) < self.__detection_range_x and abs(distance_y) < self.__detection_range_y:
             Attack(
                 pos=self.pos,
-                hitbox=Vector(50, 50),
+                hitbox=Vector(2, 2),
                 hitbox_offset=None,
                 damage=1000,
                 owner=self
@@ -96,7 +96,7 @@ class RightFireball(Enemy):
         )
 
         self.__detection_range_x = 20
-        self.__detection_range_y = 10
+        self.__detection_range_y = 20
         self.__hascollided = False
 
         self.__animations = Animation(spritesheet, 1)
@@ -128,7 +128,7 @@ class RightFireball(Enemy):
         if abs(distance_x) < self.__detection_range_x and abs(distance_y) < self.__detection_range_y:
             Attack(
                 pos=self.pos,
-                hitbox=Vector(50, 50),
+                hitbox=Vector(2, 2),
                 hitbox_offset=None,
                 damage=1000,
                 owner=self
@@ -137,9 +137,6 @@ class RightFireball(Enemy):
             self.__hascollided = True
 
     def remove(self) -> bool:
-        # if self.__animation.done and not self.is_alive:
-        #     return True
-        # return False
         if self.pos.y > 800:
             return True
 

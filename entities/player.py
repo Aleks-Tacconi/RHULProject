@@ -17,7 +17,7 @@ class Player(PhysicsEntity):
             size=Vector(200, 200),
             vel=Vector(0, 0),
             hitbox=Vector(40, 92),
-            hp=3000,
+            hp=30000,
             level_id=level_id,
             hitbox_offset=Vector(-5, 55),
         )
@@ -137,6 +137,7 @@ class Player(PhysicsEntity):
             self.__horizontal_movement()
         self._gravity()
 
+        self.__uncrouch()
         self.pos.x += self.vel.x
         Block.collisions_x(self, self._level_id)
 
@@ -146,6 +147,8 @@ class Player(PhysicsEntity):
         self.__current_animation = f"{self.__current_animation}_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
         self.__animations.update()
+
+        print(f"{self.hp=}")
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         if self.direction == "LEFT":
@@ -158,12 +161,25 @@ class Player(PhysicsEntity):
             self._render_hitbox(canvas, offset_x, offset_y)
 
     def __idle(self) -> None:
-        if (not self.__movement_x and not self.__movement_y and not self.__jumping and self.vel.x == 0 and
-                self.vel.y == 0 and not self.__movement_x_locked and not self.__movement_y_locked):
-            self.hitbox = Vector(40, 92)
-            self.hitbox_offset = Vector(-5, 55)
+        if (not self.__movement_x and not self.__movement_y and not self.__jumping and self.vel.x == 0 and not
+                self.crouched and self.vel.y == 0 and not self.__movement_x_locked and not self.__movement_y_locked):
             self.vel.x = 0
             self.__current_animation = "IDLE"
+
+    def __can_uncrouch(self):
+        self.hitbox = Vector(40, 92)
+        self.hitbox_offset = Vector(-5, 55)
+        if Block.collisions_crouch_y(self, self._level_id):
+            self.hitbox = Vector(40, 64)
+            self.hitbox_offset = Vector(-5, 69)
+        else:
+            self.crouched = False
+
+    def __uncrouch(self):
+        if not Block.collisions_crouch_y(self, self._level_id) and not any("S" in letter for letter in self.__movement_y):
+            self.crouched = False
+            self.hitbox = Vector(40, 92)
+            self.hitbox_offset = Vector(-5, 55)
 
     def __jump(self) -> None:
         if self.__jumps > 0:
@@ -239,7 +255,7 @@ class Player(PhysicsEntity):
         direction_y = self.__movement_y[-1]
 
         if not self.__movement_y_locked:
-            if direction_y == "W" and not self.__jumping:
+            if direction_y == "W" and not self.__jumping and not self.crouched:
                 self.__jump()
                 self.__current_animation = "JUMP"
                 self.__jumping = True
@@ -278,8 +294,8 @@ class Player(PhysicsEntity):
     def __crouch(self) -> None:
         self.vel.y = 12
         self.crouched = True
-        self.hitbox = Vector(40, 66)
-        self.hitbox_offset = Vector(-5, 68)
+        self.hitbox = Vector(40, 64)
+        self.hitbox_offset = Vector(-5, 69)
         if self.vel.x == 0:
             self.__current_animation = "CROUCH"
         else:
@@ -300,8 +316,8 @@ class Player(PhysicsEntity):
 
     def __death(self) -> None:
 
-        #if self.pos.y > 350:
-            #self.hp = 0
+        if self.pos.y > 350:
+            self.hp = 0
         if not self.is_alive:
             self.vel.x = 0
             self.vel.y = 12
@@ -362,7 +378,8 @@ class Player(PhysicsEntity):
         if key == 83:  # S
             if "S" in self.__movement_y:
                 self.__movement_y.remove("S")
-                self.crouched = False
+                self.__can_uncrouch()
         if key == 87:  # W
             if "W" in self.__movement_y:
                 self.__movement_y.remove("W")
+
