@@ -54,7 +54,7 @@ class Mage(Enemy):
         self.__current_animation = f"IDLE_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
         self.__distance_x = 1000
-        self.__detection_range = 400
+        self.__detection_range = 500
         self.__attack_distance = 400
         self.__speed = 3
         self.__base_hp = self.hp
