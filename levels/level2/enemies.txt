@@ -1,2 +1,6 @@
-AbyssalRevenant,462,15,RIGHT
-AbyssalRevenant,634,24,LEFT
+AbyssalRevenant,3638,-102,RIGHT
+AbyssalRevenant,3639,-361,RIGHT
+Mage,3950,-561,LEFT
+AbyssalRevenant,1903,27,LEFT
+AbyssalRevenant,6327,57,LEFT
+Mage,6517,-2,LEFT

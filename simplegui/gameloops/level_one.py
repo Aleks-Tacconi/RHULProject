@@ -36,7 +36,7 @@ class LevelOne(GameLoop):
                     size_x=1280,
                     size_y=566,
                     scale_factor=0.75,
-                    frames=4,
+                    frames=12,
                     cols=17,
                 )
             )
