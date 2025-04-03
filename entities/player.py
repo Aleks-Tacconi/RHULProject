@@ -7,8 +7,9 @@ from utils import Vector
 from .abstract import PhysicsEntity
 from .attack import Attack
 from .block import Block
-from .utils import MultiAnimation, Animation, SpriteSheet
-
+from .utils import MultiAnimation, SpriteSheet
+from .utils import PlaySound
+import random
 
 class Player(PhysicsEntity):
     def __init__(self, pos: Vector, level_id: str) -> None:
@@ -21,6 +22,8 @@ class Player(PhysicsEntity):
             level_id=level_id,
             hitbox_offset=Vector(-5, 55),
         )
+
+        self.__original_hp = self.hp
 
         spritesheet = SpriteSheet(
             os.path.join("assets", "player", "PLAYER.png"),
@@ -116,6 +119,39 @@ class Player(PhysicsEntity):
         self.knockback_given_multiplier_x = 1
         self.knockback_given_multiplier_x = 1
         self.interacting = False
+        self.__sound = PlaySound()
+        self.__sound.change_volume(0.3)
+        self.__sounds = {"DEATH": "death_2_sean.wav",
+                         "DAMAGE1": "damage_1_sean.wav",
+                         "DAMAGE2": "damage_2_sean.wav",
+                         "DAMAGE3": "damage_3_sean.wav",
+                         "DAMAGE4": "damage_4_sean.wav",
+                         "DAMAGE5": "damage_5_sean.wav",
+                         "DAMAGE6": "damage_6_sean.wav",
+                         "DAMAGE7": "damage_7_sean.wav",
+                         "DAMAGE8": "damage_8_sean.wav",
+                         "DAMAGE9": "damage_9_sean.wav",
+                         "DAMAGE10": "damage_10_sean.wav",
+                         "ATTACK1": "07_human_atk_sword_1.wav",
+                         "ATTACK2": "07_human_atk_sword_2.wav",
+                         "ATTACK3": "07_human_atk_sword_3.wav",
+                         "GRUNT1": "grunting_1_sean.wav",
+                         "GRUNT2": "grunting_2_sean.wav",
+                         "GRUNT3": "grunting_3_sean.wav",
+                         "GRUNT4": "grunting_4_sean.wav",
+                         "GRUNT5": "grunting_5_sean.wav",
+                         "GRUNT6": "grunting_6_sean.wav",
+                         "GRUNT7": "grunting_7_sean.wav",
+                         "GRUNT8": "grunting_8_sean.wav",
+                         "GRUNT9": "grunting_9_sean.wav",
+                         "GRUNT10": "grunting_10_sean.wav",
+                         "WALK1": "16_human_walk_stone_1.wav",
+                         "WALK2": "16_human_walk_stone_2.wav",
+                         "WALK3": "16_human_walk_stone_3.wav",
+                         "JUMP1": "12_human_jump_1.wav",
+                         "JUMP2": "12_human_jump_2.wav",
+                         "JUMP3": "12_human_jump_3.wav",
+                         }
 
 
     def remove(self) -> bool:
@@ -135,6 +171,8 @@ class Player(PhysicsEntity):
             self.__idle()
             self.__vertical_movement()
             self.__horizontal_movement()
+            self.__take_damage()
+
         self._gravity()
 
         self.__uncrouch()
@@ -147,6 +185,11 @@ class Player(PhysicsEntity):
         self.__current_animation = f"{self.__current_animation}_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
         self.__animations.update()
+
+    def __take_damage(self):
+        if self.__original_hp != self.hp:
+            self.__original_hp = self.hp
+            self.__sound.play_sound(self.__sounds.get(f"DAMAGE{random.randint(1, 10)}"))
 
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         if self.direction == "LEFT":
@@ -255,6 +298,7 @@ class Player(PhysicsEntity):
         if not self.__movement_y_locked:
             if direction_y == "W" and not self.__jumping and not self.crouched:
                 self.__jump()
+                self.__sound.play_sound(self.__sounds.get(f"JUMP{random.randint(1, 3)}"))
                 self.__current_animation = "JUMP"
                 self.__jumping = True
 
@@ -279,6 +323,8 @@ class Player(PhysicsEntity):
             damage=100,
             owner=self,
         )
+        self.__sound.play_sound(self.__sounds.get(f"GRUNT{random.randint(1, 10)}"),
+                                self.__sounds.get(f"ATTACK{random.randint(1, 3)}"))
 
         if self.crouched:
             self.__animations.set_animation(f"CROUCH_ATTACK_{self.direction}")
@@ -317,6 +363,7 @@ class Player(PhysicsEntity):
         if self.pos.y > 350:
             self.hp = 0
         if not self.is_alive:
+            self.__sound.play_sound(self.__sounds.get("DEATH"))
             self.vel.x = 0
             self.vel.y = 12
         

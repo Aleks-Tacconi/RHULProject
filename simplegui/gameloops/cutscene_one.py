@@ -7,7 +7,7 @@ from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, 
                       Mage, EvilKnight, PlayerHealthBar, Cinematic)
 from simplegui.gameloops.cutscene_screen import CutSceneScreen
 
-from simplegui.components import PlaySound
+from entities.utils import PlaySound
 from utils import Vector
 
 from .abstract import GameLoop
@@ -72,14 +72,14 @@ class CutsceneOne(GameLoop):
                                                          " shadow has faded from this world.", Vector(1000, 1000),
                                                          Vector(250,390), Vector(830, 700))
 
-        self.__speech = PlaySound("king_speech.wav")
+        self.__speech = PlaySound()
         self.__sound_playing = False
 
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         if not self.__sound_playing:
-            self.__speech.play()
+            self.__speech.play_sound("king_speech.wav")
             self.__sound_playing = True
         # TODO: 400 is half the screen width - not good magic number
         self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 10
