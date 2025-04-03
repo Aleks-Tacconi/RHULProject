@@ -7,8 +7,7 @@ from utils import Vector
 from .abstract import PhysicsEntity
 from .attack import Attack
 from .block import Block
-from .utils import MultiAnimation, SpriteSheet
-from .utils import PlaySound
+from .utils import MultiAnimation, SpriteSheet, PlaySound
 import random
 
 class Player(PhysicsEntity):
@@ -145,9 +144,6 @@ class Player(PhysicsEntity):
                          "GRUNT8": "grunting_8_sean.wav",
                          "GRUNT9": "grunting_9_sean.wav",
                          "GRUNT10": "grunting_10_sean.wav",
-                         "WALK1": "16_human_walk_stone_1.wav",
-                         "WALK2": "16_human_walk_stone_2.wav",
-                         "WALK3": "16_human_walk_stone_3.wav",
                          "JUMP1": "12_human_jump_1.wav",
                          "JUMP2": "12_human_jump_2.wav",
                          "JUMP3": "12_human_jump_3.wav",
