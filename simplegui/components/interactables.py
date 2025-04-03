@@ -17,7 +17,7 @@ class Interactable:
         self.__animations = Animation(self.__spritesheet, frames)
         self.__function = function
         self.__trigger = Trigger(self.__player, pos, size)
-        self.__subtitles = Subtitles(subtitles, pos, 18)
+        self.__subtitles = Subtitles(subtitles, Vector(pos.x, pos.y + size.y / 4), 18)
         self.__subtitles_playing = False
 
 
@@ -32,7 +32,7 @@ class Interactable:
         if self.__spritesheet != SpriteSheet(interactable[2], interactable[3], interactable[4]):
             self.__spritesheet = SpriteSheet(interactable[2], interactable[3], interactable[4])
             self.__animations = Animation(self.__spritesheet, interactable[5])
-            self.__subtitles = Subtitles(interactable[1], interactable[6][1], 18)
+            self.__subtitles = Subtitles(interactable[1], self.pos, 18)
             self.__function = interactable[0]
             self.__trigger = interactable[6]
 

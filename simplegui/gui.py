@@ -35,7 +35,7 @@ class GUI:
                             xp=self.__xp)
         level_one = LevelOne(reset=lambda: self.__reset_game,
                             failed=lambda: self.__reset_level_one,
-                            passed=self.__reset_level_two,
+                            passed=lambda: self.__reset_level_two,
                             scoreboard=self.__scoreboard,
                             xp=self.__xp)
         level_two = LevelTwo(self.__reset_game,
