@@ -19,7 +19,7 @@ class AbyssalRevenant(Enemy):
             size=Vector(200, 200),
             hitbox=Vector(50, 80),
             vel=Vector(0, 0),
-            hp=1000,
+            hp=7000,
             level_id=level_id,
             hitbox_offset=Vector(0, 20),
             direction=start_direction
@@ -109,7 +109,7 @@ class AbyssalRevenant(Enemy):
             pos=Vector(int(self.pos.x + offset), int(self.pos.y + 20)),
             hitbox=Vector(69, 70),
             hitbox_offset=None,
-            damage=40,
+            damage=750,
             start_frame=7,
             end_frame=7,
             owner=self,

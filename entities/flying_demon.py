@@ -17,7 +17,7 @@ class FlyingDemon(Enemy):
             size=Vector(158, 98),
             hitbox=Vector(100, 80),
             vel=Vector(0, 0),
-            hp=300,
+            hp=500,
             level_id=level_id,
             hitbox_offset=Vector(0, 20),
             direction=start_direction,
@@ -105,7 +105,7 @@ class FlyingDemon(Enemy):
             pos=Vector(int(self.pos.x + offset), int(self.pos.y + 20)),
             hitbox=Vector(69, 70),
             hitbox_offset=None,
-            damage=40,
+            damage=200,
             owner=self,
         )
 
