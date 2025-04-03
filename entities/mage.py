@@ -55,7 +55,9 @@ class Mage(Enemy):
         self.__current_animation = f"IDLE_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
         self.__distance_x = 1000
-        self.__detection_range = 500
+        self.__distance_y = 0
+        self.__detection_range_x = 500
+        self.__detection_range_y = 10
         self.__attack_distance = 400
         self.__speed = 3
         self.__base_hp = self.hp
@@ -64,7 +66,7 @@ class Mage(Enemy):
         self.__seen_player = False
 
     def __idle(self) -> None:
-        if abs(self.__distance_x) > self.__detection_range:
+        if abs(self.__distance_x) > self.__detection_range_x:
             self.vel.x = 0
             self.__animations.set_animation(f"IDLE_{self.direction}")
 
@@ -129,16 +131,6 @@ class Mage(Enemy):
         if self.direction == "LEFT":
             offset *= -1
 
-        # Attack(
-        #     pos=Vector(int(self.pos.x + offset), int(self.pos.y + 20)),
-        #     hitbox=Vector(69, 70),
-        #     hitbox_offset=None,
-        #     damage=40,
-        #     start_frame=7,
-        #     end_frame=7,
-        #     owner=self,
-        # )
-
         self.__animations.set_animation(f"ATTACK_{self.direction}")
         self.__animations.set_one_iteration(True)
 
@@ -158,7 +150,8 @@ class Mage(Enemy):
                 self.__dead = True
 
     def __move(self) -> None:
-        if abs(self.__distance_x) > self.__detection_range or self.__player is None:
+        if ((abs(self.__distance_x) > self.__detection_range_x and abs(self.__distance_y) > self.__detection_range_y) or
+                self.__player is None):
             return
 
         if self.__player.crouched and not self.__seen_player:
@@ -174,6 +167,7 @@ class Mage(Enemy):
 
     def interaction(self, entity: PhysicsEntity) -> None:
         self.__distance_x = self.pos.x - entity.pos.x
+        self.__distance_y = self.pos.y - entity.pos.y
         self.__player = entity
 
         if self.__left_fireball is not None:

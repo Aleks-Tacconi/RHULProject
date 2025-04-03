@@ -51,7 +51,9 @@ class AbyssalRevenant(Enemy):
         self.__current_animation = f"IDLE_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
         self.__distance_x = 1000
-        self.__detection_range = 300
+        self.__distance_y = 0
+        self.__detection_range_x = 300
+        self.__detection_range_y = 10
         self.__attack_distance = 70
         self.__speed = 3
         self.__base_hp = self.hp
@@ -60,7 +62,7 @@ class AbyssalRevenant(Enemy):
         self.seen_player = False
 
     def __idle(self) -> None:
-        if abs(self.__distance_x) > self.__detection_range:
+        if abs(self.__distance_x) > self.__detection_range_x:
             self.vel.x = 0
             self.__animations.set_animation(f"IDLE_{self.direction}")
 
@@ -144,10 +146,12 @@ class AbyssalRevenant(Enemy):
 
     def interaction(self, entity: PhysicsEntity) -> None:
         self.__distance_x = self.pos.x - entity.pos.x
+        self.__distance_y = self.pos.y - entity.pos.y
         self.__player = entity
 
     def __move(self) -> None:
-        if abs(self.__distance_x) > self.__detection_range or self.__player is None:
+        if ((abs(self.__distance_x) > self.__detection_range_x and abs(self.__distance_y) > self.__detection_range_y) or
+                self.__player is None):
             return
 
         if self.__player.crouched and not self.seen_player:
