@@ -46,7 +46,7 @@ class EvilHand(Enemy):
         self.__distance_x = 1000
         self.__distance_y = 0
         self.__detection_range_x = 200
-        self.__detection_range_y = 10
+        self.__detection_range_y = 100
         self.__attack_distance = 10
         self.__speed = 3
         self.__base_hp = self.hp
@@ -126,7 +126,7 @@ class EvilHand(Enemy):
                 self.__dead = True
 
     def __move(self) -> None:
-        if ((abs(self.__distance_x) > self.__detection_range_x and abs(self.__distance_y) > self.__detection_range_y) or
+        if ((abs(self.__distance_x) > self.__detection_range_x or abs(self.__distance_y) > self.__detection_range_y) or
                 self.__player is None):
             return
 
