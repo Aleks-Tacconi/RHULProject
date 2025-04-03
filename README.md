@@ -94,3 +94,172 @@
 - Abstract base class which creates a simple template for implementing levels. This enforces functions such as keyhandlers are implemented and creates a mouse instance which can be used for handling mouse inputs. Also enforces a draw handler is provided.
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- ### utils/vector.py
+
+- Class representing Vectors
+
+- ### utils/speech.py
+
+- Provides functionality to speak into the microphone to convert voice into text
+
+- ### utils/score.py
+
+- Handles login process and updates the score for each user
+
+- ### utils/mouse.py
+
+- Is the mouse handler class
+
+- ### entities/abyssal_revenant.py
+
+- Handles the AI of then Abyssal Revenant enemy and how it interacts with the player
+
+- ### entities/attack.py
+
+- Creates a hitbox instance for the attack for each entity
+
+- ### entities/background.py
+
+- Handles rendering the background that has no collisions with player
+
+- ### entities/block.py
+
+- Handles the collision of blocks.
+
+- ### entities/cinematic.py
+
+- Handles the rendering of cinematic bars
+
+- ### entities/demon_slime_boss.py
+
+- Handles the functions of the final boss enemy
+
+- ### entities/evil_hand
+
+- Handles the function of the evil hand enemy
+
+- ### entities/evil_knight.py
+
+- Handles the function of the evil knight enemy
+
+- ### entities/fire.py
+
+- Handles creation of vertical fire used by the boss and how they function.
+
+- ### entities/fireball.py
+
+- Handles horizontal fireballs used by the mage.py
+
+- ### entities/flying_demon.py
+
+- Handles the flying demon enemy logic
+
+- ### entities/impaler_boss.py
+
+- Never used
+
+- ### entities/mage.py
+
+- Handles mage enemy logic
+
+- ### entities/player.py
+
+- Handles player logic as well as keyboard controls from user.
+
+- ### entities/player.healthbar.py
+
+- handles the logic and rendering of the player health bar
+
+### entities/teleport.py
+
+- Handles teleport the player to the new coordinates
+
+- ### entities/trigger.py
+
+- Handles the trigger class with vectors.
+
