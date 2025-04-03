@@ -21,7 +21,7 @@ from .abstract import GameLoop
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 800
-LEVEL = "level2"
+LEVEL = "level3"
 
 
 class LevelEditor(GameLoop):
