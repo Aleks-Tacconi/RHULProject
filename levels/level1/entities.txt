@@ -1368,3 +1368,10 @@ assets\blocks\stone.png,-67,0
 assets\blocks\stone.png,-64,0
 assets\blocks\stone.png,-63,0
 assets\blocks\stone.png,-62,0
+assets\blocks\BLACK.png,5,4
+assets\blocks\BLACK.png,6,4
+assets\blocks\BLACK.png,2,5
+assets\blocks\BLACK.png,3,5
+assets\blocks\BLACK.png,7,4
+assets\blocks\BLACK.png,8,4
+assets\blocks\BLACK.png,4,5
