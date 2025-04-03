@@ -1,5 +1,4 @@
 ## Info
-- Docstring conventions: [Google Style Docstrings](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html)
 - Python version - 3.13.1
 
 ## How to run
@@ -35,3 +34,22 @@
     ```sh
     python main.py
     ```
+
+## File Explanations 
+
+### ai/ai.py
+
+- Provides an interface to interact with the openAI api
+
+### entities/abstract/enemy.py
+
+- Abstract base class for representing an general enemy. This provides a template for implementing enemies in the game. Inherits from PhysicsEntity
+
+### entities/abstract/entity.py
+
+- Abstract base class for representing a in game entity. Enforces specific methods which every in game entity should contain
+
+### entities/abstract/physics_entity.py
+
+- 
+
