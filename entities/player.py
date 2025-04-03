@@ -148,8 +148,6 @@ class Player(PhysicsEntity):
         self.__animations.set_animation(self.__current_animation)
         self.__animations.update()
 
-        print(f"{self.hp=}")
-
     def render(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
         if self.direction == "LEFT":
             pos = Vector(int(self.pos.x + offset_x - 10), int(self.pos.y + offset_y))

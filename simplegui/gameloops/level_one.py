@@ -5,6 +5,7 @@ import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, DemonSlimeBoss, FlyingDemon, EvilHand,
                       Mage, EvilKnight, PlayerHealthBar, Cinematic, Teleport)
+from simplegui.components.xp import XP
 from simplegui.gameloops.transition_screen import TransitionScreen
 from utils import Vector
 
@@ -15,7 +16,7 @@ from simplegui.components import ScoreBoard, Cutscene, Interactable
 ID = "LevelOne"
 
 class LevelOne(GameLoop):
-    def __init__(self, reset: Callable, failed: Callable, passed: Callable) -> None:
+    def __init__(self, reset: Callable, failed: Callable, passed: Callable, scoreboard: ScoreBoard, xp: XP) -> None:
         super().__init__()
 
         self.__reset = reset
@@ -24,7 +25,8 @@ class LevelOne(GameLoop):
 
         self._load_level(os.path.join("levels", "level1"), ID)
 
-        self.__scoreboard = ScoreBoard()
+        self.__scoreboard = scoreboard
+        self.__xp = xp
 
         self.__environment = []
 
@@ -115,6 +117,7 @@ class LevelOne(GameLoop):
 
             if not entity.is_alive:
                 self.__scoreboard.enemy_killed_score(entity)
+                self.__xp.enemy_killed_xp(entity)
             if entity.remove():
                 self._enemies.remove(entity)
 
@@ -122,6 +125,7 @@ class LevelOne(GameLoop):
             self.__scoreboard.calculate_score("LevelOne")
             print("|||||||||||||||||||||||||||||||||")
             self.__scoreboard.print_score()
+            self.__xp.print_xp()
             print("|||||||||||||||||||||||||||||||||")
             self.__reset(transition_screen=TransitionScreen(
                     prev_level=ID,
@@ -129,7 +133,8 @@ class LevelOne(GameLoop):
                     failed=self.__failed,
                     passed=self.__passed,
                     passed_level=self.__player.hp > 0,
-                    score=self.__scoreboard.return_score(ID)
+                    score=self.__scoreboard.return_score(ID),
+                    xp=self.__xp
                 ))
 
         """

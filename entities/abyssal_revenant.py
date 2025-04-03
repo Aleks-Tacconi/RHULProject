@@ -22,7 +22,7 @@ class AbyssalRevenant(Enemy):
             hp=1000,
             level_id=level_id,
             hitbox_offset=Vector(0, 20),
-            direction=start_direction,
+            direction=start_direction
         )
 
         spritesheet = SpriteSheet(
@@ -46,6 +46,7 @@ class AbyssalRevenant(Enemy):
                                            )
 
         self.points = 100
+        self.xp = 50
         self.direction = start_direction
         self.__current_animation = f"IDLE_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
@@ -142,7 +143,6 @@ class AbyssalRevenant(Enemy):
     def interaction(self, entity: PhysicsEntity) -> None:
         self.__distance_x = self.pos.x - entity.pos.x
         self.__player = entity
-        print("Health: ", self.hp)
 
     def __move(self) -> None:
         if abs(self.__distance_x) > self.__detection_range or self.__player is None:

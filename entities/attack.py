@@ -59,6 +59,7 @@ class Attack(Entity):
         if self.__counter == self.__start_frame - 1:
             super()._render_hitbox(canvas, offset_x, offset_y)
 
+    
     @classmethod
     def remove_attack(cls, attack: "Attack") -> None:
         cls.all.remove(attack)

@@ -25,6 +25,7 @@ class PhysicsEntity(Entity, metaclass=ABCMeta):
         self.vel = vel
         self._level_id = level_id
         self.hp = hp
+        self.xp = 50
         self.immune = False
         self.__max_gravity = 10
         self.__gravity_strength = 0.8
