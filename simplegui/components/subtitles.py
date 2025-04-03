@@ -42,7 +42,7 @@ class Subtitles:
                 if (len(self.__words) >= self.__max_words or len(self.__letters) >= self.__max_characters or
                         self.__end_of_sentence):
                     self.__end_of_sentence = False
-                    time.sleep(0.5)
+                    time.sleep(0.7)
                     self.text = ""
                     self.__words.clear()
                     self.__letters.clear()

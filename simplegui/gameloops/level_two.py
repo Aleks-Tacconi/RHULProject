@@ -68,8 +68,6 @@ class LevelTwo(GameLoop):
 
         self.__offset_x = 0
         self.__offset_y = 0
-        #self.__offset_x_light = 0
-        #self.__offset_y_light = 0
 
         self.__interactions = Interactable(self.__next_scene, "Press F to go to the next level",
                                            os.path.join("assets", "portal", "red_portal.png"),
@@ -84,9 +82,6 @@ class LevelTwo(GameLoop):
         # TODO: 400 is half the screen width - not good magic number
         self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 10
         self.__offset_y += (self.__player.pos.y - 180 - self.__offset_y) // 10
-
-        #self.__offset_x_light += (self.__player_light.pos.x - 400 - self.__offset_x) // 30
-        #self.__offset_y_light += (self.__player_light.pos.y - 400 - self.__offset_y) // 30
 
         self.__player.update()
 
