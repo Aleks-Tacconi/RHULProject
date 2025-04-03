@@ -51,6 +51,7 @@ class FlyingDemon(Enemy):
         self.__detection_range = 200
         self.__attack_distance = 70
         self.__speed = 1
+        self.xp = 200
         self.__base_hp = self.hp
         self.__dead = False
         self.__player = None
