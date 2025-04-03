@@ -59,7 +59,7 @@ class TransitionScreen(GameLoop):
             self.__elements = [f"You died.", f"Retry {this_level[prev_level]}."]
 
         self.__selected = None
-        self.__can_pick_buff = (passed_level and xp.return_xp(prev_level) >= 150) or True
+        self.__can_pick_buff = (passed_level and xp.return_xp(prev_level) >= 150)
 
         self.__xp.reset_xp(prev_level)
         self.__score = score
