@@ -18,7 +18,7 @@ class EvilKnight(PhysicsEntity):
             size=Vector(200, 200),
             vel=Vector(0, 0),
             hitbox=Vector(40, 92),
-            hp=10000,
+            hp=5000,
             level_id=level_id,
             hitbox_offset=Vector(-5, 55),
             direction=start_direction,
@@ -196,7 +196,7 @@ class EvilKnight(PhysicsEntity):
             hitbox_offset=Vector(0, 30),
             start_frame= 10,
             end_frame=10,
-            damage=100,
+            damage=500,
             owner=self,
         )
 

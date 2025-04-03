@@ -19,7 +19,7 @@ class DemonSlimeBoss(Enemy):
             size=Vector(576, 320),
             hitbox=Vector(120, 200),
             vel=Vector(0, 0),
-            hp=300,
+            hp=100000,
             level_id=level_id,
             hitbox_offset=Vector(0, 20),
             direction=start_direction,
@@ -131,7 +131,7 @@ class DemonSlimeBoss(Enemy):
             hitbox_offset=None,
             start_frame=7,
             end_frame=7,
-            damage=40,
+            damage=1000,
             owner=self,
         )
 

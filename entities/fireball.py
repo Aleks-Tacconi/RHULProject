@@ -63,7 +63,7 @@ class LeftFireball(Enemy):
                 pos=self.pos,
                 hitbox=Vector(2, 2),
                 hitbox_offset=None,
-                damage=1000,
+                damage=500,
                 owner=self
             )
 

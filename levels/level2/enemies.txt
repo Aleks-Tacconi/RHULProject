@@ -1,10 +1,10 @@
 EvilKnight,1898,-24,LEFT
-EvilKnight,3147,-31,LEFT
 EvilKnight,3634,-149,RIGHT
 EvilKnight,3632,-409,RIGHT
 EvilKnight,3817,-570,LEFT
-EvilHand,4932,145,LEFT
-EvilHand,5139,155,LEFT
 EvilKnight,5832,15,LEFT
 EvilKnight,5895,17,LEFT
 EvilHand,6343,14,LEFT
+EvilKnight,3148,-23,LEFT
+EvilHand,4907,145,LEFT
+EvilHand,5162,145,LEFT
