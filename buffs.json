@@ -1,5 +1,1 @@
-{
-    "Health": false,
-    "Attack": false,
-    "Crit rate": false
-}
+{"Health": false, "Attack": true, "Crit rate": true}

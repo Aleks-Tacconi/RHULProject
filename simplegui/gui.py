@@ -17,6 +17,9 @@ class GUI:
         self.__scoreboard = ScoreBoard()
         self.__xp = XP()
 
+        with open("buffs.json", "w") as f:
+            f.write('{"Health": false, "Attack": false, "Crit rate": false}')
+
         self.__reset_game()
 
     def __set_draw_handler(self, gameloop: GameLoop) -> None:
@@ -50,7 +53,7 @@ class GUI:
         login = Login(lambda: self.__reset_game(login_status=True))
 
         cutscene_1 = CutsceneOne(self.__reset_game,
-                                self.__reset_level_one)
+                                 self.__reset_level_one)
 
         level_editor = LevelEditor(self.__reset_game, self.__labels)
         title_screen = TitleScreen(lambda: self.__set_draw_handler(cutscene_1),
@@ -65,6 +68,7 @@ class GUI:
             self.__set_draw_handler(title_screen)
     
     def __reset_tutorial(self, login_status = False):
+        print("Trying to load...")
         tutorial = Tutorial(self.__reset_game, 
                             failed=lambda: self.__reset_tutorial,
                             passed=lambda: self.__reset_level_one,
@@ -74,6 +78,7 @@ class GUI:
         self.__set_draw_handler(tutorial)
 
     def __reset_level_one(self, login_status = False):
+        print("Trying to load...")
         level_one = LevelOne(reset=self.__reset_game,
                             failed=lambda: self.__reset_level_one,
                             passed=lambda: self.__reset_level_two,
@@ -83,7 +88,8 @@ class GUI:
         self.__set_draw_handler(level_one)
     
     def __reset_level_two(self, login_status = False):
-        level_two = Tutorial(self.__reset_game, 
+        print("Trying to load...")
+        level_two = LevelTwo(self.__reset_game, 
                             failed=lambda: self.__reset_level_two,
                             passed=lambda: self.__set_draw_handler(),
                             scoreboard=self.__scoreboard,
@@ -92,7 +98,8 @@ class GUI:
         self.__set_draw_handler(level_two)
 
     def __reset_level_three(self, login_status = False):
-        level_three = Tutorial(self.__reset_game, 
+        print("Trying to load...")
+        level_three = LevelThree(self.__reset_game, 
                             failed=lambda: self.__reset_level_three,
                             passed=lambda: self.__reset_game,
                             scoreboard=self.__scoreboard,
