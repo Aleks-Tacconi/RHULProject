@@ -20,6 +20,9 @@ SURROUNDINGS = [
     [2, -5], [1, -5], [0, -5], [-1, -5], [-2, -5],
 ]
 
+SURROUNDINGS_CROUCHED = [[0, 3], [1, 3], [-1, 3], [0, 2], [1, 2], [-1, 2],[0, -1], [-1, -1], [1, -1]]
+
+
 
 
 
@@ -95,6 +98,16 @@ class Block(Entity):
         return surroundings
 
     @classmethod
+    def __get_surroundings_for_crouch(cls, x: int, y: int, id: str) -> list:
+        surroundings = []
+        for sx, sy in SURROUNDINGS_CROUCHED:
+            key = f"{id}|{int(x + sx)}|{int(y + sy)}"
+            if key in cls.all:
+                surroundings.append(cls.all[key])
+
+        return surroundings
+
+    @classmethod
     def collisions_x(cls, entity: PhysicsEntity, id: str) -> None:
         x = int((entity.pos.x + entity.hitbox_offset.x) // SIZE)
         y = int((entity.pos.y + entity.hitbox_offset.y) // SIZE)
@@ -125,7 +138,7 @@ class Block(Entity):
         x = int((entity.pos.x + entity.hitbox_offset.x) // SIZE)
         y = int((entity.pos.y + entity.hitbox_offset.y) // SIZE)
 
-        for block in cls.__get_surroundings(x, y, id):
+        for block in cls.__get_surroundings_for_crouch(x, y, id):
            if block.handle_crouch_collision_y(entity):
                return True
         return False
