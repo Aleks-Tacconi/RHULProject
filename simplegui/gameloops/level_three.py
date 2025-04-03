@@ -77,6 +77,18 @@ class LevelThree(GameLoop):
                                            os.path.join("assets", "portal", "red_portal.png"),
                                            1, 24, 4, self.__player, Vector(5950, 100),
                                            Vector(128, 128))
+        self.__interaction2 = Interactable(
+            self.__next_scene,
+            "Press F to complete the game",
+            os.path.join("assets", "portal", "red_portal.png"),
+            1,
+            24,
+            4,
+            self.__player,
+            Vector(9675, 83),
+            Vector(128, 128)
+        )
+        self.__display_end_portal = False
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
@@ -119,7 +131,11 @@ class LevelThree(GameLoop):
                 self.__scoreboard.enemy_killed_score(entity)
                 self.__xp.enemy_killed_xp(entity, ID)
             if entity.remove():
+                print(type(entity))
+                print(type(entity) == DemonSlimeBoss)
                 self._enemies.remove(entity)
+                if type(entity) == DemonSlimeBoss:
+                    self.__display_end_portal = True
 
         if self.__player.remove():
             self.__scoreboard.calculate_score(ID)
@@ -157,6 +173,12 @@ class LevelThree(GameLoop):
                 self.__interactions.update(interactable)
                 self.__interactions.render(canvas, -self.__offset_x, -self.__offset_y)
 
+        for interactable in self.__interaction2.interactables:
+            if self.is_entity_visible(self.__player, interactable[6]):
+                if self.__display_end_portal:
+                    self.__interaction2.update(interactable)
+                    self.__interaction2.render(canvas, -self.__offset_x, -self.__offset_y)
+
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
 
     def keyup_handler(self, key: int) -> None:
@@ -164,5 +186,19 @@ class LevelThree(GameLoop):
 
     def keydown_handler(self, key: int) -> None:
         self.__player.keydown_handler(key)
+
+    def __next_scene(self):
+        self.__scoreboard.calculate_score(ID)
+        self.__reset(
+            transition_screen=TransitionScreen(
+                prev_level=ID,
+                title=self.__reset,
+                failed=self.__failed,
+                passed=self.__passed,
+                passed_level=self.__player.hp > 0,
+                score=self.__scoreboard.return_score(ID),
+                xp=self.__xp,
+            )
+        )
 
 
