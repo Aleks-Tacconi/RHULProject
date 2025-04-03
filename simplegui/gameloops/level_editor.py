@@ -195,8 +195,6 @@ class LevelEditor(GameLoop):
     def keyup_handler(self, key: int) -> None: ...
 
     def keydown_handler(self, key: int) -> None:
-        print(key)
-
         if key == 49:
             self.__type = "enemy"
             self.__current = self.__all_enemies[0]

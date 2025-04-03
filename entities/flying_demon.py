@@ -156,7 +156,6 @@ class FlyingDemon(Enemy):
     def interaction(self, entity: PhysicsEntity) -> None:
         self.__distance_x = self.pos.x - entity.pos.x
         self.__player = entity
-        print("Health: ", self.hp)
 
     def __str__(self) -> str:
         return "FlyingDemon"

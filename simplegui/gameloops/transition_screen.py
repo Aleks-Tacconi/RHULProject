@@ -1,26 +1,33 @@
+import json
+import os
 from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
+from entities import Background
 from simplegui.components import Button, ButtonStyle
 from simplegui.components.buffs import Buff
 from simplegui.components.xp import XP
-from .abstract import GameLoop
-import os
-from entities import Background
 from utils import Vector
-import json
+from utils.score import SCORE
+
+from .abstract import GameLoop
+
 
 class TransitionScreen(GameLoop):
-    def __init__(self, 
-                 prev_level: str, 
-                 title: Callable, 
-                 failed: Callable, 
-                 passed: Callable, 
-                 passed_level: bool, 
-                 score: int, 
-                 xp: XP) -> None:
+    def __init__(
+        self,
+        prev_level: str,
+        title: Callable,
+        failed: Callable,
+        passed: Callable,
+        passed_level: bool,
+        score: int,
+        xp: XP,
+    ) -> None:
         super().__init__()
+
+        SCORE.add_score(score, passed_level)
 
         self.__title = title
         self.__passed_level = passed_level
@@ -30,32 +37,33 @@ class TransitionScreen(GameLoop):
             "tutorial": "LevelOne",
             "LevelOne": "Level Two",
             "LevelTwo": "Level Three",
-            "LevelThree": "the Title Screen"
+            "LevelThree": "the Title Screen",
         }
-
         this_level = {
             "tutorial": "the Tutorial",
             "LevelOne": "Level One",
             "LevelTwo": "Level Two",
-            "LevelThree": "Level Three"
+            "LevelThree": "Level Three",
         }
         if self.__passed_level:
             self.__start_game = passed
         else:
             self.__start_game = failed
-        
+
         self.__xp.reset_xp(prev_level)
         self.__score = score
 
         if self.__passed_level:
-            self.__elements = [f"You passed {this_level[prev_level]}.", f"Proceed to {next_level[prev_level]}"]
+            self.__elements = [
+                f"You passed {this_level[prev_level]}.",
+                f"Proceed to {next_level[prev_level]}",
+            ]
         else:
             self.__elements = [f"You died.", f"Retry {this_level[prev_level]}."]
 
         self.__selected = None
         self.__can_pick_buff = passed_level and xp.return_xp(prev_level) >= 150
-                
-        
+
         self.__start = Button(
             pos=[[290, 280], [510, 280], [510, 310], [290, 310]],
             text=self.__elements[1],
@@ -67,7 +75,7 @@ class TransitionScreen(GameLoop):
                 font_color="Black",
                 text_offset_x=-105,
                 text_offset_y=6,
-            )
+            ),
         )
 
         self.__title_screen = Button(
@@ -81,18 +89,18 @@ class TransitionScreen(GameLoop):
                 font_color="Black",
                 text_offset_x=-105,
                 text_offset_y=6,
-            )
+            ),
         )
 
         self.__title_background = Background(
-                pos=Vector(404, 200),
-                img=os.path.join("assets", "black_background", "black-background.jpg"),
-                size_x=1920,
-                size_y=1080,
-                scale_factor=1.5,
-                frames=1,
-                cols=1,
-            )
+            pos=Vector(404, 200),
+            img=os.path.join("assets", "black_background", "black-background.jpg"),
+            size_x=1920,
+            size_y=1080,
+            scale_factor=1.5,
+            frames=1,
+            cols=1,
+        )
         if self.__can_pick_buff:
             health_buff_url = os.path.join("assets", "buffs", "Buff_Health.png")
             self.__health_buff_img = Buff(
@@ -100,26 +108,25 @@ class TransitionScreen(GameLoop):
                 center_source=(80, 80),
                 dest_center=(310, 200),
                 dest_length=40,
-                buff_type="Health"
+                buff_type="Health",
             )
-            
+
             attack_buff_url = os.path.join("assets", "buffs", "Buff_Melee_Range.png")
             self.__attack_buff_img = Buff(
                 url=attack_buff_url,
-                center_source=(24,24),
+                center_source=(24, 24),
                 dest_center=(390, 200),
                 dest_length=40,
-                buff_type="Attack"
+                buff_type="Attack",
             )
-            
-            
+
             crit_buff_url = os.path.join("assets", "buffs", "Buff_Accuracy.png")
             self.__crit_buff_img = Buff(
                 url=crit_buff_url,
                 center_source=(48, 48),
                 dest_center=(470, 200),
                 dest_length=40,
-                buff_type="Crit rate"
+                buff_type="Crit rate",
             )
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
@@ -141,9 +148,11 @@ class TransitionScreen(GameLoop):
                 self.__attack_buff_img.handle_click(self._mouse.last_click)
                 self.__crit_buff_img.handle_click(self._mouse.last_click)
 
-                if self.__health_buff_img.get_is_selected() is False and \
-                self.__attack_buff_img.get_is_selected() is False and \
-                self.__crit_buff_img.get_is_selected() is False:
+                if (
+                    self.__health_buff_img.get_is_selected() is False
+                    and self.__attack_buff_img.get_is_selected() is False
+                    and self.__crit_buff_img.get_is_selected() is False
+                ):
                     if self.__selected == "Health":
                         self.__health_buff_img.force_select()
                     if self.__selected == "Attack":
@@ -157,9 +166,9 @@ class TransitionScreen(GameLoop):
                         self.__selected = "Attack"
                     if self.__crit_buff_img.get_is_selected():
                         self.__selected = "Crit rate"
+
             def has_selected(pos):
                 if not self.__can_pick_buff:
-                    print("Load")
                     self.__start_game()
                     return
                 if self.__selected is None:
@@ -168,14 +177,19 @@ class TransitionScreen(GameLoop):
                     data = json.load(f)
                 data[self.__selected] = True
                 with open("buffs.json", "w") as f:
-                    json.dump(data)
+                    json.dump(data, f)
                 self.__start_game()
 
             self.__start.handle_click(self._mouse.last_click, self.__start_game)
-            self.__title_screen.handle_click(self._mouse.last_click, self.__title)
-        
+            self.__title_screen.handle_click(self._mouse.last_click, self.__title_screen_func)
+            self._mouse.clicked = False
+
         self._mouse.update()
-    
+
+    def __title_screen_func(self) -> None:
+        self.__title()
+        SCORE.current_score = 0
+
     def keydown_handler(self, key: int) -> None: ...
 
     def keyup_handler(self, key: int) -> None: ...

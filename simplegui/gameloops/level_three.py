@@ -74,7 +74,6 @@ class LevelThree(GameLoop):
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
-
         self.__scoreboard.update()
 
         # TODO: 400 is half the screen width - not good magic number
@@ -118,10 +117,6 @@ class LevelThree(GameLoop):
 
         if self.__player.remove():
             self.__scoreboard.calculate_score(ID)
-            print("|||||||||||||||||||||||||||||||||")
-            self.__scoreboard.print_score()
-            self.__xp.print_xp()
-            print("|||||||||||||||||||||||||||||||||")
             self.__reset(transition_screen=TransitionScreen(
                 prev_level=ID,
                 title=self.__reset,

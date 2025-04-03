@@ -3,20 +3,33 @@ from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, DemonSlimeBoss, FlyingDemon, EvilHand,
-                      Mage, EvilKnight, PlayerHealthBar, Cinematic, Teleport)
+from entities import (
+    Attack,
+    Background,
+    Block,
+    Player,
+    PlayerHealthBar,
+    Teleport,
+)
+from simplegui.components import Cutscene, Interactable, ScoreBoard
 from simplegui.components.xp import XP
 from simplegui.gameloops.transition_screen import TransitionScreen
 from utils import Vector
 
 from .abstract import GameLoop
-from simplegui.components import ScoreBoard, Cutscene, Interactable
-
 
 ID = "LevelOne"
 
+
 class LevelOne(GameLoop):
-    def __init__(self, reset: Callable, failed: Callable, passed: Callable, scoreboard: ScoreBoard, xp: XP) -> None:
+    def __init__(
+        self,
+        reset: Callable,
+        failed: Callable,
+        passed: Callable,
+        scoreboard: ScoreBoard,
+        xp: XP,
+    ) -> None:
         super().__init__()
 
         self.__reset = reset
@@ -34,7 +47,9 @@ class LevelOne(GameLoop):
             self.__environment.append(
                 Background(
                     pos=Vector(-420 + (960 * i), 70),
-                    img=os.path.join("assets", "background", "BATTLEFIELD_BACKGROUND.png"),
+                    img=os.path.join(
+                        "assets", "background", "BATTLEFIELD_BACKGROUND.png"
+                    ),
                     size_x=1280,
                     size_y=566,
                     scale_factor=0.75,
@@ -57,31 +72,41 @@ class LevelOne(GameLoop):
         self.__player = Player(pos=Vector(100, 0), level_id=ID)
 
         self.__gui = []
-        self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 360), player=self.__player)
+        self.__player_healthbar = PlayerHealthBar(
+            pos=Vector(130, 360), player=self.__player
+        )
         self.__gui.append(self.__player_healthbar)
 
         self.__offset_x = 0
         self.__offset_y = 0
 
         self.__teleport = Teleport(Vector(-2000, 80), self.__player)
-        self.__interactions = Interactable(self.__next_scene, "Press F to go to the next level",
-                                           os.path.join("assets", "portal", "red_portal.png"),
-                                           1, 24, 4, self.__player, Vector(300, 100),
-                                           Vector(128, 128))
-        self.__tower = Interactable(self.__teleport.teleport, "Press F to enter tower",
-                                           os.path.join("assets", "background", "tower.png"),
-                                           1, 1, 1, self.__player, Vector(1500, 50),
-                                           Vector(512, 512))
-
-
-
-
+        self.__interactions = Interactable(
+            self.__next_scene,
+            "Press F to go to the next level",
+            os.path.join("assets", "portal", "red_portal.png"),
+            1,
+            24,
+            4,
+            self.__player,
+            Vector(300, 100),
+            Vector(128, 128),
+        )
+        self.__tower = Interactable(
+            self.__teleport.teleport,
+            "Press F to enter tower",
+            os.path.join("assets", "background", "tower.png"),
+            1,
+            1,
+            1,
+            self.__player,
+            Vector(1500, 50),
+            Vector(512, 512),
+        )
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
-
         self.__scoreboard.update()
 
-        # TODO: 400 is half the screen width - not good magic number
         self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 10
         self.__offset_y += (self.__player.pos.y - 180 - self.__offset_y) // 10
 
@@ -118,20 +143,18 @@ class LevelOne(GameLoop):
                 self._enemies.remove(entity)
 
         if self.__player.remove():
-            self.__scoreboard.calculate_score("LevelOne")
-            print("|||||||||||||||||||||||||||||||||")
-            self.__scoreboard.print_score()
-            self.__xp.print_xp()
-            print("|||||||||||||||||||||||||||||||||")
-            self.__reset(transition_screen=TransitionScreen(
+            self.__scoreboard.calculate_score(ID)
+            self.__reset(
+                transition_screen=TransitionScreen(
                     prev_level=ID,
                     title=self.__reset,
                     failed=self.__failed,
                     passed=self.__passed,
                     passed_level=self.__player.hp > 0,
                     score=self.__scoreboard.return_score(ID),
-                    xp=self.__xp
-                ))
+                    xp=self.__xp,
+                )
+            )
 
         for interactable in self.__interactions.interactables:
             if self.is_entity_visible(self.__player, interactable[6]):
@@ -157,16 +180,14 @@ class LevelOne(GameLoop):
 
     def __next_scene(self):
         self.__scoreboard.calculate_score(ID)
-        print("|||||||||||||||||||||||||||||||||")
-        self.__scoreboard.print_score()
-        self.__xp.print_xp()
-        print("|||||||||||||||||||||||||||||||||")
-        self.__reset(transition_screen=TransitionScreen(
-            prev_level=ID,
-            title=self.__reset,
-            failed=self.__failed,
-            passed=self.__passed,
-            passed_level=self.__player.hp > 0,
-            score=self.__scoreboard.return_score(ID),
-            xp=self.__xp
-        ))
+        self.__reset(
+            transition_screen=TransitionScreen(
+                prev_level=ID,
+                title=self.__reset,
+                failed=self.__failed,
+                passed=self.__passed,
+                passed_level=self.__player.hp > 0,
+                score=self.__scoreboard.return_score(ID),
+                xp=self.__xp,
+            )
+        )

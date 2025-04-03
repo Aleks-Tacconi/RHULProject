@@ -37,6 +37,13 @@ class Score:
 
         return False
 
+    def add_score(self, score: int, boolean: bool) -> None:
+        if boolean:
+            self.current_score += score
+
+        self.update()
+        self.update_scores()
+
     def __load_scores(self) -> None:
         with open(file="scores.json", mode="r", encoding="utf-8") as f:
             self.__scores = json.load(f)
@@ -51,5 +58,6 @@ class Score:
     def update_scores(self) -> None:
         with open(file="scores.json", mode="w", encoding="utf-8") as f:
             json.dump(self.__scores, f)
+
 
 SCORE = Score()

@@ -114,7 +114,6 @@ class Login(GameLoop):
             return
 
         try:
-            print(key)
             if (key == 13): # 13 is enter key
                 self.__confirm_text = "Logging in..."
                 self.__login()
@@ -126,7 +125,6 @@ class Login(GameLoop):
                     self.__focus_username()
                 return
             key = chr(key).lower()
-            print(key)
             if key in string.printable and not (key == "\t" or key == "\n"):
                 if self.__focus == "username":
                     self.__username += key
