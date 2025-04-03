@@ -18,6 +18,9 @@ class GUI:
         self.__scoreboard = ScoreBoard()
         self.__xp = XP()
 
+        with open("buffs.json", "w") as f:
+            f.write('{"Health": false, "Attack": false, "Crit rate": false}')
+
         self.__reset_game()
 
     def __set_draw_handler(self, gameloop: GameLoop) -> None:

@@ -50,9 +50,6 @@ class TransitionScreen(GameLoop):
         else:
             self.__start_game = failed
 
-        self.__xp.reset_xp(prev_level)
-        self.__score = score
-
         if self.__passed_level:
             self.__elements = [
                 f"You passed {this_level[prev_level]}.",
@@ -62,8 +59,12 @@ class TransitionScreen(GameLoop):
             self.__elements = [f"You died.", f"Retry {this_level[prev_level]}."]
 
         self.__selected = None
-        self.__can_pick_buff = passed_level and xp.return_xp(prev_level) >= 150
+        self.__can_pick_buff = (passed_level and xp.return_xp(prev_level) >= 150)
 
+        self.__xp.reset_xp(prev_level)
+        self.__score = score
+                
+        
         self.__start = Button(
             pos=[[290, 280], [510, 280], [510, 310], [290, 310]],
             text=self.__elements[1],
@@ -167,18 +168,17 @@ class TransitionScreen(GameLoop):
                     if self.__crit_buff_img.get_is_selected():
                         self.__selected = "Crit rate"
 
-            def has_selected(pos):
-                if not self.__can_pick_buff:
-                    self.__start_game()
-                    return
-                if self.__selected is None:
-                    return
-                with open("buffs.json") as f:
-                    data = json.load(f)
-                data[self.__selected] = True
-                with open("buffs.json", "w") as f:
-                    json.dump(data, f)
-                self.__start_game()
+            if not self.__can_pick_buff:
+                return
+            if self.__selected is None:
+                return
+            with open("buffs.json") as f:
+                data = json.load(f)
+            for key, value in data.items():
+                data[key] = False
+            data[self.__selected] = True
+            with open("buffs.json", "w") as f:
+                json.dump(data, f)
 
             self.__start.handle_click(self._mouse.last_click, self.__start_game)
             self.__title_screen.handle_click(self._mouse.last_click, self.__title_screen_func)
