@@ -1,0 +1,5 @@
+EvilKnight,1643,161,LEFT
+EvilKnight,2771,174,LEFT
+EvilKnight,2889,175,LEFT
+EvilHand,4425,167,LEFT
+EvilKnight,3918,173,LEFT

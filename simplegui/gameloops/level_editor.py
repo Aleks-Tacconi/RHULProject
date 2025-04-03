@@ -21,7 +21,7 @@ from .abstract import GameLoop
 
 CANVAS_WIDTH = 800
 CANVAS_HEIGHT = 800
-LEVEL = "level1"
+LEVEL = "level3"
 
 
 class LevelEditor(GameLoop):
@@ -41,7 +41,7 @@ class LevelEditor(GameLoop):
 
         self._load_level(os.path.join("levels", LEVEL), "LevelEditor")
 
-        self.__all_eneimes = [
+        self.__all_enemies = [
             "AbyssalRevenant",
             "Mage",
             "FlyingDemon",
@@ -128,7 +128,7 @@ class LevelEditor(GameLoop):
                                 start_direction=self.__direction,
                             )
                         )
-                    if self.__current == "DEMONSLIMEBOSS":
+                    if self.__current == "DemonSlimeBoss":
                         self._enemies.append(
                             DemonSlimeBoss(
                                 pos=Vector(x, y),
@@ -136,7 +136,7 @@ class LevelEditor(GameLoop):
                                 start_direction=self.__direction,
                             )
                         )
-                    if self.__current == "FLYINGDEMON":
+                    if self.__current == "FlyingDemon":
                         self._enemies.append(
                             FlyingDemon(
                                 pos=Vector(x, y),
@@ -144,7 +144,7 @@ class LevelEditor(GameLoop):
                                 start_direction=self.__direction,
                             )
                         )
-                    if self.__current == "EVILKNIGHT":
+                    if self.__current == "EvilKnight":
                         self._enemies.append(
                             EvilKnight(
                                 pos=Vector(x, y),
@@ -152,7 +152,7 @@ class LevelEditor(GameLoop):
                                 start_direction=self.__direction,
                             )
                         )
-                    if self.__current == "EVILHAND":
+                    if self.__current == "EvilHand":
                         self._enemies.append(
                             EvilHand(
                                 pos=Vector(x, y),
@@ -199,7 +199,7 @@ class LevelEditor(GameLoop):
 
         if key == 49:
             self.__type = "enemy"
-            self.__current = self.__all_eneimes[0]
+            self.__current = self.__all_enemies[0]
         if key == 50:
             self.__type = "block"
             self.__current = self.__all_entities[0]
@@ -212,9 +212,9 @@ class LevelEditor(GameLoop):
 
         if self.__type == "enemy":
             if key == 37:
-                self.__change_selected(-1, self.__all_eneimes)
+                self.__change_selected(-1, self.__all_enemies)
             if key == 39:
-                self.__change_selected(1, self.__all_eneimes)
+                self.__change_selected(1, self.__all_enemies)
         elif self.__type == "block":
             if key == 37:
                 self.__change_selected(-1, self.__all_entities)
