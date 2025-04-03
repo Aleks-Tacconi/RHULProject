@@ -1,9 +1,8 @@
-AbyssalRevenant,2385,90,LEFT
 AbyssalRevenant,1547,90,LEFT
-Mage,4046,40,LEFT
-Mage,4304,47,LEFT
-FlyingDemon,4176,113,LEFT
 FlyingDemon,5537,113,LEFT
 FlyingDemon,8489,-3,LEFT
 FlyingDemon,8328,54,LEFT
 DemonSlimeBoss,9675,53,LEFT
+AbyssalRevenant,2612,52,RIGHT
+Mage,3486,28,LEFT
+FlyingDemon,4138,-14,LEFT

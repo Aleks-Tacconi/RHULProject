@@ -78,8 +78,8 @@ class GameLoop(metaclass=ABCMeta):
         player_y = player.pos.y
         direction = player.direction
 
-        screen_right = player_x + 500
-        screen_left = player_x - 500
+        screen_right = player_x + 550
+        screen_left = player_x - 550
         screen_top = player_y - 400
         screen_bottom = player_y + 300
 
