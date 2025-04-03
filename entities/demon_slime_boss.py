@@ -46,6 +46,7 @@ class DemonSlimeBoss(Enemy):
                                            )
 
         self.points = 1000
+        self.xp = 300
         self.direction = start_direction
         self.__current_animation = f"IDLE_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
