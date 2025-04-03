@@ -2,10 +2,9 @@ from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
-from simplegui.components import Button, ButtonStyle
+
 from .abstract import GameLoop
-import os
-from entities import Background
+
 from utils import Vector
 
 class CutSceneScreen(GameLoop):

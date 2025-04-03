@@ -6,7 +6,8 @@ import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, DemonSlimeBoss, FlyingDemon, EvilHand,
                       Mage, EvilKnight, PlayerHealthBar, Cinematic)
 from simplegui.gameloops.cutscene_screen import CutSceneScreen
-from simplegui.gameloops.transition_screen import TransitionScreen
+
+from simplegui.components import PlaySound
 from utils import Vector
 
 from .abstract import GameLoop
@@ -71,9 +72,15 @@ class CutsceneOne(GameLoop):
                                                          " shadow has faded from this world.", Vector(1000, 1000),
                                                          Vector(250,390), Vector(830, 700))
 
+        self.__speech = PlaySound("king_speech.wav")
+        self.__sound_playing = False
+
+
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
-
+        if not self.__sound_playing:
+            self.__speech.play()
+            self.__sound_playing = True
         # TODO: 400 is half the screen width - not good magic number
         self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 10
         self.__offset_y += (self.__player.pos.y - 180 - self.__offset_y) // 10

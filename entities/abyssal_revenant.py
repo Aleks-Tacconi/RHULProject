@@ -128,6 +128,8 @@ class AbyssalRevenant(Enemy):
                 hitbox=Vector(100, 100),
                 hitbox_offset=None,
                 damage=1000,
+                start_frame=3,
+                end_frame=3,
                 owner=self,
             )
 
