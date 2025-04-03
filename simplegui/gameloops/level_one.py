@@ -89,7 +89,7 @@ class LevelOne(GameLoop):
             24,
             4,
             self.__player,
-            Vector(300, 100),
+            Vector(4850, 195),
             Vector(128, 128),
         )
         self.__tower = Interactable(
@@ -100,7 +100,7 @@ class LevelOne(GameLoop):
             1,
             1,
             self.__player,
-            Vector(1500, 50),
+            Vector(-480, 50),
             Vector(512, 512),
         )
 
