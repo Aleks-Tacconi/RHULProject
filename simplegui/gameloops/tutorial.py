@@ -45,23 +45,6 @@ class Tutorial(GameLoop):
 
         self.__player = Player(pos=Vector(100, 0), level_id=ID)
 
-        """"
-        self.__player_light = Background(
-            pos=Vector(0, 0),
-            img=os.path.join("assets", "player", "FRAME_HARD.png"),
-            size_x=1200,
-            size_y=1200,
-            scale_factor=1,
-        )
-        self.__player_light_flip = Background(
-            pos=Vector(0, 0),
-            img=os.path.join("assets", "player", "FRAME_HARD_FLIPPED.png"),
-            size_x=1200,
-            size_y=1200,
-            scale_factor=1,
-        )
-        """
-
         self.__gui = []
         self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 360), player=self.__player)
         self.__gui.append(self.__player_healthbar)
@@ -108,9 +91,6 @@ class Tutorial(GameLoop):
         # TODO: 400 is half the screen width - not good magic number
         self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 10
         self.__offset_y += (self.__player.pos.y - 180 - self.__offset_y) // 10
-
-        #self.__offset_x_light += (self.__player_light.pos.x - 400 - self.__offset_x) // 30
-        #self.__offset_y_light += (self.__player_light.pos.y - 400 - self.__offset_y) // 30
 
         self.__player.update()
 
@@ -160,21 +140,6 @@ class Tutorial(GameLoop):
                 score=self.__scoreboard.return_score(ID),
                 xp=self.__xp
             ))
-
-        """
-        if self.__player.direction == "LEFT":
-            self.__player_light.render(
-                canvas,
-                self.__player.pos.x - self.__offset_x,
-                self.__player.pos.y - self.__offset_y,
-            )
-        else:
-            self.__player_light_flip.render(
-                canvas,
-                self.__player.pos.x - self.__offset_x,
-                self.__player.pos.y - self.__offset_y,
-            )
-        """
 
         for entity in self.__gui:
             entity.update()
