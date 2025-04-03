@@ -10,7 +10,7 @@ from simplegui.gameloops.transition_screen import TransitionScreen
 from utils import Vector
 
 from .abstract import GameLoop
-from simplegui.components import ScoreBoard, Cutscene
+from simplegui.components import ScoreBoard, Cutscene, Interactable
 
 
 ID = "LevelTwo"
@@ -43,7 +43,7 @@ class LevelTwo(GameLoop):
                 )
             )
 
-        self.__player = Player(pos=Vector(100, -150), level_id=ID)
+        self.__player = Player(pos=Vector(-400, 80), level_id=ID)
 
         """"
         self.__player_light = Background(
@@ -70,6 +70,11 @@ class LevelTwo(GameLoop):
         self.__offset_y = 0
         #self.__offset_x_light = 0
         #self.__offset_y_light = 0
+
+        self.__interactions = Interactable(self.__next_scene, "Press F to go to the next level",
+                                           os.path.join("assets", "portal", "red_portal.png"),
+                                           1, 24, 4, self.__player, Vector(7980, 70),
+                                           Vector(128, 128))
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
@@ -152,8 +157,29 @@ class LevelTwo(GameLoop):
 
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
 
+        for interactable in self.__interactions.interactables:
+            if self.is_entity_visible(self.__player, interactable[6]):
+                self.__interactions.update(interactable)
+                self.__interactions.render(canvas, -self.__offset_x, -self.__offset_y)
+
     def keyup_handler(self, key: int) -> None:
         self.__player.keyup_handler(key)
 
     def keydown_handler(self, key: int) -> None:
         self.__player.keydown_handler(key)
+
+    def __next_scene(self):
+        self.__scoreboard.calculate_score(ID)
+        print("|||||||||||||||||||||||||||||||||")
+        self.__scoreboard.print_score()
+        self.__xp.print_xp()
+        print("|||||||||||||||||||||||||||||||||")
+        self.__reset(transition_screen=TransitionScreen(
+            prev_level=ID,
+            title=self.__reset,
+            failed=self.__failed,
+            passed=self.__passed,
+            passed_level=self.__player.hp > 0,
+            score=self.__scoreboard.return_score(ID),
+            xp=self.__xp
+        ))

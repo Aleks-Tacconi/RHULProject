@@ -6,4 +6,4 @@ FlyingDemon,4176,113,LEFT
 FlyingDemon,5537,113,LEFT
 FlyingDemon,8489,-3,LEFT
 FlyingDemon,8328,54,LEFT
-DemonSlimeBoss,9525,57,LEFT
+DemonSlimeBoss,9675,53,LEFT
