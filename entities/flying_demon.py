@@ -48,7 +48,9 @@ class FlyingDemon(Enemy):
         self.__current_animation = f"IDLE_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
         self.__distance_x = 1000
-        self.__detection_range = 200
+        self.__distance_y = 0
+        self.__detection_range_x = 200
+        self.__detection_range_y = 10
         self.__attack_distance = 70
         self.__speed = 1
         self.xp = 200
@@ -58,7 +60,7 @@ class FlyingDemon(Enemy):
         self.__seen_player = False
 
     def __idle(self) -> None:
-        if abs(self.__distance_x) > self.__detection_range:
+        if abs(self.__distance_x) > self.__detection_range_x:
             self.vel.x = 0
             self.__animations.set_animation(f"IDLE_{self.direction}")
 
@@ -138,7 +140,8 @@ class FlyingDemon(Enemy):
                 self.__dead = True
 
     def __move(self) -> None:
-        if abs(self.__distance_x) > self.__detection_range or self.__player is None:
+        if ((abs(self.__distance_x) > self.__detection_range_x and abs(self.__distance_y) > self.__detection_range_y) or
+                self.__player is None):
             return
 
         if self.__player.crouched and not self.__seen_player:
@@ -155,6 +158,7 @@ class FlyingDemon(Enemy):
 
     def interaction(self, entity: PhysicsEntity) -> None:
         self.__distance_x = self.pos.x - entity.pos.x
+        self.__distance_y = self.pos.y - entity.pos.y
         self.__player = entity
 
     def __str__(self) -> str:

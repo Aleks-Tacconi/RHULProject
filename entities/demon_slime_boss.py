@@ -50,7 +50,9 @@ class DemonSlimeBoss(Enemy):
         self.__current_animation = f"IDLE_{self.direction}"
         self.__animations.set_animation(self.__current_animation)
         self.__distance_x = 1000
-        self.__detection_range = 500
+        self.__distance_y = 0
+        self.__detection_range_x = 500
+        self.__detection_range_y = 10
         self.__attack_distance = 100
         self.__speed = 1
         self.__base_hp = self.hp
@@ -63,7 +65,7 @@ class DemonSlimeBoss(Enemy):
         self.knockback_chance = 0.01
 
     def __idle(self) -> None:
-        if abs(self.__distance_x) > self.__detection_range:
+        if abs(self.__distance_x) > self.__detection_range_x:
             self.vel.x = 0
             self.__animations.set_animation(f"IDLE_{self.direction}")
 
@@ -103,7 +105,7 @@ class DemonSlimeBoss(Enemy):
         self.healthbar(canvas, offset_x, offset_y)
 
     def __fire(self) -> None:
-        if abs(self.__distance_x) > self.__detection_range:
+        if abs(self.__distance_x) > self.__detection_range_x:
             return
         if random.randint(1,20) == 1:
             self.__fires.append(Fire(self.__player_x + random.randint(-20,20), level_id="LevelEditor"))
@@ -162,7 +164,8 @@ class DemonSlimeBoss(Enemy):
                 self.__dead = True
 
     def __move(self) -> None:
-        if abs(self.__distance_x) > self.__detection_range or self.__player is None:
+        if ((abs(self.__distance_x) > self.__detection_range_x and abs(self.__distance_y) > self.__detection_range_y) or
+                self.__player is None):
             return
 
         if self.__player.crouched and not self.__seen_player:
@@ -179,6 +182,7 @@ class DemonSlimeBoss(Enemy):
 
     def interaction(self, entity: PhysicsEntity) -> None:
         self.__distance_x = self.pos.x - entity.pos.x
+        self.__distance_y = self.pos.y - entity.pos.y
         self.__player_x = entity.pos.x
         self.__player = entity
 

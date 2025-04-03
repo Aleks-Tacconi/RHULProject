@@ -69,7 +69,7 @@ class LevelOne(GameLoop):
             )
         )
 
-        self.__player = Player(pos=Vector(100, 0), level_id=ID)
+        self.__player = Player(pos=Vector(140, 170), level_id=ID)
 
         self.__gui = []
         self.__player_healthbar = PlayerHealthBar(

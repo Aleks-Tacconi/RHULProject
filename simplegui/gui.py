@@ -5,7 +5,7 @@ from simplegui.components.xp import XP
 from simplegui.gameloops.cutscene_one import CutsceneOne
 from simplegui.gameloops.cutscene_screen import CutSceneScreen
 
-from .gameloops import LevelOne, LevelThree, LevelTwo, Login, TitleScreen, Tutorial
+from .gameloops import LevelOne, LevelThree, LevelTwo, Login, TitleScreen, Tutorial, LeaderBoard
 from .gameloops.abstract import GameLoop
 from .gameloops.level_editor import LevelEditor
 
@@ -13,7 +13,6 @@ from .gameloops.level_editor import LevelEditor
 class GUI:
     def __init__(self, title: str, width: int, height: int) -> None:
         self.__frame = simplegui.create_frame(title, width, height)
-        self.__frame.set_canvas_background("#8B8C8A")
         self.__labels = [self.__frame.add_label("") for _ in range(20)]
 
         self.__scoreboard = ScoreBoard()
@@ -40,6 +39,7 @@ class GUI:
         login = Login(lambda: self.__reset_game(login_status=True))
 
         cutscene_1 = CutsceneOne(self.__reset_game, self.__reset_level_one)
+        leaderboard = LeaderBoard(self.__reset_game)
 
         level_editor = LevelEditor(self.__reset_game, self.__labels)
         title_screen = TitleScreen(
@@ -48,6 +48,7 @@ class GUI:
             lambda: self.__set_draw_handler(level_editor),
             lambda: self.__set_draw_handler(login),
             login_status,
+            lambda: self.__set_draw_handler(leaderboard),
         )
         if transition_screen is not None:
             self.__set_draw_handler(transition_screen)

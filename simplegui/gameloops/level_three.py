@@ -4,13 +4,13 @@ from typing import Callable
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, DemonSlimeBoss, FlyingDemon, EvilHand,
-                      Mage, EvilKnight, PlayerHealthBar, Cinematic)
+                      Mage, EvilKnight, PlayerHealthBar, Cinematic, Teleport)
 from simplegui.components.xp import XP
 from simplegui.gameloops.transition_screen import TransitionScreen
 from utils import Vector
 
 from .abstract import GameLoop
-from simplegui.components import ScoreBoard, Cutscene
+from simplegui.components import ScoreBoard, Cutscene, Interactable
 
 
 ID = "LevelThree"
@@ -44,7 +44,7 @@ class LevelThree(GameLoop):
                 )
             )
 
-        self.__player = Player(pos=Vector(100, -100), level_id=ID)
+        self.__player = Player(pos=Vector(-150, 80), level_id=ID)
 
         """"
         self.__player_light = Background(
@@ -71,6 +71,12 @@ class LevelThree(GameLoop):
         self.__offset_y = 0
         #self.__offset_x_light = 0
         #self.__offset_y_light = 0
+
+        self.__teleport = Teleport(Vector(7640, 80), self.__player)
+        self.__interactions = Interactable(self.__teleport.teleport, "Press F to meet Demon King",
+                                           os.path.join("assets", "portal", "red_portal.png"),
+                                           1, 24, 4, self.__player, Vector(5950, 100),
+                                           Vector(128, 128))
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
@@ -146,6 +152,11 @@ class LevelThree(GameLoop):
             entity.update()
             entity.render(canvas, 0, 0)
 
+        for interactable in self.__interactions.interactables:
+            if self.is_entity_visible(self.__player, interactable[6]):
+                self.__interactions.update(interactable)
+                self.__interactions.render(canvas, -self.__offset_x, -self.__offset_y)
+
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
 
     def keyup_handler(self, key: int) -> None:
@@ -153,3 +164,5 @@ class LevelThree(GameLoop):
 
     def keydown_handler(self, key: int) -> None:
         self.__player.keydown_handler(key)
+
+
