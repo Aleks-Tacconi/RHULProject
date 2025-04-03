@@ -63,17 +63,26 @@ class AI:
         Returns:
             str | None: The generated response | None if there was an Error.
         """
+        try:
+            response = self.__model.chat.completions.create(
+                model="gpt-4o",
+                messages=[
+                    {
+                        "role": "user",
+                        "content": prompt,
+                    }
+                ],
+            )
+            return response.choices[0].message.content
 
-        response = self.__model.chat.completions.create(
-            model="gpt-4o",
-            messages=[
-                {
-                    "role": "user",
-                    "content": prompt,
-                }
-            ],
-        )
-        return response.choices[0].message.content
+        except openai.AuthenticationError:
+            return "ERROR"
+
+        except openai.OpenAIError:
+            return "ERROR"
+
+        except Exception:
+            return "ERROR"
 
     def __listen_and_respond(self) -> None:
         """Captures voice input through microphone and responds by playing an audio file"""

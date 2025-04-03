@@ -2,6 +2,7 @@ import os
 from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
+from SimpleGUICS2Pygame.simpleguics2pygame import canvas
 
 from entities import (
     Attack,
@@ -11,11 +12,13 @@ from entities import (
     PlayerHealthBar,
     Teleport,
 )
-from simplegui.components import Cutscene, Interactable, ScoreBoard
+from entities.utils import PlaySound
+from simplegui.components import Cutscene, Interactable, ScoreBoard, Subtitles
 from simplegui.components.xp import XP
 from simplegui.gameloops.transition_screen import TransitionScreen
 from utils import Vector
-
+from ai import AI
+import random
 from .abstract import GameLoop
 
 ID = "LevelOne"
@@ -62,7 +65,7 @@ class LevelOne(GameLoop):
                 pos=Vector(-2000, 138),
                 img=os.path.join("assets", "background", "lonely_knight.png"),
                 size_x=776,
-                size_y=400,
+                size_y=410,
                 scale_factor=0.5,
                 frames=4,
                 cols=27,
@@ -80,7 +83,8 @@ class LevelOne(GameLoop):
         self.__offset_x = 0
         self.__offset_y = 0
 
-        self.__teleport = Teleport(Vector(-2000, 80), self.__player)
+        self.__teleport = Teleport(Vector(-1870, 80), self.__player)
+        self.__teleport_back = Teleport(Vector(-480, 0), self.__player)
         self.__interactions = Interactable(
             self.__next_scene,
             "Press F to go to the next level",
@@ -103,6 +107,35 @@ class LevelOne(GameLoop):
             Vector(-480, 50),
             Vector(512, 512),
         )
+
+        self.__door = Interactable(
+            self.__teleport_back.teleport,
+            "Press F to exit tower",
+            os.path.join("assets", "background", "door.png"),
+            1,
+            8,
+            2,
+            self.__player,
+            Vector(-2130, 160),
+            Vector(150, 150),
+        )
+
+        self.__npc = Interactable(
+            self.__talk,
+            "Press F to talk to mysterious knight",
+            os.path.join("assets", "background", "transparent_square.png"),
+            1,
+            8,
+            2,
+            self.__player,
+            Vector(-1970, 200),
+            Vector(50, 100),
+        )
+        self.__npc_talk = Subtitles("", Vector(-2100, 169), 15)
+        self.__npc_ai = AI()
+        self.__music = PlaySound()
+        self.__music.play_sound("ha-simplestring_1.wav")
+        self.__music.change_volume(0.3)
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         self.__scoreboard.update()
@@ -166,11 +199,22 @@ class LevelOne(GameLoop):
                 self.__tower.update(interactable)
                 self.__tower.render(canvas, -self.__offset_x, -self.__offset_y)
 
+        for interactable in self.__door.interactables:
+            if self.is_entity_visible(self.__player, interactable[6]):
+                self.__door.update(interactable)
+                self.__door.render(canvas, -self.__offset_x, -self.__offset_y)
+
+        for interactable in self.__npc.interactables:
+            if self.is_entity_visible(self.__player, interactable[6]):
+                self.__npc.update(interactable)
+                self.__npc.render(canvas, -self.__offset_x, -self.__offset_y)
+
         for entity in self.__gui:
             entity.update()
             entity.render(canvas, 0, 0)
 
         self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
+        self.__npc_talk.render(canvas, -self.__offset_x, -self.__offset_y)
 
     def keyup_handler(self, key: int) -> None:
         self.__player.keyup_handler(key)
@@ -191,3 +235,20 @@ class LevelOne(GameLoop):
                 xp=self.__xp,
             )
         )
+
+    def __talk(self):
+        response = self.__npc_ai.text_prompt("Act as a mysterious knight. Say one sentence about you grumbling about"
+                                             " the war with the demons.")
+        if response == "ERROR":
+            responses = {"Talk": ["This war has gone for way too long, I wish it would just end!",
+                                  "It never ends! How many have to die?",
+                                  "Leave me alone stranger.",
+                                  "The gods have forsaken us!",
+                                  "God, please give me strength to live another day in this damned world!"]}
+            response = random.choice(responses["Talk"])
+
+        self.__npc_talk.new_subtitle(response)
+        self.__npc_talk.start_subtitles()
+
+
+

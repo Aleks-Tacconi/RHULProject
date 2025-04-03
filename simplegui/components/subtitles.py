@@ -51,4 +51,8 @@ class Subtitles:
                     self.text=""
                     self.generate = False
 
+    def new_subtitle(self, text) -> None:
+        self.__prompt = text.split(" ")
+        self.generate = True
+
 

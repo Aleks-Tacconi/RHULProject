@@ -8,7 +8,7 @@ from utils import Vector
 from .abstract import Enemy
 from .attack import Attack
 from .block import Block
-from .utils import MultiAnimation, SpriteSheet
+from .utils import MultiAnimation, SpriteSheet, PlaySound
 from .fire import Fire
 import random
 
@@ -64,6 +64,17 @@ class DemonSlimeBoss(Enemy):
         self.__player_x = None
         self.__seen_player = False
         self.knockback_chance = 0.01
+        self.__sound = PlaySound()
+        self.__sound.change_volume(0.3)
+        self.__sounds = {"ATTACK1": "Sword Impact Hit 1.wav",
+                         "ATTACK2": "Sword Impact Hit 2.wav",
+                         "ATTACK3": "Sword Impact Hit 3.wav",
+                         "ATTACK4": "Wave Attack 1.wav",
+                         "ATTACK5": "Wave Attack 2.wav",
+                         "FIRE1": "Fireball 1.wav",
+                         "FIRE2": "Fireball 2.wav",
+                         "FIRE3": "Fireball 3.wav",
+                         }
 
     def __idle(self) -> None:
         if abs(self.__distance_x) > self.__detection_range_x:
@@ -110,6 +121,7 @@ class DemonSlimeBoss(Enemy):
             return
         if random.randint(1,20) == 1:
             self.__fires.append(Fire(self.__player_x + random.randint(-20,20), level_id="LevelEditor"))
+            self.__sound.play_sound(self.__sounds.get(f"FIRE{random.randint(1, 3)}"))
 
 
 
@@ -137,6 +149,7 @@ class DemonSlimeBoss(Enemy):
             damage=1000,
             owner=self,
         )
+        self.__sound.play_sound(self.__sounds.get(f"ATTACK{random.randint(1, 5)}"))
 
         self.__animations.set_animation(f"ATTACK_{self.direction}")
         self.__animations.set_one_iteration(True)

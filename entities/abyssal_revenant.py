@@ -8,8 +8,8 @@ from utils import Vector
 from .abstract import Enemy
 from .attack import Attack
 from .block import Block
-from .utils import MultiAnimation, SpriteSheet
-
+from .utils import MultiAnimation, SpriteSheet, PlaySound
+import random
 
 
 class AbyssalRevenant(Enemy):
@@ -61,6 +61,13 @@ class AbyssalRevenant(Enemy):
         self.__player = None
         self.seen_player = False
 
+        self.__sound = PlaySound()
+        self.__sound.change_volume(0.3)
+        self.__sounds = {"ATTACK1": "07_human_atk_sword_1.wav",
+                         "ATTACK2": "07_human_atk_sword_2.wav",
+                         "ATTACK3": "07_human_atk_sword_3.wav"}
+
+
     def __idle(self) -> None:
         if abs(self.__distance_x) > self.__detection_range_x:
             self.vel.x = 0
@@ -96,6 +103,8 @@ class AbyssalRevenant(Enemy):
         if ((abs(self.__distance_x) > self.__detection_range_x or abs(self.__distance_y) > self.__detection_range_y) or
                 self.__player is None):
             return
+
+        self.__sound.play_sound(self.__sounds.get(f"ATTACK{random.randint(1, 3)}"))
 
         if self.__distance_x > 0:
             self.direction = "LEFT"

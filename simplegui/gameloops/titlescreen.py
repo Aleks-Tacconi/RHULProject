@@ -2,7 +2,7 @@ import os
 from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
-
+from entities.utils import PlaySound
 from entities import Background
 from simplegui.components import Button, ButtonStyle
 from utils import Vector
@@ -22,7 +22,7 @@ class TitleScreen(GameLoop):
     ) -> None:
         super().__init__()
 
-        sound_path = "TITLE_MUSIC.wav"
+
         self.__start = Button(
             pos=[[300, 240], [500, 240], [500, 270], [300, 270]],
             text="Start",
@@ -110,6 +110,10 @@ class TitleScreen(GameLoop):
             cols=9,
         )
         self.__login_status = login
+
+        self.__music = PlaySound()
+        self.__music.play_sound("ha-backrooms.wav")
+        self.__music.change_volume(0.3)
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         self.__title_background.render(canvas, 0, 0)

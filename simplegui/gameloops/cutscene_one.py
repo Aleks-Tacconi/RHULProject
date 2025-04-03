@@ -71,9 +71,13 @@ class CutsceneOne(GameLoop):
                                                          " Demon Lord is nothing but dust and the last echo of his"
                                                          " shadow has faded from this world.", Vector(1000, 1000),
                                                          Vector(250,390), Vector(830, 700))
+        self.__music = PlaySound()
+        self.__music.play_sound("ha-waterheater.wav")
+        self.__music.change_volume(0.3)
 
         self.__speech = PlaySound()
         self.__sound_playing = False
+
 
 
 

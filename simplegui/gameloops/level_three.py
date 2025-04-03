@@ -8,7 +8,7 @@ from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, 
 from simplegui.components.xp import XP
 from simplegui.gameloops.transition_screen import TransitionScreen
 from utils import Vector
-
+from entities.utils import PlaySound
 from .abstract import GameLoop
 from simplegui.components import ScoreBoard, Cutscene, Interactable
 
@@ -69,14 +69,16 @@ class LevelThree(GameLoop):
 
         self.__offset_x = 0
         self.__offset_y = 0
-        #self.__offset_x_light = 0
-        #self.__offset_y_light = 0
+
 
         self.__teleport = Teleport(Vector(7640, 80), self.__player)
         self.__interactions = Interactable(self.__teleport.teleport, "Press F to meet Demon King",
                                            os.path.join("assets", "portal", "red_portal.png"),
                                            1, 24, 4, self.__player, Vector(5950, 100),
                                            Vector(128, 128))
+        self.__music = PlaySound()
+        self.__music.play_sound("ha-pressure.wav")
+        self.__music.change_volume(0.3)
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
@@ -85,9 +87,6 @@ class LevelThree(GameLoop):
         # TODO: 400 is half the screen width - not good magic number
         self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 10
         self.__offset_y += (self.__player.pos.y - 180 - self.__offset_y) // 10
-
-        #self.__offset_x_light += (self.__player_light.pos.x - 400 - self.__offset_x) // 30
-        #self.__offset_y_light += (self.__player_light.pos.y - 400 - self.__offset_y) // 30
 
         self.__player.update()
 
@@ -132,21 +131,6 @@ class LevelThree(GameLoop):
                 score=self.__scoreboard.return_score(ID),
                 xp=self.__xp
             ))
-
-        """
-        if self.__player.direction == "LEFT":
-            self.__player_light.render(
-                canvas,
-                self.__player.pos.x - self.__offset_x,
-                self.__player.pos.y - self.__offset_y,
-            )
-        else:
-            self.__player_light_flip.render(
-                canvas,
-                self.__player.pos.x - self.__offset_x,
-                self.__player.pos.y - self.__offset_y,
-            )
-        """
 
         for entity in self.__gui:
             entity.update()

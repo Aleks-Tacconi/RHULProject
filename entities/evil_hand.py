@@ -9,7 +9,7 @@ from utils import Vector
 from .abstract import Enemy
 from .attack import Attack
 from .block import Block
-from .utils import MultiAnimation, SpriteSheet
+from .utils import MultiAnimation, SpriteSheet, PlaySound
 
 
 

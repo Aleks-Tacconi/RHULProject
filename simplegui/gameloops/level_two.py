@@ -8,7 +8,7 @@ from entities import (Block, Player, Attack, AbyssalRevenant, Fire, Background, 
 from simplegui.components.xp import XP
 from simplegui.gameloops.transition_screen import TransitionScreen
 from utils import Vector
-
+from entities.utils import PlaySound
 from .abstract import GameLoop
 from simplegui.components import ScoreBoard, Cutscene, Interactable
 
@@ -45,22 +45,7 @@ class LevelTwo(GameLoop):
 
         self.__player = Player(pos=Vector(-400, 80), level_id=ID)
 
-        """"
-        self.__player_light = Background(
-            pos=Vector(0, 0),
-            img=os.path.join("assets", "player", "FRAME_HARD.png"),
-            size_x=1200,
-            size_y=1200,
-            scale_factor=1,
-        )
-        self.__player_light_flip = Background(
-            pos=Vector(0, 0),
-            img=os.path.join("assets", "player", "FRAME_HARD_FLIPPED.png"),
-            size_x=1200,
-            size_y=1200,
-            scale_factor=1,
-        )
-        """
+
 
         self.__gui = []
         self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 360), player=self.__player)
@@ -73,6 +58,10 @@ class LevelTwo(GameLoop):
                                            os.path.join("assets", "portal", "red_portal.png"),
                                            1, 24, 4, self.__player, Vector(7980, 70),
                                            Vector(128, 128))
+
+        self.__music = PlaySound()
+        self.__music.play_sound("ha-abomination.wav")
+        self.__music.change_volume(0.3)
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
@@ -127,20 +116,6 @@ class LevelTwo(GameLoop):
                 xp=self.__xp
             ))
 
-        """
-        if self.__player.direction == "LEFT":
-            self.__player_light.render(
-                canvas,
-                self.__player.pos.x - self.__offset_x,
-                self.__player.pos.y - self.__offset_y,
-            )
-        else:
-            self.__player_light_flip.render(
-                canvas,
-                self.__player.pos.x - self.__offset_x,
-                self.__player.pos.y - self.__offset_y,
-            )
-        """
 
         for entity in self.__gui:
             entity.update()

@@ -6,11 +6,11 @@ from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
 from entities.abstract.physics_entity import PhysicsEntity
 from entities.fireball import LeftFireball, RightFireball
 from utils import Vector
-
+import random
 from .abstract import Enemy
 from .attack import Attack
 from .block import Block
-from .utils import MultiAnimation, SpriteSheet
+from .utils import MultiAnimation, SpriteSheet, PlaySound
 
 
 
@@ -64,6 +64,13 @@ class Mage(Enemy):
         self.__dead = False
         self.__player = None
         self.__seen_player = False
+
+        self.__sound = PlaySound()
+        self.__sound.change_volume(0.3)
+        self.__sounds = {"FIRE1": "Fireball 1.wav",
+                         "FIRE2": "Fireball 2.wav",
+                         "FIRE3": "Fireball 3.wav",
+                         }
 
     def __idle(self) -> None:
         if abs(self.__distance_x) > self.__detection_range_x:
@@ -131,6 +138,7 @@ class Mage(Enemy):
         if self.direction == "LEFT":
             offset *= -1
 
+        self.__sound.play_sound(self.__sounds.get(f"FIRE{random.randint(1, 3)}"))
         self.__animations.set_animation(f"ATTACK_{self.direction}")
         self.__animations.set_one_iteration(True)
 
