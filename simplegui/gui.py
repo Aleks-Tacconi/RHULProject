@@ -12,7 +12,6 @@ from .gameloops.level_editor import LevelEditor
 class GUI:
     def __init__(self, title: str, width: int, height: int) -> None:
         self.__frame = simplegui.create_frame(title, width, height)
-        self.__frame.set_canvas_background("#8B8C8A")
         self.__labels = [self.__frame.add_label("") for _ in range(20)]
 
         self.__scoreboard = ScoreBoard()
@@ -54,7 +53,7 @@ class GUI:
                                 self.__reset_level_one)
 
         level_editor = LevelEditor(self.__reset_game, self.__labels)
-        title_screen = TitleScreen(lambda: self.__set_draw_handler(level_three),
+        title_screen = TitleScreen(lambda: self.__set_draw_handler(cutscene_1),
                                 lambda: self.__set_draw_handler(tutorial),
                                 lambda: self.__set_draw_handler(level_editor),
                                 lambda: self.__set_draw_handler(login), login_status)
@@ -80,7 +79,7 @@ class GUI:
                             passed=lambda: self.__reset_level_two,
                             scoreboard=self.__scoreboard,
                             xp=self.__xp)
-        self.__frame.set_canvas_background("Black")
+        self.__frame.set_canvas_background("#BDAE97")
         self.__set_draw_handler(level_one)
     
     def __reset_level_two(self, login_status = False):
