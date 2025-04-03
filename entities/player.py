@@ -1,3 +1,4 @@
+import json
 import os
 
 from SimpleGUICS2Pygame import simpleguics2pygame as simplegui
@@ -12,12 +13,19 @@ import random
 
 class Player(PhysicsEntity):
     def __init__(self, pos: Vector, level_id: str) -> None:
+        with open("buffs.json") as f:
+            data = json.load(f)
+        if data["Health"]:
+            hp=150000
+        else:
+            hp=100000
+
         super().__init__(
             pos=pos,
             size=Vector(200, 200),
             vel=Vector(0, 0),
             hitbox=Vector(40, 92),
-            hp=100000,
+            hp=hp,
             level_id=level_id,
             hitbox_offset=Vector(-5, 55),
         )
@@ -310,15 +318,24 @@ class Player(PhysicsEntity):
         if self.direction == "LEFT":
             offset *= -1
 
+        with open("buffs.json") as f:
+            data = json.load(f)
+        if data["Attack"]:
+            damage=150
+        else:
+            damage=100
+
         Attack(
             pos=Vector(int(self.pos.x + offset), int(self.pos.y + 30)),
             hitbox=Vector(100, 100),
             hitbox_offset=Vector(0, 30),
             start_frame= 10,
             end_frame=10,
-            damage=100,
+            damage=damage,
             owner=self,
         )
+        print(f"{damage=}")
+        print(f"{self.hp=}")
         self.__sound.play_sound(self.__sounds.get(f"GRUNT{random.randint(1, 10)}"),
                                 self.__sounds.get(f"ATTACK{random.randint(1, 3)}"))
 

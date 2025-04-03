@@ -168,17 +168,17 @@ class TransitionScreen(GameLoop):
                     if self.__crit_buff_img.get_is_selected():
                         self.__selected = "Crit rate"
 
-            if not self.__can_pick_buff:
-                return
-            if self.__selected is None:
-                return
-            with open("buffs.json") as f:
-                data = json.load(f)
-            for key, value in data.items():
-                data[key] = False
-            data[self.__selected] = True
-            with open("buffs.json", "w") as f:
-                json.dump(data, f)
+            if self.__can_pick_buff:
+                
+                if self.__selected is not None:
+                    
+                    with open("buffs.json") as f:
+                        data = json.load(f)
+                    for key, value in data.items():
+                        data[key] = False
+                    data[self.__selected] = True
+                    with open("buffs.json", "w") as f:
+                        json.dump(data, f)
 
             self.__start.handle_click(self._mouse.last_click, self.__start_game)
             self.__title_screen.handle_click(self._mouse.last_click, self.__title_screen_func)
