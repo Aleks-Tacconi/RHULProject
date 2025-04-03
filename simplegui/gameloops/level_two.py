@@ -111,7 +111,7 @@ class LevelTwo(GameLoop):
 
             if not entity.is_alive:
                 self.__scoreboard.enemy_killed_score(entity)
-                self.__xp.enemy_killed_xp(entity)
+                self.__xp.enemy_killed_xp(entity, ID)
             if entity.remove():
                 self._enemies.remove(entity)
 
