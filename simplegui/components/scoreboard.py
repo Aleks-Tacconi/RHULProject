@@ -16,6 +16,7 @@ class ScoreBoard:
         self.__enemy_killed_score = 0
 
     def update(self) -> None:
+        self.__count += 1
         if self.__count % 60 == 0:
             self.__time += 1
 

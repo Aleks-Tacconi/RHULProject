@@ -116,11 +116,7 @@ class LevelTwo(GameLoop):
                 self._enemies.remove(entity)
 
         if self.__player.remove():
-            self.__scoreboard.calculate_score("LevelTwo")
-            print("|||||||||||||||||||||||||||||||||")
-            self.__scoreboard.print_score()
-            self.__xp.print_xp()
-            print("|||||||||||||||||||||||||||||||||")
+            self.__scoreboard.calculate_score(ID)
             self.__reset(transition_screen=TransitionScreen(
                 prev_level=ID,
                 title=self.__reset,

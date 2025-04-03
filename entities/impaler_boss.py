@@ -124,8 +124,6 @@ class ImpalerBoss(Enemy):
 
     def interaction(self, entity: PhysicsEntity) -> None:
         distance_x = self.pos.x - entity.pos.x
-        print(distance_x)
-        print("Health: ", self.hp)
 
         self.__animations.set_animation(self.__current_animation)
         self.__animations.update()

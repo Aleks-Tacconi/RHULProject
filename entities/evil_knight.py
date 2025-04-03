@@ -7,7 +7,7 @@ from utils import Vector
 from .abstract import PhysicsEntity
 from .attack import Attack
 from .block import Block
-from .utils import MultiAnimation, SpriteSheet
+from .utils import MultiAnimation, SpriteSheet, PlaySound
 import random
 
 
@@ -93,6 +93,34 @@ class EvilKnight(PhysicsEntity):
             "WALL_SLIDE_LEFT": (29, 3, 3, True),
         }
                                            )
+
+        self.__sound = PlaySound()
+        self.__sound.change_volume(0.3)
+        self.__sounds = {"DEATH": "death_2_ian.wav",
+                         "DAMAGE1": "damage_1_ian.wav",
+                         "DAMAGE2": "damage_2_ian.wav",
+                         "DAMAGE3": "damage_3_ian.wav",
+                         "DAMAGE4": "damage_4_ian.wav",
+                         "DAMAGE5": "damage_5_ian.wav",
+                         "DAMAGE6": "damage_6_ian.wav",
+                         "DAMAGE7": "damage_7_ian.wav",
+                         "DAMAGE8": "damage_8_ian.wav",
+                         "DAMAGE9": "damage_9_ian.wav",
+                         "DAMAGE10": "damage_10_ian.wav",
+                         "ATTACK1": "07_human_atk_sword_1.wav",
+                         "ATTACK2": "07_human_atk_sword_2.wav",
+                         "ATTACK3": "07_human_atk_sword_3.wav",
+                         "GRUNT1": "grunting_1_ian.wav",
+                         "GRUNT2": "grunting_2_ian.wav",
+                         "GRUNT3": "grunting_3_ian.wav",
+                         "GRUNT4": "grunting_4_ian.wav",
+                         "GRUNT5": "grunting_5_ian.wav",
+                         "GRUNT6": "grunting_6_ian.wav",
+                         "GRUNT7": "grunting_7_ian.wav",
+                         "GRUNT8": "grunting_8_ian.wav",
+                         "GRUNT9": "grunting_9_ian.wav",
+                         "GRUNT10": "grunting_10_ian.wav",
+                         }
 
         self.points = 100
         self.direction = start_direction
@@ -202,6 +230,8 @@ class EvilKnight(PhysicsEntity):
             damage=500,
             owner=self,
         )
+        self.__sound.play_sound(self.__sounds.get(f"GRUNT{random.randint(1, 10)}"),
+                                self.__sounds.get(f"ATTACK{random.randint(1, 3)}"))
 
         if self.__crouched:
             self.__animations.set_animation(f"CROUCH_ATTACK_{self.direction}")
@@ -235,8 +265,14 @@ class EvilKnight(PhysicsEntity):
             self.__rolling = True
             self.__animations.set_one_iteration(True)
 
+    def __take_damage(self):
+        if self.__original_hp != self.hp:
+            self.__original_hp = self.hp
+            self.__sound.play_sound(self.__sounds.get(f"DAMAGE{random.randint(1, 10)}"))
+
     def __death(self) -> None:
         if not self.is_alive:
+            self.__sound.play_sound(self.__sounds.get("DEATH"))
             self.vel.x = 0
             self.vel.y = 12
 
@@ -254,7 +290,6 @@ class EvilKnight(PhysicsEntity):
         self.__distance_x = self.pos.x - entity.pos.x
         self.__distance_y = self.pos.y - entity.pos.y
         self.__player = entity
-        print("Health: ", self.hp)
 
     def __str__(self) -> str:
         return "EvilKnight"
