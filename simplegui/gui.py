@@ -54,7 +54,7 @@ class GUI:
                                 self.__reset_level_one)
 
         level_editor = LevelEditor(self.__reset_game, self.__labels)
-        title_screen = TitleScreen(lambda: self.__set_draw_handler(cutscene_1),
+        title_screen = TitleScreen(lambda: self.__set_draw_handler(level_three),
                                 lambda: self.__set_draw_handler(tutorial),
                                 lambda: self.__set_draw_handler(level_editor),
                                 lambda: self.__set_draw_handler(login), login_status)

@@ -150,12 +150,12 @@ class LevelTwo(GameLoop):
             entity.update()
             entity.render(canvas, 0, 0)
 
-        self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
-
         for interactable in self.__interactions.interactables:
             if self.is_entity_visible(self.__player, interactable[6]):
                 self.__interactions.update(interactable)
                 self.__interactions.render(canvas, -self.__offset_x, -self.__offset_y)
+                
+        self.__player.render(canvas, -self.__offset_x, -self.__offset_y)
 
     def keyup_handler(self, key: int) -> None:
         self.__player.keyup_handler(key)

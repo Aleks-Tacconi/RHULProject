@@ -54,7 +54,7 @@ class LevelOne(GameLoop):
             )
         )
 
-        self.__player = Player(pos=Vector(100, 0), level_id=ID)
+        self.__player = Player(pos=Vector(140, 170), level_id=ID)
 
         self.__gui = []
         self.__player_healthbar = PlayerHealthBar(pos=Vector(130, 360), player=self.__player)
@@ -66,11 +66,11 @@ class LevelOne(GameLoop):
         self.__teleport = Teleport(Vector(-2000, 80), self.__player)
         self.__interactions = Interactable(self.__next_scene, "Press F to go to the next level",
                                            os.path.join("assets", "portal", "red_portal.png"),
-                                           1, 24, 4, self.__player, Vector(300, 100),
+                                           1, 24, 4, self.__player, Vector(4850, 195),
                                            Vector(128, 128))
         self.__tower = Interactable(self.__teleport.teleport, "Press F to enter tower",
                                            os.path.join("assets", "background", "tower.png"),
-                                           1, 1, 1, self.__player, Vector(1500, 50),
+                                           1, 1, 1, self.__player, Vector(-480, 50),
                                            Vector(512, 512))
 
 

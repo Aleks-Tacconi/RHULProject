@@ -1364,7 +1364,6 @@ assets\blocks\HELL_BLOCK.png,126,12
 assets\blocks\HELL_BLOCK.png,119,9
 assets\blocks\HELL_BLOCK.png,120,9
 assets\blocks\HELL_BLOCK.png,118,9
-assets\blocks\HELL_BLOCK.png,121,9
 assets\blocks\HELL_BLOCK.png,119,10
 assets\blocks\HELL_BLOCK.png,121,10
 assets\blocks\HELL_BLOCK.png,120,11
@@ -1697,7 +1696,6 @@ assets\blocks\HELL_BLOCK.png,140,9
 assets\blocks\HELL_BLOCK.png,139,9
 assets\blocks\HELL_BLOCK.png,121,5
 assets\blocks\HELL_BLOCK.png,123,6
-assets\blocks\HELL_BLOCK.png,138,5
 assets\blocks\HELL_BLOCK.png,140,8
 assets\blocks\HELL_BLOCK.png,83,-12
 assets\blocks\HELL_BLOCK.png,92,-6
