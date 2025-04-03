@@ -22,14 +22,20 @@
     .\venv\Scripts\activate  # On Windows
     ```
 
-4. Export OPENAI_API_KEY:
+4. Install dependencies
+
+    ```sh
+    pip install -r requirements.txt
+    ```
+
+5. Export OPENAI_API_KEY:
 
     ```sh
     export OPENAI_API_KEY="your_api_key" # On Linux/MacOS
     $env:OPENAI_API_KEY="your_api_key"   # On Windows
     ```
 
-5. Run the program:
+6. Run the program:
 
     ```sh
     python main.py
