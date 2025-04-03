@@ -1,3 +1,5 @@
+import json
+import random
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from utils import Vector
