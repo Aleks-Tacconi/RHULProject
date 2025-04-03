@@ -185,7 +185,6 @@ class DemonSlimeBoss(Enemy):
         self.__distance_y = self.pos.y - entity.pos.y
         self.__player_x = entity.pos.x
         self.__player = entity
-        print("Health: ", self.hp)
 
     def __str__(self) -> str:
         return "DemonSlimeBoss"

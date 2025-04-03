@@ -11,11 +11,11 @@ class Score:
         self.current_score = 0
         self.__user = ""
 
-        self.__scores = {}
+        self.scores = {}
         self.__load_scores()
 
     def new_user(self, username: str, passwd: str) -> None:
-        self.__scores[username] = {
+        self.scores[username] = {
             "score": 0,
             "password": passwd,
         }
@@ -28,28 +28,36 @@ class Score:
     def login(self, user: str, passwd: str) -> bool:
         encrypted = self.encrypt(passwd)
 
-        if user not in self.__scores:
+        if user not in self.scores:
             return False
 
-        if self.__scores[user]["password"] == encrypted:
+        if self.scores[user]["password"] == encrypted:
             self.__user = user
             return True
 
         return False
 
+    def add_score(self, score: int, boolean: bool) -> None:
+        if boolean:
+            self.current_score += score
+
+        self.update()
+        self.update_scores()
+
     def __load_scores(self) -> None:
         with open(file="scores.json", mode="r", encoding="utf-8") as f:
-            self.__scores = json.load(f)
+            self.scores = json.load(f)
 
     def update(self) -> None:
-        if self.__user not in self.__scores:
+        if self.__user not in self.scores:
             return
 
-        if self.current_score > self.__scores[self.__user]["score"]:
-            self.__scores[self.__user]["score"] = self.current_score
+        if self.current_score > self.scores[self.__user]["score"]:
+            self.scores[self.__user]["score"] = self.current_score
 
     def update_scores(self) -> None:
         with open(file="scores.json", mode="w", encoding="utf-8") as f:
-            json.dump(self.__scores, f)
+            json.dump(self.scores, f)
+
 
 SCORE = Score()

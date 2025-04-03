@@ -61,10 +61,25 @@ class Login(GameLoop):
             ),
         )
 
+        self.__new = Button(
+            pos=[[x, y - 40] for x, y in pos],
+            text="Create User",
+            style=ButtonStyle(
+                border_color="White",
+                border_width=2,
+                fill_color="White",
+                font_size=20,
+                font_color="Black",
+                text_offset_x=-30,
+                text_offset_y=6,
+            ),
+        )
+
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         self.__confirm.render(canvas)
         self.__password_button.render(canvas)
         self.__username_button.render(canvas)
+        self.__new.render(canvas)
         
         if self.__focus == "username":
             canvas.draw_text(self.__username, [310, 180], 20, "Red")
@@ -88,6 +103,16 @@ class Login(GameLoop):
             )
             self.__confirm.handle_click(self._mouse.last_click, self.__login)
             self._mouse.clicked = False
+            self.__new.handle_click(self._mouse.last_click, self.__new_user)
+
+    def __new_user(self) -> None:
+        if self.__username in SCORE.scores:
+            self.__confirm_text = f"{self.__username} already exists!"
+            return
+
+        if self.__username != "" and self.__password != "": 
+            SCORE.new_user(self.__username, self.__password)
+            self.__confirm_text = "User successfully created"
 
     def __login(self) -> None:
         if SCORE.login(self.__username, self.__password):
@@ -114,7 +139,6 @@ class Login(GameLoop):
             return
 
         try:
-            print(key)
             if (key == 13): # 13 is enter key
                 self.__confirm_text = "Logging in..."
                 self.__login()
@@ -126,7 +150,6 @@ class Login(GameLoop):
                     self.__focus_username()
                 return
             key = chr(key).lower()
-            print(key)
             if key in string.printable and not (key == "\t" or key == "\n"):
                 if self.__focus == "username":
                     self.__username += key

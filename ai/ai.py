@@ -79,10 +79,8 @@ class AI:
         """Captures voice input through microphone and responds by playing an audio file"""
 
         #speech = speak()
-        #print(speech)
         # speech = "Hello"
         #response = self.text_prompt(self.__prompt + speech)
-        #print(response)
 
         #if response is not None:
             #self.__generate_response_voice(response)

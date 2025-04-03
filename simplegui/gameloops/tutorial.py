@@ -126,11 +126,6 @@ class Tutorial(GameLoop):
 
         if self.__player.remove():
             self.__scoreboard.calculate_score(ID)
-            print("|||||||||||||||||||||||||||||||||")
-            self.__scoreboard.print_score()
-            self.__xp.print_xp()
-            print("|||||||||||||||||||||||||||||||||")
-            self.__reset(self.__scoreboard.return_score(ID))
             self.__reset(transition_screen=TransitionScreen(
                 prev_level=ID,
                 title=self.__reset,
@@ -166,10 +161,6 @@ class Tutorial(GameLoop):
 
     def __next_scene(self):
         self.__scoreboard.calculate_score(ID)
-        print("|||||||||||||||||||||||||||||||||")
-        self.__scoreboard.print_score()
-        self.__xp.print_xp()
-        print("|||||||||||||||||||||||||||||||||")
         self.__reset(transition_screen=TransitionScreen(
             prev_level=ID,
             title=self.__reset,

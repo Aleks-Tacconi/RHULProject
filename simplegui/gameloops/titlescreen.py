@@ -18,6 +18,7 @@ class TitleScreen(GameLoop):
         level_editor: Callable,
         login_func: Callable,
         login: bool,
+        leaderboard: Callable,
     ) -> None:
         super().__init__()
 
@@ -36,9 +37,9 @@ class TitleScreen(GameLoop):
             ),
         )
 
-        self.__settings = Button(
+        self.__leaderboard = Button(
             pos=[[300, 280], [500, 280], [500, 310], [300, 310]],
-            text="Settings",
+            text="Leaderboard",
             style=ButtonStyle(
                 border_color="Black",
                 border_width=2,
@@ -97,6 +98,7 @@ class TitleScreen(GameLoop):
         self.__level_editor = level_editor
         self.__login_func = login_func
         self.__music_is_playing = False
+        self.__leaderboard_func = leaderboard
 
         self.__title_background = Background(
             pos=Vector(404, 200),
@@ -114,7 +116,7 @@ class TitleScreen(GameLoop):
         self.__title_background.update()
         canvas.draw_text("Knightborne", (280, 50), 50, "White")
         self.__start.render(canvas)
-        self.__settings.render(canvas)
+        self.__leaderboard.render(canvas)
         self.__tutorials.render(canvas)
         self.__editor.render(canvas)
         self.__login.render(canvas)
@@ -130,6 +132,7 @@ class TitleScreen(GameLoop):
             self.__tutorials.handle_click(self._mouse.last_click, self.__tutorial)
             self.__editor.handle_click(self._mouse.last_click, self.__level_editor)
             self.__login.handle_click(self._mouse.last_click, self.__login_func)
+            self.__leaderboard.handle_click(self._mouse.last_click, self.__leaderboard_func)
 
         self._mouse.update()
 

@@ -22,4 +22,4 @@ def speak() -> str | None:
                 return recognizer.recognize_google(audio_2)
 
         except sr.UnknownValueError:
-            print("Error")
+            pass
