@@ -179,79 +179,79 @@
 
 
 
-- ### utils/vector.py
+### utils/vector.py
 
 - Class representing Vectors
 
-- ### utils/speech.py
+### utils/speech.py
 
 - Provides functionality to speak into the microphone to convert voice into text
 
-- ### utils/score.py
+### utils/score.py
 
 - Handles login process and updates the score for each user
 
-- ### utils/mouse.py
+### utils/mouse.py
 
 - Is the mouse handler class
 
-- ### entities/abyssal_revenant.py
+### entities/abyssal_revenant.py
 
 - Handles the AI of then Abyssal Revenant enemy and how it interacts with the player
 
-- ### entities/attack.py
+### entities/attack.py
 
 - Creates a hitbox instance for the attack for each entity
 
-- ### entities/background.py
+### entities/background.py
 
 - Handles rendering the background that has no collisions with player
 
-- ### entities/block.py
+### entities/block.py
 
 - Handles the collision of blocks.
 
-- ### entities/cinematic.py
+### entities/cinematic.py
 
 - Handles the rendering of cinematic bars
 
-- ### entities/demon_slime_boss.py
+### entities/demon_slime_boss.py
 
 - Handles the functions of the final boss enemy
 
-- ### entities/evil_hand
+### entities/evil_hand
 
 - Handles the function of the evil hand enemy
 
-- ### entities/evil_knight.py
+### entities/evil_knight.py
 
 - Handles the function of the evil knight enemy
 
-- ### entities/fire.py
+### entities/fire.py
 
 - Handles creation of vertical fire used by the boss and how they function.
 
-- ### entities/fireball.py
+### entities/fireball.py
 
 - Handles horizontal fireballs used by the mage.py
 
-- ### entities/flying_demon.py
+### entities/flying_demon.py
 
 - Handles the flying demon enemy logic
 
-- ### entities/impaler_boss.py
+### entities/impaler_boss.py
 
 - Never used
 
-- ### entities/mage.py
+### entities/mage.py
 
 - Handles mage enemy logic
 
-- ### entities/player.py
+### entities/player.py
 
 - Handles player logic as well as keyboard controls from user.
 
-- ### entities/player.healthbar.py
+### entities/player.healthbar.py
 
 - handles the logic and rendering of the player health bar
 
@@ -259,7 +259,7 @@
 
 - Handles teleport the player to the new coordinates
 
-- ### entities/trigger.py
+### entities/trigger.py
 
 - Handles the trigger class with vectors.
 
