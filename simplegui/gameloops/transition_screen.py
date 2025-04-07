@@ -32,6 +32,9 @@ class TransitionScreen(GameLoop):
         self.__title = title
         self.__passed_level = passed_level
         self.__xp = xp
+        self.__music = PlaySound()
+        self.__music.loop(True)
+        self.__music.change_volume(0.3)
 
         next_level = {
             "tutorial": "LevelOne",
@@ -138,9 +141,6 @@ class TransitionScreen(GameLoop):
                 buff_type="Crit rate",
             )
 
-            self.__music = PlaySound()
-            self.__music.loop(True)
-            self.__music.change_volume(0.3)
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         self.__music.play_sound("ha-crunchy_1.wav")

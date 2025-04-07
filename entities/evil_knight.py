@@ -140,9 +140,9 @@ class EvilKnight(PhysicsEntity):
         self.__detection_range_x = 300
         self.__detection_range_y = 100
         self.__attack_distance = 70
-        self.__base_hp = self.hp
+        self.__original_hp = self.hp
         self.__player = None
-        self.__seen_player = False
+        self.seen_player = False
 
 
     def remove(self) -> bool:
@@ -151,20 +151,19 @@ class EvilKnight(PhysicsEntity):
         return False
 
     def update(self) -> None:
-        if self.hp != self.__base_hp:
-            self.__seen_player = True
         self._get_direction()
         self._knockback(self.__player)
         self._gravity()
         self.__death()
 
         self.__roll()
-        if self.__animations.done():
+        if self.__animations.done() and self.is_alive:
             self.__rolling = False
             self.immune = False
             self.__idle()
             self.__move()
             self.__attack()
+            self.__take_damage()
 
         self.pos.x += self.vel.x
         Block.collisions_x(self, self._level_id)
@@ -198,7 +197,7 @@ class EvilKnight(PhysicsEntity):
                 self.__player is None):
             return
 
-        if self.__player.crouched and not self.__seen_player:
+        if self.__player.crouched and not self.seen_player:
             if not (self.direction == "LEFT" and self.__distance_x > 0 or
                     self.direction == "RIGHT" and self.__distance_x < 0):
                 return
@@ -206,11 +205,12 @@ class EvilKnight(PhysicsEntity):
             self.vel.x = -self.__speed
         else:
             self.vel.x = self.__speed
-        self.__seen_player = True
+        self.seen_player = True
         self.__animations.set_animation(f"RUN_{self.direction}")
 
     def __attack(self) -> None:
-        if abs(self.__distance_x) > self.__attack_distance or not self.__seen_player:
+        if ((abs(self.__distance_x) > self.__attack_distance or abs(self.__distance_y) > self.__detection_range_y) or
+                self.__player is None or not self.seen_player):
             return
 
         self.vel.x = 0
@@ -270,6 +270,7 @@ class EvilKnight(PhysicsEntity):
         if self.__original_hp != self.hp:
             self.__original_hp = self.hp
             self.__sound.play_sound(self.__sounds.get(f"DAMAGE{random.randint(1, 10)}"))
+            self.seen_player = True
 
     def __death(self) -> None:
         if not self.is_alive:

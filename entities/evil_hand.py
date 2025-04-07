@@ -49,10 +49,10 @@ class EvilHand(Enemy):
         self.__detection_range_y = 100
         self.__attack_distance = 10
         self.__speed = 3
-        self.__base_hp = self.hp
+        self.__original_hp = self.hp
         self.__dead = False
         self.__player = None
-        self.__seen_player = False
+        self.seen_player = False
 
     def __idle(self) -> None:
         if abs(self.__distance_x) > self.__detection_range_x:
@@ -60,16 +60,15 @@ class EvilHand(Enemy):
             self.__animations.set_animation(f"RUN_{self.direction}")
 
     def update(self) -> None:
-        if self.hp != self.__base_hp:
-            self.__seen_player = True
         self._get_direction()
         self._gravity()
         self.__death()
 
-        if self.__animations.done():
+        if self.__animations.done() and self.is_alive:
             self.__idle()
             self.__move()
             self.__attack()
+            self.__take_damage()
 
         self.pos.x += self.vel.x
         Block.collisions_x(self, self._level_id)
@@ -85,7 +84,8 @@ class EvilHand(Enemy):
         self.healthbar(canvas, offset_x, offset_y)
 
     def __attack(self) -> None:
-        if abs(self.__distance_x) > self.__attack_distance or not self.__seen_player:
+        if ((abs(self.__distance_x) > self.__attack_distance or abs(self.__distance_y) > self.__detection_range_y) or
+                self.__player is None or not self.seen_player):
             return
 
         if self.__distance_x > 0:
@@ -130,7 +130,7 @@ class EvilHand(Enemy):
                 self.__player is None):
             return
 
-        if self.__player.crouched and not self.__seen_player:
+        if self.__player.crouched and not self.seen_player:
             if not (self.direction == "LEFT" and self.__distance_x > 0 or
                     self.direction == "RIGHT" and self.__distance_x < 0):
                 return
@@ -138,8 +138,13 @@ class EvilHand(Enemy):
             self.vel.x = -self.__speed
         else:
             self.vel.x = self.__speed
-        self.__seen_player = True
+        self.seen_player = True
         self.__animations.set_animation(f"RUN_{self.direction}")
+
+    def __take_damage(self):
+        if self.__original_hp != self.hp:
+            self.__original_hp = self.hp
+            self.seen_player = True
 
     def interaction(self, entity: PhysicsEntity) -> None:
         self.__distance_x = self.pos.x - entity.pos.x
