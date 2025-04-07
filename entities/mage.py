@@ -161,7 +161,7 @@ class Mage(Enemy):
                 self.__player is None):
             return
 
-        if self.__player.crouched and not self.__seen_player:
+        if self.__player.crouched and not self.seen_player:
             if not (self.direction == "LEFT" and self.__distance_x > 0 or
                     self.direction == "RIGHT" and self.__distance_x < 0):
                 return
