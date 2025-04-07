@@ -2,7 +2,7 @@ import os
 from typing import Callable
 
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
-
+from entities.utils import PlaySound
 from entities import (
     SIZE,
     AbyssalRevenant,
@@ -50,6 +50,9 @@ class LevelEditor(GameLoop):
             "EvilHand",
         ]
         self.__all_entities = os.listdir(os.path.join("assets", "blocks"))
+        self.__music = PlaySound()
+        self.__music.loop(True)
+        self.__music.change_volume(0.3)
 
     def __set_text(self) -> None:
         self.__labels[0].set_text(
@@ -72,6 +75,7 @@ class LevelEditor(GameLoop):
         self.__current = lst[new_index % len(lst)]
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
+        self.__music.play_sound("ha-undercurrent2.wav")
         self.__set_text()
 
         if self.__toggle:

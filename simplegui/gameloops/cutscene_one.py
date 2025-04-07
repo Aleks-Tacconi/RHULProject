@@ -72,16 +72,17 @@ class CutsceneOne(GameLoop):
                                                          " shadow has faded from this world.", Vector(1000, 1000),
                                                          Vector(250,390), Vector(830, 700))
         self.__music = PlaySound()
-        self.__music.play_sound("ha-waterheater.wav")
         self.__music.change_volume(0.3)
 
         self.__speech = PlaySound()
+        self.__music.loop(True)
         self.__sound_playing = False
 
 
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
+        self.__music.play_sound("ha-waterheater.wav")
         if not self.__sound_playing:
             self.__speech.play_sound("king_speech.wav")
             self.__sound_playing = True

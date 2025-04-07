@@ -57,7 +57,7 @@ class Entity(metaclass=ABCMeta):
         return y1 < b2
 
     def _render_hitbox(self, canvas: simplegui.Canvas, offset_x: int, offset_y: int) -> None:
-        return
+        return #Renders the hitbox, remove return to see hitboxes
         canvas.draw_polygon(
             [
                 [self.hitbox_area[0] + offset_x, self.hitbox_area[1] + offset_y],

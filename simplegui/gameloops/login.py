@@ -5,7 +5,7 @@ import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from simplegui.components import Button, ButtonStyle
 from utils.score import SCORE
-
+from entities.utils import PlaySound
 from .abstract import GameLoop
 
 
@@ -75,7 +75,12 @@ class Login(GameLoop):
             ),
         )
 
+        self.__music = PlaySound()
+        self.__music.loop(True)
+        self.__music.change_volume(0.3)
+
     def mainloop(self, canvas: simplegui.Canvas) -> None:
+        self.__music.play_sound("ha-distillery.wav")
         self.__confirm.render(canvas)
         self.__password_button.render(canvas)
         self.__username_button.render(canvas)

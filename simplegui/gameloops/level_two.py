@@ -60,12 +60,12 @@ class LevelTwo(GameLoop):
                                            Vector(128, 128))
 
         self.__music = PlaySound()
-        self.__music.play_sound("ha-abomination.wav")
+        self.__music.loop(True)
         self.__music.change_volume(0.3)
 
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
-
+        self.__music.play_sound("ha-abomination.wav")
         self.__scoreboard.update()
 
         # TODO: 400 is half the screen width - not good magic number

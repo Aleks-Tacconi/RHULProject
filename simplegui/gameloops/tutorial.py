@@ -11,6 +11,7 @@ from utils import Vector
 
 from .abstract import GameLoop
 from simplegui.components import ScoreBoard, Cutscene, Interactable
+from entities.utils import PlaySound
 
 
 ID = "tutorial"
@@ -83,9 +84,13 @@ class Tutorial(GameLoop):
                                            1, 24, 4, self.__player, Vector(4700, 100),
                                            Vector(128, 128))
 
+        self.__music = PlaySound()
+        self.__music.loop(True)
+        self.__music.change_volume(0.3)
+
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
-
+        self.__music.play_sound("ha-amorph.wav")
         self.__scoreboard.update()
 
         # TODO: 400 is half the screen width - not good magic number

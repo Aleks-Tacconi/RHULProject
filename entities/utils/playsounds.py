@@ -8,7 +8,6 @@ class PlaySound:
         self.__audio = Playback()
         self.__audio_2 = Playback()
 
-
     def play(self) -> None:
         self.__audio.play()
 
@@ -23,6 +22,9 @@ class PlaySound:
 
     def change_volume(self, volume: float) -> None:
         self.__audio.set_volume(volume)
+
+    def loop(self, boolean: bool) -> None:
+        self.__audio.loop_at_end(boolean)
 
     def play_sound(self, audio_file, audio_file_2 = None) -> None:
         if self.__audio_file != audio_file:

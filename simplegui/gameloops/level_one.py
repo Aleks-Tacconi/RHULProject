@@ -134,10 +134,11 @@ class LevelOne(GameLoop):
         self.__npc_talk = Subtitles("", Vector(-2100, 169), 15)
         self.__npc_ai = AI()
         self.__music = PlaySound()
-        self.__music.play_sound("ha-simplestring_1.wav")
+        self.__music.loop(True)
         self.__music.change_volume(0.3)
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
+        self.__music.play_sound("ha-simplestring_1.wav")
         self.__scoreboard.update()
 
         self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 10

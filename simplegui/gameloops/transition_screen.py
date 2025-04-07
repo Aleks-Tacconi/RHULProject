@@ -1,7 +1,7 @@
 import json
 import os
 from typing import Callable
-
+from entities.utils import PlaySound
 import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from entities import Background
@@ -138,7 +138,12 @@ class TransitionScreen(GameLoop):
                 buff_type="Crit rate",
             )
 
+            self.__music = PlaySound()
+            self.__music.loop(True)
+            self.__music.change_volume(0.3)
+
     def mainloop(self, canvas: simplegui.Canvas) -> None:
+        self.__music.play_sound("ha-crunchy_1.wav")
         self.__title_background.render(canvas, 0, 0)
         self.__title_background.update()
         if self.__completed_game:

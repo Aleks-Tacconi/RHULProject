@@ -3,7 +3,7 @@ import SimpleGUICS2Pygame.simpleguics2pygame as simplegui
 
 from utils.score import SCORE
 from simplegui.components import Button, ButtonStyle
-
+from entities.utils import PlaySound
 from .abstract import GameLoop
 
 
@@ -25,8 +25,12 @@ class LeaderBoard(GameLoop):
         )
 
         self.__back_func = back
+        self.__music = PlaySound()
+        self.__music.loop(True)
+        self.__music.change_volume(0.3)
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
+        self.__music.play_sound("ha-pressure-nofx.wav")
         self.__back.render(canvas)
         scores = []
 

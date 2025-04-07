@@ -112,10 +112,11 @@ class TitleScreen(GameLoop):
         self.__login_status = login
 
         self.__music = PlaySound()
-        self.__music.play_sound("ha-backrooms.wav")
+        self.__music.loop(True)
         self.__music.change_volume(0.3)
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
+        self.__music.play_sound("ha-backrooms.wav")
         self.__title_background.render(canvas, 0, 0)
         self.__title_background.update()
         canvas.draw_text("Knightborne", (280, 50), 50, "White")

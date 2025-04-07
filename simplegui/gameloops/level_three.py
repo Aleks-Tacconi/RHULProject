@@ -61,7 +61,7 @@ class LevelThree(GameLoop):
                                            1, 24, 4, self.__player, Vector(5950, 100),
                                            Vector(128, 128))
         self.__music = PlaySound()
-        self.__music.play_sound("ha-pressure.wav")
+        self.__music.loop(True)
         self.__music.change_volume(0.3)
 
         self.__interaction2 = Interactable(
@@ -80,6 +80,7 @@ class LevelThree(GameLoop):
 
     def mainloop(self, canvas: simplegui.Canvas) -> None:
         self.__scoreboard.update()
+        self.__music.play_sound("ha-pressure.wav")
 
         # TODO: 400 is half the screen width - not good magic number
         self.__offset_x += (self.__player.pos.x - 380 - self.__offset_x) // 10
