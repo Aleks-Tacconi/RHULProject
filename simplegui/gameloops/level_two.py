@@ -139,6 +139,7 @@ class LevelTwo(GameLoop):
         print("|||||||||||||||||||||||||||||||||")
         self.__scoreboard.print_score()
         self.__xp.print_xp()
+        self.__music.stop()
         print("|||||||||||||||||||||||||||||||||")
         self.__reset(transition_screen=TransitionScreen(
             prev_level=ID,

@@ -225,6 +225,7 @@ class LevelOne(GameLoop):
 
     def __next_scene(self):
         self.__scoreboard.calculate_score(ID)
+        self.__music.stop()
         self.__reset(
             transition_screen=TransitionScreen(
                 prev_level=ID,
