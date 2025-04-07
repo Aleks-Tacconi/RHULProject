@@ -72,7 +72,7 @@ class Tutorial(GameLoop):
                                                           "Press E whilst sneaking to deal a sneak attack that"
                                                           " does critical-damage.", Vector(0, 300))
         self.__cutscenes.new_cutscene(Vector(3000, 0), 0, "This is a big gap."
-                                                          " To cross you will need to run and jump"
+                                                          " To cross you will need to run and jump."
                                                           " Press Shift to run.", Vector(0, 300))
         self.__cutscenes.new_cutscene(Vector(4000, 0), 0, "Press F to interact with objects"
                                                           " in the world. And with this, you have completed the basic"
