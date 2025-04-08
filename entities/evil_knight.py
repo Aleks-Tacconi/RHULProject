@@ -252,7 +252,7 @@ class EvilKnight(PhysicsEntity):
 
     def __roll(self):
         if (random.randint(1,10) == 1 and abs(self.__distance_x) <= self.__attack_distance and
-                self.__player.is_attacking and self.vel.x == 0):
+                self.__player.is_attacking and self.vel.x == 0 and self.is_alive):
             if self.direction == "RIGHT":
                 self.vel.x += self.__speed
             else:
